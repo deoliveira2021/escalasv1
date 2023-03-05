@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+<!--?
+//=========================================
+//  Sistema desenvolvido para o Exército Brasileiro
+//  by: Edvaldo de Oliveira Sousa
+//  email: edvaldo.cigex@gmail.com
+
+// Página de designação de escalas para o militar previamente selecionado
+//========================================= ?> -->
+
+{% block content %}
+{% block feriados %}{% endblock %}
+  <!-- Tabela com os feriados cadastrados -->
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center" id="minhaTabela">
+    <thead>
+      <th colspan="10" bgcolor="#6699CC">
+        <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Feriados cadastrados</font></b></font></div>
+      </th>
+      <tr bgcolor="cccccc">
+        <th>Data</th>
+        <th>Dia</th>
+        <th>Descrição</th>
+        <th colspan="2">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for feriado in feriados %}
+        <tr bgcolor="ebebeb">
+          <td align = center >{{ feriado.data }}</td>
+          <td align = lelft >{{ feriado.dia }}</td>
+          <td align = left >{{ feriado.descricao }}</td>
+          <td align = center >
+            <a href="{% url 'core:editar_feriado' feriado.id feriados.number %}">
+              <i class="fa fa-edit"></i>
+                Editar
+            </a>
+          </td>
+          <td align = center >
+            <a href="{% url 'core:excluir_feriado' feriado.id feriados.number %}">
+              <i class="fa fa-trash"></i>
+              Excluir
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if feriados.has_other_pages %}
+  <div class="pagination">
+    {% if feriados.has_previous %}
+      <a href="?page={{ feriados.previous_page_number }}">&laquo;</a>
+    {% endif %}
+    {% for i in feriados.paginator.page_range %}
+      {% if feriados.number == i %}
+        <a href="?page={{ i }}" class="active">{{ i }}</a>
+      {% else %}
+        <a href="?page={{ i }}">{{ i }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if feriados.has_next %}
+      <a href="?page={{ feriados.next_page_number }}">&raquo;</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+<!-- 
+  {% if feriados.has_other_pages %}
+    <ul class="breadcrumb">
+      {% if feriados.has_previous %}
+        <li><a href="?page={{ feriados.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in feriados.paginator.page_range %}
+        {% if feriados.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(Pág Atual)</span></span></li>
+        {% else %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if feriados.has_next %}
+        <li><a href="?page={{ feriados.next_page_number }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+  {% endif %}
+  -->
+  {% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+{% block militares %}{% endblock %}
+<table class="table full" align="center" id="minhaTabela">
+  <thead>
+    <th colspan="3" bgcolor="#6699CC">
+      <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Militares disponíveis para troca</font></b></font></div>
+    </th>
+    <tr bgcolor="cccccc">
+      <th>Posto/Grad</th>
+      <th>Nome de Guerra</th>
+      <th>Selecionar</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for militar in militares %}
+      <tr bgcolor="ebebeb">
+        <td align = center >{{ militar.get_posto_display }}</td>
+        <td align = lelft >{{ militar.nome_guerra }}</td>
+        <td align = center >
+<!--          <button  id="visualizarDados"
+          class="pure-button button-small">Selecionar</button>
+-->
+          <a href="{#}" class="pure-button button-small">
+              Selecionar
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if militares.has_other_pages %}
+  <ul class="breadcrumb">
+    {% if militares.has_previous %}
+      <li><a href="?page={{ militares.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in militares.paginator.page_range %}
+      {% if militares.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(Pág Atual)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if militares.has_next %}
+      <li><a href="?page={{ militares.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+{% endblock %}

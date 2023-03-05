@@ -1,0 +1,84 @@
+<!--?
+//=========================================
+//  Sistema desenvolvido para o Exército Brasileiro
+//  by: Edvaldo de Oliveira Sousa e Sérgio Manfrin
+//  email: edvaldo.cigex@gmail.com
+// Página de cadastrar dispensas
+//========================================= ?> -->
+{% extends "listar_dispensas.html" %}
+{% load widget_tweaks %} #usado para renderizar os camops dos forms
+{% block dispensas %}
+<div class = "splash">
+</div>
+<form name="frm_dispensa" class="pure-form pure-form-aligned" method="post">
+  {% csrf_token %}
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+    {{ form.non_field_errors }}
+	   <tr bgcolor="#6699CC">
+		     <td colspan="8"><div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Cadastro de Dispensa/Férias</b></font></div></td>
+	   </tr>
+     <tr bgcolor="ebebeb">
+       <td colspan="1">Posto/Graduação:
+       </td>
+       <td colspan="1">
+         <input type="text" readonly=true name="posto_graduacao" size="4" value="{{militar.get_posto_display}}">
+       </td>
+       <td colspan="1" align="right">
+         Nome:
+       </td>
+       <td colspan="1">
+          <input type="text" readonly=true name="nome" size="60" value="{{militar.nome}}">
+          <input type="hidden" readonly=true name="idmilitar" size="15" value="{{militar.id}}">
+          <input type="hidden" readonly=true name="idcirculo" size="15" value="{{militar.idcirculo}}">
+       </td>
+       <td>
+         Início:
+       </td>
+       <td>
+         {% render_field form.datainicio type="date" value="datetime.now" size="3" %}
+         <!--{#{ form.datainicio}}
+         <input type="date" name="datainicio" value="today" id="Id_Inicio" size="4" required> -->
+       </td>
+       <td>
+         Fim:
+       </td>
+       <td>
+         {% render_field form.datafim type="date" value="datetime.now" size="3" %}
+         <!--{#{{ form.datafim}}
+        <input type="date" name="datafim" value="today" id="Id_Fim" size="4" required> -->
+       </td>
+     </tr>
+     <tr bgcolor="ebebeb">
+     <td colspan="4">
+       <div class="control-group">
+         {{ form.motivo.label_tag }}
+         {% render_field form.motivo width="10" %}
+         {{ form.motivo.errors }}
+       </div>
+     </td>
+     <td colspan="2" align="right">
+       <div class="control-group">
+         {{ form.prejuizo.label_tag }}
+       </div>
+     </td>
+     <td colspan="1" align="left">
+       <div class="control-group">
+         {% render_field form.prejuizo width="5" %}
+         {{ form.prejuizo.errors }}
+       </div>
+     </td>
+     <td></td>
+    </tr>
+     <tr bgcolor="ebebeb">
+       <td colspan="2"></td>
+       <td colspan="4">
+         <div class="controls" align = "center">
+             <button type="submit" class="pure-button pure-button-primary">Salvar</button>
+             <button type="button" onclick='history.go(-1)' class="pure-button pure-button-error">Voltar</button>
+         </div>
+       </td>
+       <td colspan="2"></td>
+     </tr>
+    </table>
+  </form>
+{% endblock %}

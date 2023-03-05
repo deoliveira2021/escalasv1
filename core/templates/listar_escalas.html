@@ -1,0 +1,95 @@
+<!--?
+//=========================================
+//  Sistema desenvolvido para o Exército Brasileiro
+//  by: Edvaldo de Oliveira Sousa
+//  email: edvaldo.cigex@gmail.com
+
+// Página de designação de escalas para o militar previamente selecionado
+//========================================= ?> -->
+
+{% extends "base.html" %}
+{% block content %}
+{% block escalas %}{% endblock %}
+  <!-- Tabela com as escalas cadastradas -->
+  <table class="table full" align="center" id="minhaTabela">
+    <thead>
+      <th colspan="8" bgcolor="#6699CC">
+        <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Escalas cadastradas</font></b></font></div>
+      </th>
+      <tr bgcolor="cccccc">
+        <th>Prec</th>
+        <th>Círculo</th>
+        <th>Descrição</th>
+        <th>Folga Mínima</th>
+        <th>Qtos por Escala?</th>
+        <th>Corrida?</th>
+        <th colspan="2">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for escala in escalas %}
+        <tr bgcolor="ebebeb">
+          <td align = center >{{ escala.precedencia }}</td>
+          <td align = center >{{ escala.get_idcirculo_display }}</td>
+          <td>{{ escala.descricao }}</td>
+          <td align = center >{{ escala.folgaminima }}</td>
+          <td align = center >{{ escala.qtdporescala }}</td>
+          <td align = center >{{ escala.get_corrida_display }}</td>
+          <td align = center >
+            <a href="{% url 'core:editar_escala' escala.id escalas.number %}">
+              <i class="fa fa-edit"></i>
+                Editar
+            </a>
+          </td>
+          <td align = center >
+            <a href="{% url 'core:excluir_escala' escala.id escalas.number %}">
+              <i class="fa fa-trash"></i>
+              Excluir
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if escalas.has_other_pages %}
+  <div class="pagination">
+    {% if escalas.has_previous %}
+      <a href="?page={{ escalas.previous_page_number }}">&laquo;</a>
+    {% endif %}
+    {% for i in escalas.paginator.page_range %}
+      {% if escalas.number == i %}
+        <a href="?page={{ i }}" class="active">{{ i }}</a>
+      {% else %}
+        <a href="?page={{ i }}">{{ i }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if escalas.has_next %}
+      <a href="?page={{ escalas.next_page_number }}">&raquo;</a>
+    {% endif %}
+  </div>
+  {% endif %}
+  
+  <!--
+  {% if escalas.has_other_pages %}
+    <ul class="breadcrumb">
+      {% if escalas.has_previous %}
+        <li><a href="?page={{ escalas.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in escalas.paginator.page_range %}
+        {% if escalas.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(Pág Atual)</span></span></li>
+        {% else %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if escalas.has_next %}
+        <li><a href="?page={{ escalas.next_page_number }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+  {% endif %}
+  -->
+  {% endblock %}

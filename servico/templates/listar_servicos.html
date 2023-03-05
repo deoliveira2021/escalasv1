@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% load widget_tweaks %} #usado para renderizar os camops dos forms
+{% block content %}
+<div class = "splash">
+    <div class="pure-g-r">
+    </div>
+</div>
+<form name="form" class="pure-form pure-form-aligned" method="post" >
+  {% csrf_token %}
+<table class="table full"  cellspacing="1" cellpadding="2"  align="center" id="minhaTabela">
+  <thead>
+    <th colspan="14" bgcolor="#6699CC">
+      <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Relação de Serviços tirados</font></b></font></div>
+    </th>
+    <tr>
+      <th colspan="2" align = "center">Data</th>
+      <th colspan="2" align = "center">Dia</th>
+      <th colspan="2" align = "center">Escala</th>
+      <th colspan="2" align = "center">Posto/Grad</th>
+      <th colspan="4" align = "center">Nome</th>
+      <th colspan="2" align = "center">Folga</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for escalado in escalados %}
+      <tr bgcolor="ebebeb">
+        <td colspan="2" align = center >
+        {% if escalado.vermelha%}
+        <font color="red">
+          {{ escalado.data }}
+        {%else %}
+         <font color="#777" >
+          {{ escalado.data }}
+        {%endif%}
+        </td>
+        <td colspan="2" align = center >
+          {% if escalado.vermelha %}
+              <font color="red">
+              {{ escalado.dia }}
+          {%else %}
+          <font color="#777" >
+            {{ escalado.dia }}
+          {%endif%}
+        </td>
+        <td colspan="2" align = left >
+          {% if escalado.vermelha%}
+              <font color="red">
+              {{ escalado.descricao }}
+          {%else %}
+          <font color="#777" >
+            {{ escalado.descricao }}
+          {%endif%}
+        </td>
+        <td colspan="2" align=left>
+          {% if escalado.vermelha%}
+              <font color="red">
+              {{ escalado.get_posto_display }}
+          {%else %}
+          <font color="#777" >
+            {{ escalado.get_posto_display }}
+          {%endif%}
+        </td>
+        <td colspan="4" align = left >
+          {% if escalado.vermelha%}
+              <font color="red">
+                {%if escalado.nomesubstituto%}
+                  {{ escalado.nomesubstituto }}
+                {%else%}
+                  {{ escalado.nomeguerra }}
+                {%endif%}
+          {%else %}
+          <font color="#777" >
+            {%if escalado.nomesubstituto%}
+              {{  escalado.nomesubstituto  }}
+            {%else%}
+              {{ escalado.nomeguerra }}
+            {%endif%}
+          {%endif%}
+        </td>
+        <td colspan="2" align = center >
+          {% if escalado.vermelha%}
+              <font color="red">
+              {{ escalado.folga }}
+          {%else %}
+          <font color="#777" >
+            {{ escalado.folga }}
+          {%endif%}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+  </table>
+  <table>
+  <tfoot >
+    {{ form.non_field_errors }}
+    <tr bgcolor="#ebebeb">
+      <td ><font face="Arial" size="2">De:</td>
+      <td >
+        {% if user.is_staff%}
+          <input type="date" name="dataInicio" value={{datetime.now}} id="idinicio">
+        {% else %}
+          <input type="date" name="dataInicio" value={{datetime.now}} id="idinicio" readonly>
+        {% endif %}
+    </td>
+      <td ><font face="Arial" size="2">At&eacute;:</td>
+      <td >
+        {% if user.is_staff%}
+          <input type="date" name="dataFim" value="{{datetime.date.today|date:'Y-m-d' }}" id="idfim" >
+        {% else %}
+          <input type="date" name="dataFim" value="{{datetime.date.today}}" id="idfim" readonly>
+        {% endif %}
+      </td>
+      <td >
+<!--        {#% render_field form.searchEscala size="30" placeholder="Filtrar pela Escala..."%}
+-->     <input type="text" id="escalaSearch" name="searchEscala"
+        placeholder="Filtrar pela Escala..."
+        aria-label="Search through site content" size="30">
+
+      </td>
+       <td>
+           <span class="input-group-addon">
+          <!--  <a href="{#% url 'previsao:filtrar' %}" class="fa fa-search"></a>-->
+            <button  name="filtrarescala" class="fa fa-search"
+            style="background:transparent;border:none"
+            formaction="{% url 'previsao:filtrar' %}"></button>
+           </span>
+       </td>
+       <td colspan="2">
+<!--         {#% render_field form.searchMilitar size="30" placeholder="Filtrar pelo nome de Guerra..."%}
+-->
+           <input type="text" id="nguerra" name="searchMilitar"
+           placeholder="Filtrar pelo nome de Guerra..."
+           aria-label="Search through site content" size="30">
+
+       </td>
+       <td>
+         <span class="input-group-addon">
+          <button name="filtrarnome" class="fa fa-search"
+          style="background:transparent;border:none"
+          formaction="{% url 'previsao:filtrar' %}"></button>
+         </span>
+       </td>
+      <td >
+        <a href="{% url 'servico:GeneratePDF'%}" class="pure-button button-small"
+        readonly={{user.is_staff}}>Gerar PDF</a>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+</form>
+<!-- codigo responsável pela paginação-->
+{% if escalados.has_other_pages %}
+  <div class="pagination">
+    {% if escalados.has_previous %}
+      <a href="?page={{ escalados.previous_page_number }}">&laquo;</a>
+    {% endif %}
+    {% for i in escalados.paginator.page_range %}
+      {% if escalados.number == i %}
+        <a href="?page={{ i }}" class="active">{{ i }}</a>
+      {% else %}
+        <a href="?page={{ i }}">{{ i }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if escalados.has_next %}
+      <a href="?page={{ escalados.next_page_number }}">&raquo;</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

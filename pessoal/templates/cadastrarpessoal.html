@@ -1,0 +1,88 @@
+{% extends "listar_militar.html" %}
+
+{% block pessoal %}
+<div class = "splash">
+</div>
+<form class="pure-form pure-form-aligned" method="post">
+  {% csrf_token %}
+  <table class="table full" align="center">
+    <tr bgcolor="#6699CC">
+      <td colspan="20">
+      <div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Cadastro de Militares</b></font></div></td>
+    </tr>
+    {{ form.non_field_errors }}
+    <tr bgcolor="ebebeb">
+      <td colspan="5" width="5%">
+        <div class="control-group">
+            {{ form.idcirculo.label_tag }}
+            {{ form.idcirculo }}
+            {{ form.idcirculo.errors }}
+        </div>
+      </td>
+      <td colspan="5" width="5%">
+        <div class="control-group">
+            {{ form.posto.label_tag }}
+            {{ form.posto }}
+            {{ form.posto.errors }}
+        </div>
+      </td>
+      <td colspan="5" width="18%">
+        <div class="control-group">
+            {{ form.nome.label_tag }}
+            {{ form.nome }}
+            {{ form.nome.errors }}
+        </div>
+      </td>
+      <td colspan="5" width="18%">
+        <div class="control-group">
+            {{ form.nome_guerra.label_tag }}
+            {{ form.nome_guerra }}
+            {{ form.nome_guerra.errors }}
+        </div>
+      </td>
+		</tr>
+    <tr bgcolor="ebebeb">
+      <td colspan="4" width="5%">
+        <div class="control-group">
+            {{ form.antiguidade.label_tag }}
+            {{ form.antiguidade }}
+            {{ form.antiguidade.errors }}
+        </div>
+      </td>
+      <td colspan="4" width="5%">
+        <div class="control-group" align="center">
+            {{ form.pronto.label_tag }}
+            {{ form.pronto }}
+            {{ form.pronto.errors }}
+        </div>
+      </td>
+      <td colspan="4" width="18%">
+        <div class="control-group">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            {{ form.email.errors }}
+        </div>
+      </td>
+      <td colspan="4" width="18%">
+        <div class="control-group">
+            {{ form.tel1.label_tag }}
+            {{ form.tel1 }}
+            {{ form.tel1.errors }}
+        </div>
+      </td>
+      <td colspan="4"></td>
+    </tr>
+	</table>
+
+  <table class="table full" align="center">
+   <tr bgcolor="ebebeb">
+     <td>
+       <div class="controls" align = "center">
+           <button type="submit" class="pure-button pure-button-primary">Salvar</button>
+           <button type="reset" class="pure-button ">Limpar dados</button>
+       </div>
+     </td>
+   </tr>
+  </table>
+</form>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+<!--?
+//=========================================
+//  Sistema desenvolvido para o Exército Brasileiro
+//  by: Edvaldo de Oliveira Sousa
+//  email: edvaldo.cigex@gmail.com
+
+// Página de designação de escalas para o militar previamente selecionado
+//========================================= ?> -->
+
+{% block content %}
+{% block dispensas %}{% endblock %}
+  <!-- Tabela com as dispensas cadastradas -->
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center" id="minhaTabela">
+    <thead>
+      <th colspan="11" bgcolor="#6699CC">
+        <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Dispensas/Férias deste Militar</font></b></font></div>
+      </th>
+      <tr bgcolor="cccccc">
+        <th>Início</th>
+        <th>Término</th>
+        <th>Dias</th>
+        <th>Motivo</th>
+        <th>Com Prejuízo?</th>
+        <th colspan="2">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dispensa in dispensado %}
+        <tr bgcolor="ebebeb">
+          <td align = center >{{ dispensa.datainicio }}</td>
+          <td align = center >{{ dispensa.datafim }}</td>
+          <td align = center >{{ dispensa.dias }}</td>
+          <td align = center >{{ dispensa.motivo }}</td>
+          <td align = center >{{ dispensa.get_prejuizo_display }}</td>
+          <td align = center >
+            <a href="{% url 'core:editar_dispensa' dispensa.id dispensado.number %}">
+              <i class="fa fa-edit"></i>
+                Editar
+            </a>
+          </td>
+          <td align = center >
+            <a href="{% url 'core:excluir_dispensa' dispensa.id dispensado.number %}">
+              <i class="fa fa-trash"></i>
+              Excluir
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if dispensado.has_other_pages %}
+  <div class="pagination">
+    {% if dispensado.has_previous %}
+      <a href="?page={{ dispensado.previous_page_number }}">&laquo;</a>
+    {% endif %}
+    {% for i in dispensado.paginator.page_range %}
+      {% if dispensado.number == i %}
+        <a href="?page={{ i }}" class="active">{{ i }}</a>
+      {% else %}
+        <a href="?page={{ i }}">{{ i }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if dispensado.has_next %}
+      <a href="?page={{ dispensado.next_page_number }}">&raquo;</a>
+    {% endif %}
+  </div>
+{% endif %}
+  <!--
+  {% if dispensado.has_other_pages %}
+    <ul class="breadcrumb">
+      {% if dispensado.has_previous %}
+        <li><a href="?page={{ dispensado.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in dispensado.paginator.page_range %}
+        {% if dispensado.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(Pág Atual)</span></span></li>
+        {% else %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if dispensado.has_next %}
+        <li><a href="?page={{ dispensado.next_page_number }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+  {% endif %}
+  -->
+  {% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+{% block register %}{% endblock %}
+<table class="table full" align="center" id="minhaTabela">
+  <thead>
+    <th colspan="10" bgcolor="#6699CC">
+      <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Usuários cadastrados</font></b></font></div>
+    </th>
+    <tr bgcolor="cccccc">
+      <th>Nome Completo</th>
+      <th>User Name</th>
+      <th>Nome de Guerra</th>
+      <th>e-mail</th>
+      <th>Administrador?</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for usuario in usuarios %}
+      <tr bgcolor="ebebeb">
+        <td align = center >{{ usuario.nome }}</td>
+        <td align = center >{{ usuario.username }}</td>
+        <td>{{ usuario.nome_guerra }}</td>
+        <td >{{ usuario.email }}</td>
+        <td >{{ usuario.get_is_staff_display }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if usuarios.has_other_pages %}
+  <div class="pagination">
+    {% if usuarios.has_previous %}
+      <a href="?page={{ militares.previous_page_number }}">&laquo;</a>
+    {% endif %}
+    {% for i in usuarios.paginator.page_range %}
+      {% if usuarios.number == i %}
+        <a href="?page={{ i }}" class="active">{{ i }}</a>
+      {% else %}
+        <a href="?page={{ i }}">{{ i }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if usuarios.has_next %}
+      <a href="?page={{ militares.next_page_number }}">&raquo;</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

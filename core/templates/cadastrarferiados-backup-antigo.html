@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+<!--?
+//=========================================
+//  Sistema desenvolvido para o Exército Brasileiro
+//  by: Edvaldo de Oliveira Sousa
+//  email: edvaldo.cigex@gmail.com
+
+// Página de designação de escalas para o militar previamente selecionado
+//========================================= ?> -->
+
+{% block content %}
+<div class = "splash">
+</div>
+<form name="frm_feriados" class="pure-form pure-form-aligned" method="post">
+  {% csrf_token %}
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+    {{ form.non_field_errors }}
+	   <tr bgcolor="#6699CC">
+		     <td colspan="7"><div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Cadastro de Feriados</b></font></div></td>
+	   </tr>
+     <tr bgcolor="ebebeb">
+       <td width="2%">
+         <div class="control-group">
+           {{ form.data.label_tag }}
+         </div>
+       </td>
+       <td colspan="2" width="15%">
+         <div class="control-group">
+           {{ form.data }}
+           {{ form.data.errors }}
+           <!--Data:
+             <input type="date" name="data" value="now" id="data">-->
+         </div>
+       </td>
+       <td width="2%">
+         <div class="control-group">
+           {{ form.descricao.label_tag }}
+         </div>
+       </td>
+       <td colspan="5" width="40%">
+         <div class="control-group">
+           {{ form.descricao }}
+           {{ form.descricao.errors }}
+         </div>
+       </td>
+     </tr>
+     <tr bgcolor="ebebeb">
+       <td colspan="6">
+         <div class="controls" align = "center">
+             <button type="submit" class="pure-button pure-button-primary">Salvar</button>
+             <button type="reset" class="pure-button pure-button-error">Limpar dados</button>
+         </div>
+       </td>
+     </tr>
+    </table>
+  </form>
+  <!-- Tabela com os feriados cadastrados -->
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+    <thead>
+      <td colspan="10" bgcolor="#6699CC">
+        <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Feriados cadastrados</font></b></font></div>
+      </td>
+      <tr bgcolor="cccccc">
+        <th>Data</th>
+        <th>Dia</th>
+        <th>Descrição</th>
+        <th>Editar</th>
+        <th>Excluir</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for feriado in feriados %}
+        <tr bgcolor="ebebeb">
+          <td align = center >{{ feriado.data }}</td>
+          <td align = center >{{ feriado.dia }}</td>
+          <td align = center >{{ feriado.descricao }}</td>
+          <td align = center >
+            <a href="{% url 'core:editar_feriado' feriado.id %}">
+              <i class="fa fa-edit"></i>
+                Editar
+            </a>
+          </td>
+          <td align = center >
+            <a href="{% url 'core:excluir_feriado' feriado.id %}">
+              <i class="fa fa-trash"></i>
+              Excluir
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if feriados.has_other_pages %}
+    <ul class="breadcrumb">
+      {% if feriados.has_previous %}
+        <li><a href="?page={{ feriados.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in feriados.paginator.page_range %}
+        {% if feriados.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(Pág Atual)</span></span></li>
+        {% else %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if feriados.has_next %}
+        <li><a href="?page={{ feriados.next_page_number }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+  {% endif %}
+  {% endblock %}

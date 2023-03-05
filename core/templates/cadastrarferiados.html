@@ -1,0 +1,61 @@
+<!--?
+//=========================================
+//  Sistema desenvolvido para o Exército Brasileiro
+//  by: Edvaldo de Oliveira Sousa
+//  email: edvaldo.cigex@gmail.com
+
+// Página de designação de escalas para o militar previamente selecionado
+//========================================= ?> -->
+
+{% extends "listar_feriados.html" %}
+{% load widget_tweaks %} #usado para renderizar os campos dos forms
+{% block feriados %}
+<div class = "splash">
+</div>
+<form name="frm_feriados" class="pure-form pure-form-aligned" method="post">
+  {% csrf_token %}
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+    {{ form.non_field_errors }}
+	   <tr bgcolor="#6699CC">
+		     <td colspan="7"><div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Cadastro de Feriados</b></font></div></td>
+	   </tr>
+     <tr bgcolor="ebebeb">
+       <td width="2%">
+         <div class="control-group">
+           {{ form.data.label_tag }}
+         </div>
+       </td>
+       <td colspan="2" width="15%">
+         <div class="control-group">
+           {% render_field form.data type="date" size="3" %}
+           {{ form.data.errors }}
+           {% render_field form.dia value=nomeDiaSemana type="hidden" %} <!--esconde esse campo -->
+
+           <!--Data:
+             <input type="date" name="data" value="now" id="data">-->
+         </div>
+       </td>
+       <td width="2%">
+         <div class="control-group">
+           {{ form.descricao.label_tag }}
+         </div>
+       </td>
+       <td colspan="5" width="40%">
+         <div class="control-group">
+           {% render_field form.descricao placeholder="Digite o nome do feriado" %}
+        <!--   #{{ form.descricao }} -->
+           {{ form.descricao.errors }}
+         </div>
+       </td>
+     </tr>
+     <tr bgcolor="ebebeb">
+       <td colspan="6">
+         <div class="controls" align = "center">
+             <button type="submit" class="pure-button pure-button-primary">Salvar</button>
+             <button type="reset" class="pure-button pure-button-error">Limpar dados</button>
+         </div>
+       </td>
+     </tr>
+    </table>
+  </form>
+  {% endblock %} <!-- #fim do bloco de feriados -->

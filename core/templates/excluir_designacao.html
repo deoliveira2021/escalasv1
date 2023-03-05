@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load widget_tweaks %} #usado para renderizar os camops dos forms
+{% block content %}
+<div class = "splash">
+</div>
+<form class="pure-form pure-form-aligned" method="post">
+  {% csrf_token %}
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+    {{ form_designacao.non_field_errors }}
+    <tr bgcolor="#8B0000"> <!-- essa cor é DarkRed (vermelha escuro)-->
+      <td colspan="20">
+        <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Exlcuir escala para este militar</font></b></font></div>
+      </td>
+    </tr>
+    <tr bgcolor="ebebeb">
+      <td colspan="5" width="12%">
+       <div class="control-group"> Posto/Graduação:
+         <input type="text" readonly=true name="posto_graduacao" size="15" value="{{militar.get_posto_display}}">
+       </div>
+      </td>
+      <td colspan="5" width="12%">
+       <div class="control-group"> Nome de Guerra:
+         <input type="text" readonly=true name="posto_graduacao" size="50" value="{{militar.nome_guerra}}">
+         <input type="hidden" readonly=true name="idmilitar" size="15" value="{{militar.id}}">
+         <input type="hidden" readonly=true name="idcirculo" size="15" value="{{militar.idcirculo}}">
+       </div>
+      </td>
+    </tr>
+  </table>
+
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+    <tr bgcolor="ebebeb">
+      {{ form_folgas.non_field_errors }}
+      <td height="25" width="6%">
+        {{ form_folgas.idescala.label_tag }}
+        {% render_field form_folgas.idescala disabled=True %}
+        {{ form_folgas.idescala.errors }}
+      </td>
+      <td width="1%">
+        {{ form_folgas.realblack.label_tag }}
+      </td>
+      <td width="5%">
+        <div class="control" align = "center">
+          {% render_field form_folgas.realblack readonly=True %}
+            {{ form_folgas.realblack.errors }}
+        </div>
+      </td>
+      <td width="1%"> <font color ="red">
+        {{ form_folgas.realred.label_tag }}
+      </td>
+      <td  width="5%">
+        <div class="control" align = "center">
+          {% render_field form_folgas.realred readonly=True %}
+            {{ form_folgas.realred.errors }}
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+      {{ form_designacao.non_field_errors }}
+      <tr bgcolor="ebebeb">
+        <td colspan="5" width="5%">
+          <div class="control" align = "center">
+              {{ form_designacao.preta.label_tag }}
+              {% render_field form_designacao.preta disabled=True %}
+              {{ form_designacao.preta.errors }}
+          </div>
+        </td>
+        <td colspan="5" width="5%">
+          <div class="control" align = "center"> <font color = "red">
+              {{ form_designacao.vermelha.label_tag }}
+              {% render_field form_designacao.vermelha disabled=True %}
+              {{ form_designacao.vermelha.errors }}
+          </font></div>
+        </td>
+        <td colspan="5" width="5%">
+          <div class="control" align = "center">
+              {{ form_designacao.dom.label_tag }}
+              {% render_field form_designacao.dom disabled=True %}
+              {{ form_designacao.dom.errors }}
+          </div>
+        </td>
+        <td colspan="5" width="5%">
+          <div class="control" align = "center">
+              {{ form_designacao.seg.label_tag }}
+              {% render_field form_designacao.seg disabled=True %}
+              {{ form_designacao.seg.errors }}
+          </div>
+        </td>
+        <td colspan="5" width="5%">
+          <div class="control" align = "center">
+              {{ form_designacao.ter.label_tag }}
+              {% render_field form_designacao.ter disabled=True %}
+              {{ form_designacao.ter.errors }}
+          </div>
+        </td>
+        <td colspan="5" width="5%">
+          <div class="control" align = "center">
+              {{ form_designacao.qua.label_tag }}
+              {% render_field form_designacao.qua disabled=True %}
+              {{ form_designacao.qua.errors }}
+          </div>
+        </td>
+        <td colspan="5" width="5%">
+          <div class="control" align = "center">
+              {{ form_designacao.qui.label_tag }}
+              {% render_field form_designacao.qui disabled=True %}
+              {{ form_designacao.qui.errors }}
+          </div>
+        </td>
+        <td colspan="5" width="5%">
+          <div class="control" align = "center">
+              {{ form_designacao.sex.label_tag }}
+              {% render_field form_designacao.sex disabled=True %}
+              {{ form_designacao.sex.errors }}
+          </div>
+        </td>
+        <td colspan="5" width="5%">
+          <div class="control" align = "center">
+              {{ form_designacao.sab.label_tag }}
+              {% render_field form_designacao.sab disabled=True %}
+              {{ form_designacao.sab.errors }}
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <table class="table full" align="center">
+    <tr bgcolor="ebebeb">
+      <td>
+        <div class="controls" align = "center">
+          <button type="submit" class="pure-button button-error">Excluir</button>
+          <button type="button" onclick="history.go(-1)" class="pure-button">Voltar</button>
+        </div>
+      </td>
+    </tr>
+    </table>
+  </form>
+{% endblock %}

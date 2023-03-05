@@ -1,0 +1,88 @@
+{% extends "listar_militar.html" %}
+{% load widget_tweaks %} #usado para renderizar os camops dos forms
+{% block pessoal %}
+<div class = "splash">
+</div>
+<form class="pure-form pure-form-aligned" method="post">
+  {% csrf_token %}
+  <table class="table full" align="center">
+    <tr bgcolor="#8B0000">
+      <td colspan="20">
+      <div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Exclusão de Militar</b></font></div></td>
+    </tr>
+    {{ form.non_field_errors }}
+    <tr bgcolor="ebebeb">
+      <td colspan="5" width="5%">
+        <div class="control-group">
+            {{ form.idcirculo.label_tag }}
+            {% render_field form.idcirculo disabled=True %}
+            {{ form.idcirculo.errors }}
+        </div>
+      </td>
+      <td colspan="5" width="5%">
+        <div class="control-group">
+            {{ form.posto.label_tag }}
+            {% render_field form.posto disabled=True %}
+            {{ form.posto.errors }}
+        </div>
+      </td>
+      <td colspan="5" width="18%">
+        <div class="control-group">
+            {{ form.nome.label_tag }}
+            {% render_field form.nome readonly=True %}
+            {{ form.nome.errors }}
+        </div>
+      </td>
+      <td colspan="5" width="18%">
+        <div class="control-group">
+            {{ form.nome_guerra.label_tag }}
+            {% render_field form.nome_guerra readonly=True %}
+            {{ form.nome_guerra.errors }}
+        </div>
+      </td>
+		</tr>
+    <tr bgcolor="ebebeb">
+      <td colspan="4" width="5%">
+        <div class="control-group">
+            {{ form.antiguidade.label_tag }}
+            {% render_field form.antiguidade readonly=True %}
+            {{ form.antiguidade.errors }}
+        </div>
+      </td>
+      <td colspan="4" width="5%">
+        <div class="control-group" align="center">
+            {{ form.pronto.label_tag }}
+            {% render_field form.pronto disabled=True %}
+            {{ form.pronto.errors }}
+        </div>
+      </td>
+      <td colspan="4" width="18%">
+        <div class="control-group">
+            {{ form.email.label_tag }}
+            {% render_field form.email readonly=True %}
+            {{ form.email.errors }}
+        </div>
+      </td>
+      <td colspan="4" width="18%">
+        <div class="control-group">
+            {{ form.tel1.label_tag }}
+            {% render_field form.tel1 readonly=True %}
+            {{ form.tel1.errors }}
+        </div>
+      </td>
+      <td colspan="4"></td>
+    </tr>
+	</table>
+
+  <table class="table full" align="center">
+   <tr bgcolor="ebebeb">
+     <td>
+       <div class="controls" align = "center">
+           <button type="submit" class="pure-button button-error">Excluir</button>
+           <button type="button" onclick="history.go(-1)" class="pure-button">Voltar</button>
+       </div>
+     </td>
+   </tr>
+  </table>
+</form>
+{% endblock %}

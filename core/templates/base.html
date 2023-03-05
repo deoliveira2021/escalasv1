@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  </head>
+  <body>{% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Gerenciamento de Escalas de Serviço">
+    <title>Escala de Serviço</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="%7B%%20static%20%27css/font-awesome.min.css%27%20%%7D">
+    <link rel="stylesheet" href="%7B%%20static%20%27css/styles.css%27%20%%7D">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+    <script type="text/javascript">
+      var tabela = document.getElementById("minhaTabela");
+      var linhas = tabela.getElementsByTagName("tr");
+      for(var i = 0; i < linhas.length; i++){
+      	var linha = linhas[i];
+        linha.addEventListener("click", function(){
+        	//Adicionar ao atual
+      		selLinha(this, false); //Selecione apenas um
+          //selLinha(this, true); //Selecione quantos quiser
+      	});
+      }
+
+      /**
+      Caso passe true, você pode selecionar multiplas linhas.
+      Caso passe false, você só pode selecionar uma linha por vez.
+      **/
+      function selLinha(linha, multiplos){
+      	if(!multiplos){
+        	var linhas = linha.parentElement.getElementsByTagName("tr");
+          for(var i = 0; i < linhas.length; i++){
+            var linha_ = linhas[i];
+            linha_.classList.remove("selecionado");
+          }
+        }
+        linha.classList.toggle("selecionado");
+      }
+
+      /**
+      Exemplo de como capturar os dados
+      **/
+      var btnVisualizar = document.getElementById("visualizarDados");
+
+      btnVisualizar.addEventListener("click", function(){
+      	var selecionados = tabela.getElementsByClassName("selecionado");
+        //Verificar se eestá selecionado
+        if(selecionados.length < 1){
+        	alert("Selecione pelo menos uma linha");
+          return false;
+        }
+
+        var dados = "";
+
+        for(var i = 0; i < selecionados.length; i++){
+        	var selecionado = selecionados[i];
+          selecionado = selecionado.getElementsByTagName("td");
+          dados += "ID: " + selecionado[0].innerHTML + " - Nome: " + selecionado[1].innerHTML + " - Idade: " + selecionado[2].innerHTML + "\n";
+        }
+        alert(dados);
+      });
+
+      // Get the modal
+      var modal = document.getElementById('id01');
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+          if (event.target == modal) {
+              modal.style.display = "none";
+          }
+      }
+    </script>
+    <div class="header">
+      <div class="home-menu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
+        <a class="pure-menu-heading" href="%7B%%20url%20%27core:home%27%20%%7D">Escala
+          de Serviço</a>
+        <ul>
+          {% if user.is_authenticated %}
+          <li class="pure-menu-selected"><a href="%7B%%20url%20%27servico:servicos%27%20%%7D">Serviços</a></li>
+          {% if user.is_staff %}
+          <li><a href="%7B%%20url%20%27core:escalas%27%20%%7D">Escalas</a></li>
+          <li><a href="%7B%%20url%20%27pessoal:cadastrarMilitar%27%20%%7D">Pessoal</a></li>
+          <li><a href="%7B%%20url%20%27core:feriados%27%20%%7D">Feriados</a></li>
+          <li><a href="%7B%%20url%20%27usuario:register_staff%27%20%%7D">Usuários</a></li>
+          {% endif %}
+          <li><a href="%7B%%20url%20%27usuario:logout%27%20%%7D">Sair</a></li>
+          {% else %}
+          <li><a href="%7B%%20url%20%27usuario:login%27%20%%7D">Fazer Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    <div class="content"> {% if messages %}
+      <div class="pure-g-r content-ribbon">
+        <aside class="pure-u-1"> {% for message in messages %}
+          <p>{{ message }}</p>
+          {% endfor %} </aside>
+      </div>
+      {% endif %} {% block content %}{% endblock %}
+      <div class="footer"> Escala de Serviço - Desenvolvido por: Edvaldo Sousa e
+        Sérgio Manfrin </div>
+    </div>
+    <script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
+    <!--
+<script src="../app.js"></script>-->
+  </body>
+</html>

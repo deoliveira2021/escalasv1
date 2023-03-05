@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class = "splash">
+    <div class="pure-g-r">
+<!--        <div class="pure-u-1">
+            <div class="l-box splash-text">
+                <h4 class="splash-head" align = "center">
+                    Previsão da Escala de Serviço
+                </h4>
+            </div>
+        </div -->
+    </div>
+</div>
+<form name="form" class="pure-form pure-form-aligned" method="post">
+  {% csrf_token %}
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+    {{ form.non_field_errors }}
+    <thead class="pure-controls">
+      <tr bgcolor="#6699CC">
+        <td colspan="6">
+          <div  align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Previsão da Escala de Serviço</b></font></div>
+        </td>
+      </tr>
+      <tr bgcolor="#FFFFFF">
+        <td>
+          <div class="pure-g-r">
+          </div>
+        </td>
+      </tr>
+      <tr bgcolor="#6699CC">
+        <td colspan="6">
+          <div  align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Filtrar</b></font></div>
+        </td>
+      </tr>
+       <tr bgcolor="ebebeb">
+         <td>
+           {{ form.nome_guerra.label_tag }}
+           {{ form.nome_guerra }}
+         </td>
+        <!-- <td colspan="2" width="45%">
+           <font face="Arial" size="2">Nome de guerra:
+             <input type="text" name="nome_guerra" size="50">
+           </font>-->
+           <!-- código que cria um botão ao lado do campo input
+           <span class="input-group-addon">
+              <button class="fa fa-search" style="background:transparent;border:none"></button>
+           </span>
+           será ativado em um momento oportuno
+         </td>-->
+         <td width="5%"><font face="Arial" size="2"><div align="center"> ou</div> </font></td>
+         <td colspan="4" width="45%"><font face="Arial" size="2">Escala: <input type="text" name="escala" size="50">
+       </tr>
+    </thead>
+
+    <tfoot>
+       <tr bgcolor="cccccc">
+         <td colspan="4">
+           <div class="pure-controls" align="center">
+               <a href="#" class="pure-button pure-button-primary">Filtrar</a>
+           </div>
+          </td>
+       </tr>
+     </tfoot>
+
+   <tr><td colspan="7" height="20"></td></tr>
+
+ </table>
+ <table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+   {% if user.is_staff%}
+   <thead>
+     <tr bgcolor="#6699CC">
+       <td colspan="6">
+         <div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Rodar Previs&atilde;o da Escala</b></font></div>
+       </td>
+     </tr>
+       <tr bgcolor="ebebeb">
+       <td width="2%"><font face="Arial" size="2">De:</td>
+       <td colspan="1"  width="10%">
+         <input type="date" name="dataInicio" value="{{datetime.now}}" id="Id_Inicio">
+         <!--<script>DateInput('datainicio', true, 'DD-MM-YYYY','<?echo $dataDe;?>')</script>-->
+       </td>
+         <td width="2%"><font face="Arial" size="2">At&eacute;:</td>
+         <td colspan="2" width="50%">
+           <input type="date" name="dataFim" value="{{datetime.now}}" id="Id_Fim">
+           <!--<script>DateInput('datafim', true, 'DD-MM-YYYY','<?echo $dataAte;?>')</script>-->
+         </td>
+     </tr>
+     </thead>
+     <tfoot>
+       <tr bgcolor="cccccc">
+         <td colspan="7">
+           <div class="pure-controls" align="center">
+             <button type="submit" class="pure-button pure-button-primary">Executar</button>
+             <!--
+               <a href="{% url 'previsao:previsao' %}" class="pure-button pure-button-primary">Executar</a>
+               -->
+           </div>
+       </tr>
+     </tfoot>
+  {% endif %}
+ </table>
+</form>
+
+<!--AQUI COME�A A TABELA QU LISTA O PESSOAL DE SERVI�O ****************************************************************************************************************************************-->
+<table class="table full"  cellspacing="1" cellpadding="2"  align="center">
+  <thead>
+    <tr bgcolor="#6699CC">
+      <td colspan="6">
+        <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Militares Escalados</font></b></font></div>
+      </td>
+    </tr>
+    <tr>
+      <th align = "center">Data</th>
+      <th align = "center">Dia</th>
+      <th align = "center">Escala</th>
+      <th align = "center">Posto/Grad</th>
+      <th align = "center">Nome de Guerra</th>
+      {% if user.is_staff %}
+      <th align = "center">
+          Folga
+        </th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for escalado in previstos %}
+      <tr bgcolor="ebebeb">
+        <td align = center >{{ escalado.data }}</td>
+        <td align = center >{{ escalado.dia }}</td>
+        <td align = center >{{ escalado.descricao }}</td>
+        <td align = center >{{ escalado.posto_graduacao }}</td>
+        <td align = center >{{ escalado.nome_guerra }}</td>
+        <td align = center >{{ escalado.folga }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr bgcolor="cccccc">
+        <td colspan="7">
+          <div class="pure-controls" align="center">
+              <a href="#" class="pure-button pure-button-primary">Imprimir Previsão</a>
+          </div>
+      </tr>
+  </tfoot>
+</table>
+{% if previstos.has_other_pages %}
+  <ul class="breadcrumb">
+    {% if previstos.has_previous %}
+      <li><a href="?page={{ previstos.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in previstos.paginator.page_range %}
+      {% if previstos.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(Pág Atual)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if previstos.has_next %}
+      <li><a href="?page={{ previstos.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+{% endblock %}

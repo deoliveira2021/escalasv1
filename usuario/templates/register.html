@@ -1,0 +1,166 @@
+{% extends "listar_usuarios.html" %}
+{% load widget_tweaks %} #usado para renderizar os campos dos forms
+{% block register %}
+<div class = "splash">
+</div>
+<form class="pure-form pure-form-aligned" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <table class="table full" align="center">
+    <tr bgcolor="#6699CC">
+      <td colspan="45">
+      <div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Cadastro de Usuários</b></font></div></td>
+    </tr>
+    {{ form.non_field_errors }}
+    <tr bgcolor="ebebeb">
+      <td colspan="10" width="5%">
+        <div class="control-group">
+            {{ form.posto.label_tag }}
+        </div>
+        <div class="control-group">
+            {{ form.posto }}
+            {{ form.posto.errors }}
+        </div>
+      </td>
+      <td colspan="20" width="20%">
+        <div class="control-group">
+          {{ form.nome.label_tag }}
+        </div>
+        <div class="control-group">
+          {{ form.nome}}
+            {{ form.nome.errors }}
+        </div>
+      </td>
+      <td colspan="8" width="20%">
+        <div class="control-group">
+            {{ form.nome_guerra.label_tag }}
+        </div>
+        <div class="control-group">
+            {{ form.nome_guerra }}
+            {{ form.nome_guerra.errors }}
+        </div>
+      </td>      
+      <td colspan="7" width="20%">
+        <div class="control-group">
+            {{ form.cpf.label_tag }}
+        </div>
+        <div class="control-group">
+            {{ form.cpf }}
+            {{ form.cpf.errors }}
+        </div>
+      </td>
+		</tr>
+    <tr bgcolor="ebebeb">
+      <td colspan="10" width="10%">
+        <div class="control-group">
+            {{ form.username.label_tag }}
+        </div>
+        <div class="control-group">
+              {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+      </td>
+      <td colspan="10" width="10%">
+        <div class="control-group">
+            {{ form.email.label_tag }}
+        </div>
+        <div class="control-group">
+            {{ form.email }}
+            {{ form.email.errors }}
+        </div>
+      </td>
+      <td colspan="10" width="5%">
+        <div class="control-group">
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+            {{ form.password1.errors }}
+        </div>
+      </td>
+      <td colspan="10" width="5%">
+        <div class="control-group" align="center">
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+            {{ form.password2.errors }}
+        </div>
+      </td>		
+      <td colspan="5" width="5%"></div>
+      </tr>
+    <tr bgcolor="ebebeb">     
+       <td colspan="10" width="5%">
+        <div class="control-group">
+            {{ form.tel1.label_tag }}
+            {{ form.tel1 }}
+            {{ form.tel1.errors }}
+        </div>
+      </td>
+      <td colspan="10" width="5%">
+        <div class="control-group" align="center">
+            {{ form.tel2.label_tag }}
+            {{ form.tel2 }}
+            {{ form.tel2.errors }}
+        </div>
+      </td>
+      <td colspan="5" width="5%">
+      <div class="control-group" align="center">
+          {{ form.sexo.label_tag }}
+        {{ form.sexo }}
+        {{ form.sexo.errors }}       
+      </div>      
+      <td colspan="5" width="5%">
+      <div class="control-group" align="center">
+          {{ form.is_staff.label_tag }}
+        {{ form.is_staff }}
+        {{ form.is_staff.errors }}       
+      </div>      
+      <td colspan="8" width="5%">
+          <div class="control-group" align="center">
+            {{ form.data_nasc.label_tag }}
+            {% render_field form.data_nasc type="date" size="3" %}
+            {{ form.data_nasc.errors }}
+          </div>
+      <td colspan="7" width="5%">
+          <div class="control-group" align="center">
+            {{ form.data_praca.label_tag }}
+            {% render_field form.data_praca type="date" size="2" %}
+            {{ form.data_praca.errors }}
+          </div>
+      </td>
+      </tr>
+	</table>
+
+  <table class="table full" align="center">
+   <tr bgcolor="ebebeb">
+     <td>
+       <div class="controls" align = "center">
+           <button type="submit" class="pure-button pure-button-primary">Cadastrar</button>
+           <button type="reset" class="pure-button ">Limpar dados</button>
+       </div>
+     </td>
+   </tr>
+  </table>
+</fieldset>
+</form>
+<!--
+<div class="pure-g-r content-ribbon">
+    <div class="pure-u-1">
+        <h2>Informe seus dados</h2>
+        <form class="pure-form pure-form-stacked" method="post">
+            {% csrf_token %}
+            <fieldset>
+                  {{ form.non_field_errors }}
+                  {% for field in form %}
+                    <div class="pure-control-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                  {% endfor %}
+                <div class="pure-controls">
+                    <button type="submit" class="pure-button pure-button-primary">Cadastrar</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+-->
+{% endblock %}

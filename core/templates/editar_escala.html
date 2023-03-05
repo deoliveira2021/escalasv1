@@ -1,0 +1,86 @@
+<!--?
+//=========================================
+//  Sistema desenvolvido para o Exército Brasileiro
+//  by: Edvaldo de Oliveira Sousa
+//  email: edvaldo.cigex@gmail.com
+
+// Página de cadastrar escalas para o militar previamente selecionado
+//========================================= ?> -->
+
+{% extends "listar_escalas.html" %}
+{% load widget_tweaks %} #usado para renderizar os camops dos forms
+{% block escalas %}
+<div class = "splash">
+</div>
+  <form class="pure-form pure-form-aligned" method="post">
+    {% csrf_token %}
+   <table class="table full" align="center">
+     <tr bgcolor="#2F4F4F">
+     <td colspan="7">
+     <div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Alteração de Escalas</b></font></div></td>
+    </tr>
+    {{ form.non_field_errors }}
+    <tr bgcolor="ebebeb">
+      <td width="10%">
+        <div class="control-group">
+            {{ form.idcirculo.label_tag }}
+            <br>
+            {% render_field form.idcirculo %}
+            {{ form.idcirculo.errors }}
+        </div>
+      </td>
+      <td width="17%">
+        <div class="control-group">
+            {{ form.descricao.label_tag }}
+            <br>
+            {{ form.descricao }}
+            {{ form.descricao.errors }}
+        </div>
+      </td>
+      <td width="10%">
+        <div class="control-group">
+            {{ form.precedencia.label_tag }}
+            <br>
+            {{ form.precedencia }}
+            {{ form.precedencia.errors }}
+        </div>
+      </td>
+      <td width="10%">
+        <div class="control-group">
+            {{ form.folgaminima.label_tag }}
+            <br>
+            {{ form.folgaminima }}
+            {{ form.folgaminima.errors }}
+        </div>
+      </td>
+      <td width="10%">
+        <div class="control-group">
+            {{ form.qtdporescala.label_tag }}
+            <br>
+            {{ form.qtdporescala }}
+            {{ form.qtdporescala.errors }}
+        </div>
+      </td>
+      <td width="7%">
+        <div class="control-group" align = "center">
+            {{ form.corrida.label_tag }}
+            <br>
+            {{ form.corrida }}
+            {{ form.corrida.errors }}
+        </div>
+      </td>
+      <td width="8%"></td>
+    </tr>
+    <tr bgcolor="ebebeb">
+   </tr>
+    <tr bgcolor="ebebeb">
+      <td colspan="7">
+        <div class="pure-controls" align = "center">
+            <button type="submit" class="pure-button pure-button-primary">Salvar</button>
+            <a href="{% url 'core:escalas' %}" class="pure-button">Voltar</a>
+        </div>
+      </td>
+    </tr>
+    </table>
+  </form>
+{% endblock %}
