@@ -22,17 +22,15 @@ SECRET_KEY = ')&fb*^@5tavz=%v$!qvdcj7u6im)j+le*wr*qbr7poh$9eahm9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-#DEBUG = False
-
-ALLOWED_HOSTS = ['*']
+# DEBUG = False
 
 TEMPLATE_DEBUG = False
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-#se DEBUG for False, configurar ALLOWED_HOSTS para todos(*)
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# se DEBUG for False, configurar ALLOWED_HOSTS para todos(*)
 # Allow all host headers
-#ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -44,8 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'widget_tweaks', #usada para renderizar os campos dos forms nos templates
- #   'sms',
+    # usada para renderizar os campos dos forms nos templates
+    'widget_tweaks',
+    # 'sms',
 
     'core',
     'pessoal',
@@ -88,14 +87,14 @@ WSGI_APPLICATION = 'escalasv1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-#DATABASES = {
+# DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
 
-#if DEBUG:
+# if DEBUG:
 #    DATABASES = {
 #        'default': {
 #            'ENGINE': 'django.db.backends.sqlite3',
@@ -110,7 +109,7 @@ if DEBUG:
             'USER': 'postgres',
             'PASSWORD': 'admin',
             'HOST': 'localhost',
-            'PORT': '5432', # 8000 is default
+            'PORT': '5432',  # 8000 is default
         }
     }
 else:
@@ -121,14 +120,14 @@ else:
             'USER': 'postgres',
             'PASSWORD': 'admin',
             'HOST': 'localhost',
-            'PORT': '5432', # 8000 is default
+            'PORT': '5432',   # 8000 is default
         }
     }
 #    DATABASES = {
 #        'default':  dj_database_url.config(),
 #    }
 
-#AUTENTICAÇÃO
+# AUTENTICAÇÃO
 LOGIN_URL = 'usuario:login'
 LOGIN_REDIRECT_URL = 'core:home'
 LOGOUT_REDIRECT_URL = 'core:home'
@@ -179,38 +178,38 @@ ALLOWED_HOSTS = ['*']
 
 PROJECT_ROOT = os.path.abspath(os.path.join(__file__, os.pardir))
 STATIC_ROOT = os.path.join(PROJECT_ROOT, '/core/static/')
-#STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, '/static/'),
 )
 
-#STATICFILES_DIR = (
+# STATICFILES_DIR = (
 #    os.path.join(BASE_DIR, '/static/'),
-#)
+# )
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#Funcionando perfeitamente
+# Funcionando perfeitamente
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'sousaedvaldo@gmail.com'
-EMAIL_HOST_PASSWORD = 'pkgrdxihoolsqpbe' #past the key or password app here
+EMAIL_HOST_PASSWORD = 'pkgrdxihoolsqpbe'   # past the key or password app here
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'sousaedvaldo@gmail.com'
 
 
-#Configuração para enviar SMS
-#SMS_BACKEND = 'sms.backends.twilio.SmsBackend'
-#TWILIO_ACCOUNT_SID = 'AC3f63076eda5c104fb10aff2fd87e72a2'
-#TWILIO_AUTH_TOKEN = '28d3b1a2e0776c3a8e8408b49ee306d2'
+# Configuração para enviar SMS
+# SMS_BACKEND = 'sms.backends.twilio.SmsBackend'
+# TWILIO_ACCOUNT_SID = 'AC3f63076eda5c104fb10aff2fd87e72a2'
+# TWILIO_AUTH_TOKEN = '28d3b1a2e0776c3a8e8408b49ee306d2'
 
-#SMS_BACKEND = 'sms.backends.messagebird.SmsBackend'
-#MESSAGEBIRD_ACCESS_KEY = 'u4P0WbPGRL189Qk8kV9fx4D9w'
+# SMS_BACKEND = 'sms.backends.messagebird.SmsBackend'
+# MESSAGEBIRD_ACCESS_KEY = 'u4P0WbPGRL189Qk8kV9fx4D9w'
 
 """
 try:
