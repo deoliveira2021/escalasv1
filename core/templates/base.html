@@ -1,15 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
+{% load static %}
 <html lang="en">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  </head>
-  <body>{% load static %}
+<head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sistema de Gerenciamento de Escalas de Serviço">
+    <meta name="description" content="Sistema de Gerenciamento de Escalas de Serviço" />
     <title>Escala de Serviço</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
-    <link rel="stylesheet" href="%7B%%20static%20%27css/font-awesome.min.css%27%20%%7D">
-    <link rel="stylesheet" href="%7B%%20static%20%27css/styles.css%27%20%%7D">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
     <script type="text/javascript">
@@ -72,38 +71,45 @@
           }
       }
     </script>
-    <div class="header">
-      <div class="home-menu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
-        <a class="pure-menu-heading" href="%7B%%20url%20%27core:home%27%20%%7D">Escala
-          de Serviço</a>
+</head>
+<body>
+<div class="header">
+    <div class="home-menu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
+        <a class="pure-menu-heading" href="{% url 'core:home' %}">Escala de Serviço</a>
         <ul>
-          {% if user.is_authenticated %}
-          <li class="pure-menu-selected"><a href="%7B%%20url%20%27servico:servicos%27%20%%7D">Serviços</a></li>
-          {% if user.is_staff %}
-          <li><a href="%7B%%20url%20%27core:escalas%27%20%%7D">Escalas</a></li>
-          <li><a href="%7B%%20url%20%27pessoal:cadastrarMilitar%27%20%%7D">Pessoal</a></li>
-          <li><a href="%7B%%20url%20%27core:feriados%27%20%%7D">Feriados</a></li>
-          <li><a href="%7B%%20url%20%27usuario:register_staff%27%20%%7D">Usuários</a></li>
-          {% endif %}
-          <li><a href="%7B%%20url%20%27usuario:logout%27%20%%7D">Sair</a></li>
-          {% else %}
-          <li><a href="%7B%%20url%20%27usuario:login%27%20%%7D">Fazer Login</a></li>
-          {% endif %}
+            {% if user.is_authenticated %}
+              <li class="pure-menu-selected"><a href="{% url 'servico:servicos' %}">Serviços</a></li>
+              {% if user.is_staff %}
+                <li><a href="{% url 'core:escalas' %}">Escalas</a></li>
+                <li><a href="{% url 'pessoal:cadastrarMilitar' %}">Pessoal</a></li>
+                <li><a href="{% url 'core:feriados' %}">Feriados</a></li>
+                <li><a href="{% url 'usuario:register_staff' %}">Usuários</a></li>
+              {% endif %}
+              <li><a href="{% url 'usuario:logout' %}">Sair</a></li>
+            {% else %}
+              <li><a href="{% url 'usuario:login' %}">Fazer Login</a></li>
+            {% endif %}
         </ul>
-      </div>
     </div>
-    <div class="content"> {% if messages %}
-      <div class="pure-g-r content-ribbon">
-        <aside class="pure-u-1"> {% for message in messages %}
-          <p>{{ message }}</p>
-          {% endfor %} </aside>
-      </div>
-      {% endif %} {% block content %}{% endblock %}
-      <div class="footer"> Escala de Serviço - Desenvolvido por: Edvaldo Sousa e
-        Sérgio Manfrin </div>
+</div>
+<div class="content">
+    {% if messages %}
+    <div class="pure-g-r content-ribbon">
+        <aside class="pure-u-1">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </aside>
     </div>
-    <script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
-    <!--
-<script src="../app.js"></script>-->
-  </body>
+    {% endif %}
+    {% block content %}{% endblock %}
+    <div class="footer">
+        Escala de Serviço - Desenvolvido por: Edvaldo Sousa e Sérgio Manfrin
+    </div>
+</div>
+<script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
+<!--
+<script src="../app.js"></script>
+-->
+</body>
 </html>
