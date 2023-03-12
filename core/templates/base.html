@@ -12,64 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
     <script type="text/javascript">
-      var tabela = document.getElementById("minhaTabela");
-      var linhas = tabela.getElementsByTagName("tr");
-      for(var i = 0; i < linhas.length; i++){
-      	var linha = linhas[i];
-        linha.addEventListener("click", function(){
-        	//Adicionar ao atual
-      		selLinha(this, false); //Selecione apenas um
-          //selLinha(this, true); //Selecione quantos quiser
-      	});
-      }
 
-      /**
-      Caso passe true, você pode selecionar multiplas linhas.
-      Caso passe false, você só pode selecionar uma linha por vez.
-      **/
-      function selLinha(linha, multiplos){
-      	if(!multiplos){
-        	var linhas = linha.parentElement.getElementsByTagName("tr");
-          for(var i = 0; i < linhas.length; i++){
-            var linha_ = linhas[i];
-            linha_.classList.remove("selecionado");
-          }
-        }
-        linha.classList.toggle("selecionado");
-      }
-
-      /**
-      Exemplo de como capturar os dados
-      **/
-      var btnVisualizar = document.getElementById("visualizarDados");
-
-      btnVisualizar.addEventListener("click", function(){
-      	var selecionados = tabela.getElementsByClassName("selecionado");
-        //Verificar se eestá selecionado
-        if(selecionados.length < 1){
-        	alert("Selecione pelo menos uma linha");
-          return false;
-        }
-
-        var dados = "";
-
-        for(var i = 0; i < selecionados.length; i++){
-        	var selecionado = selecionados[i];
-          selecionado = selecionado.getElementsByTagName("td");
-          dados += "ID: " + selecionado[0].innerHTML + " - Nome: " + selecionado[1].innerHTML + " - Idade: " + selecionado[2].innerHTML + "\n";
-        }
-        alert(dados);
-      });
-
-      // Get the modal
-      var modal = document.getElementById('id01');
-
-      // When the user clicks anywhere outside of the modal, close it
-      window.onclick = function(event) {
-          if (event.target == modal) {
-              modal.style.display = "none";
-          }
-      }
     </script>
 </head>
 <body>

@@ -391,7 +391,7 @@ def rodaprevisao(dataInicio, dataFim):
     return intervalo
 
 
-def listar_previsao(request, pagina=1, nrporpagina=15, descricao=None, nomeguerra=None):
+def listar_previsao(request, pagina=1, nrporpagina=22, descricao=None, nomeguerra=None):
     teste = "SELECT b.id, a.id as idmilitar, a.posto,a.antiguidade,\
             b.nomeguerra, b.folga,b.data,b.dia, b.nomesubstituto,\
             b.vermelha, c.descricao FROM pessoal_militar a, previsao_previsao b,\
