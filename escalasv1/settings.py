@@ -196,20 +196,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Funcionando perfeitamente
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'sousaedvaldo@gmail.com'
-EMAIL_HOST_PASSWORD = 'pkgrdxihoolsqpbe'   # past the key or password app here
+EMAIL_HOST_USER = 'seuemail'
+EMAIL_HOST_PASSWORD = # past the key or password app here
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'sousaedvaldo@gmail.com'
-
-
-# Configuração para enviar SMS
-# SMS_BACKEND = 'sms.backends.twilio.SmsBackend'
-# TWILIO_ACCOUNT_SID = 'AC3f63076eda5c104fb10aff2fd87e72a2'
-# TWILIO_AUTH_TOKEN = '28d3b1a2e0776c3a8e8408b49ee306d2'
-
-# SMS_BACKEND = 'sms.backends.messagebird.SmsBackend'
-# MESSAGEBIRD_ACCESS_KEY = 'u4P0WbPGRL189Qk8kV9fx4D9w'
+DEFAULT_FROM_EMAIL = 'seuemail'
 
 """
 try:

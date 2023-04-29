@@ -16,8 +16,8 @@ class FormPrevisao(forms.Form):
 class MilitarEscaladoForm(forms.Form):
     POSTO_CHOICES = [(5, "Cel"), (6, "T Cel"), (7, "Maj"),
         (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
-        (12, "S Ten"), (13, "1º Sgt"), (14, "2º Sgt"), (15, "3º Sgt"),
-        (16, "Cb"),  (17, "SD")]
+        (18, "S Ten"), (19, "1º Sgt"), (20, "2º Sgt"), (21, "3º Sgt"),
+        (22, "Cb EP"), (23, "Cb EV"), (24, "SD PQDT EP"), (27, "SD EP"), (28, "SD EV")]
     posto = forms.ChoiceField(label='Posto/Graduação', choices = POSTO_CHOICES)
 
     CIRCULO_CHOICES = [ (0, 'Oficial'), (1, 'ST/SGT'),

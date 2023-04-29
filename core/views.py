@@ -366,17 +366,18 @@ def excluir_feriado(request,idferiado, pagina):
 @login_required
 def listar_dispensas(request, idmilitar, idcirculo, pagina=1):
     # se estiver em modo debug, utilizamos o banco sqlite, caso contrário, utilizamos o PostgreSQL.
-    if settings.DEBUG:
-    #este código só funciona em sqlite
-       queryset = '''SELECT *, (julianday(datafim) - julianday(datainicio)+1) AS 'dias'
+#   if settings.DEBUG:
+#       #este código só funciona em sqlite
+#          queryset = '''SELECT *, (julianday(datafim) - julianday(datainicio)+1) AS 'dias'
+#              FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
+#              ORDER BY datainicio'''
+#   else:
+
+    # este código só funciona em PostgreSQL, soma 1 para poder contar o dia do fim
+    # o argumento int é para voltar número sem vírgula
+    queryset = '''SELECT *, EXTRACT(day FROM(AGE(datafim+1, datainicio))):: int AS dias
            FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
            ORDER BY datainicio'''
-    else:
-        # este código só funciona em PostgreSQL, soma 1 para poder contar o dia do fim
-        # o argumento int é para voltar número sem vírgula
-        queryset = '''SELECT *, EXTRACT(day FROM(AGE(datafim+1, datainicio))):: int AS dias
-               FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
-               ORDER BY datainicio'''
 
     dispensas = Dispensas.objects.raw(queryset, [idmilitar, idcirculo])
     page = request.GET.get('page', pagina)
