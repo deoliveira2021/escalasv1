@@ -1,4 +1,5 @@
 # escalasv1
+requisitos para lançar
 asgiref==3.6.0
 beautifulsoup4==4.11.2
 certifi==2022.12.7
