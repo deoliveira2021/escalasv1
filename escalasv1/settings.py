@@ -87,13 +87,6 @@ WSGI_APPLICATION = 'escalasv1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 # if DEBUG:
 #    DATABASES = {
 #        'default': {
@@ -107,7 +100,7 @@ if DEBUG:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'escaladebug',
             'USER': 'postgres',
-            'PASSWORD': 'admin',
+            'PASSWORD': '191001',
             'HOST': 'localhost',
             'PORT': '5432',  # 8000 is default
         }
@@ -118,7 +111,7 @@ else:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'escalasv',
             'USER': 'postgres',
-            'PASSWORD': 'admin',
+            'PASSWORD': '191001',
             'HOST': 'localhost',
             'PORT': '5432',   # 8000 is default
         }
