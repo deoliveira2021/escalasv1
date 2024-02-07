@@ -136,10 +136,20 @@ def diadaSemana(diaEscala):
 
 # retorna o Posto/Graduação
 def getPostoGraduacao(idPosto):
+    
+    #Este código foi comentado em 04FEV24 porque estava dando problema com a numeração dos postos...
+    #Postos de acordo com o previsto no contracheque... não funciona com essa numeração dos postos
+    # POSTO= [(5, "Cel"), (6, "T Cel"), (7, "Maj"),
+    #     (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
+    #     (18, "S Ten"), (19, "1º Sgt"), (20, "2º Sgt"), (21, "3º Sgt"),
+    #     (22, "Cb EP"), (23, "Cb EV"), (24, "SD PQDT EP"), (27, "SD EP"), (28, "SD EV")]
+             
+    #Substituiu o código acima, para acertar 
     POSTO = [(5, "Cel"), (6, "T Cel"), (7, "Maj"),
              (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
              (12, "S Ten"), (13, "1º Sgt"), (14, "2º Sgt"), (15, "3º Sgt"),
              (16, "Cb"), (17, "SD")]
+
     # O primeiro elemento da lista é 0, (5,"Cel"), faz-se necessário subtarir 5 pq no banco
     # o idPosto desse elemento é cinco, porém, como estamos acessando uma lista, precisamos
     # do índice correto, que é zero, já para pegar o posto, propriamente dito, que está em
@@ -455,12 +465,12 @@ def previsao(request):
     else:
         sql = Servicos.objects.last()
         if (sql != None):
-            inicio = sql.data + + timedelta(1)
+            #inicio = sql.data + + timedelta(1) comentado por causa desses dois ++ em 04FEV24
+            inicio = sql.data + timedelta(1) #SE NÃO DER PROBLEMA, APAGAR LINHA DE CIMA.
             final = inicio + timedelta(1)
         form = FormPrevisao()
 
     previstos = listar_previsao(request)
-    # podeSalvar = len(Previsao.objects.raw('SELECT DISTINCT(data), id FROM previsao_previsao GROUP BY data'))<=3
     podeSalvar = podeSalvarServico()
     context = {'form': form, 'previstos': previstos, 'podeSalvar': podeSalvar, 'inicio': inicio, 'final': final}
 
@@ -565,7 +575,8 @@ def GeneratePDF(request):
     ORDER BY b.data, c.precedencia, b.idcirculo, a.antiguidade"
 
     previsao_list = Militar.objects.raw(sqlmilitar)
-    # previsao_list = Previsao.objects.raw(sqlmilitar)
+    #previsao_list = Previsao.objects.raw(sqlmilitar)
+
     data = previsao_list[0].data
     dia = previsao_list[0].dia
     fontColor = "black"
@@ -627,6 +638,7 @@ def GeneratePDF(request):
         x -= 15
         p.drawString(47, x, '{}: {} - {}'.
                      format(escalado.descricao, getPostoGraduacao(escalado.posto), escalado.nomeguerra))
+        print(escalado.posto)
 
     # Close the PDF object cleanly, and we're done.
     p.showPage()

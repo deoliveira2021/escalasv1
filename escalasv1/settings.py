@@ -88,24 +88,48 @@ WSGI_APPLICATION = 'escalasv1.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 # if DEBUG:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': 'escaladebug',
+#             'USER': 'postgres',
+#             'PASSWORD': '191001',
+#             'HOST': 'localhost',
+#             'PORT': '5432',  # 8000 is default
+#         }
+#     }
+if DEBUG:
+    #para usar o mysql/mariaDB
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'escalasv',
+            'USER': 'mysql',
+            'PASSWORD': '191001',
+            'HOST': 'localhost',
+            'PORT': '3306',  # 8000 is default
+        }
+    }
+#    para usar o sqlite3
 #    DATABASES = {
 #        'default': {
 #            'ENGINE': 'django.db.backends.sqlite3',
 #            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #        }
 #    }
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'escaladebug',
-            'USER': 'postgres',
-            'PASSWORD': '191001',
-            'HOST': 'localhost',
-            'PORT': '5432',  # 8000 is default
-        }
-    }
+#     Para usar o postgresql
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': 'escaladebug',
+#             'USER': 'postgres',
+#             'PASSWORD': '191001',
+#             'HOST': 'localhost',
+#             'PORT': '5432',  # 8000 is default
+#         }
+#     }
 else:
+#     Para usar o postgresql
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -116,9 +140,24 @@ else:
             'PORT': '5432',   # 8000 is default
         }
     }
-#    DATABASES = {
-#        'default':  dj_database_url.config(),
-#    }
+#     para usar o sqlite3
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.sqlite3',
+    #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #     }
+    # }
+#     Para usar o mysql
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.mysql',
+    #         'NAME': 'escalasv',
+    #         'USER': 'mysql',
+    #         'PASSWORD': '191001',
+    #         'HOST': 'localhost',
+    #         'PORT': '3306',  # 8000 is default
+    #     }
+    # }
 
 # AUTENTICAÇÃO
 LOGIN_URL = 'usuario:login'
@@ -169,17 +208,18 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
 
-PROJECT_ROOT = os.path.abspath(os.path.join(__file__, os.pardir))
-STATIC_ROOT = os.path.join(PROJECT_ROOT, '/core/static/')
-# STATIC_URL = '/static/'
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, '/static/'),
-)
+#ALLOWED_HOSTS = ['192.168.0.5', 'escalasv']
 
-# STATICFILES_DIR = (
-#    os.path.join(BASE_DIR, '/static/'),
-# )
+PROJECT_ROOT = os.path.abspath(os.path.join(__file__, os.pardir))
+
+#==================== ADD ON 04FEV24 =========================#
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [ os.path.join(BASE_DIR,'core/static') ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+#=============================================================#
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

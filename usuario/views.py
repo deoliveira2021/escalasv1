@@ -23,7 +23,6 @@ def listar_usuarios(request, pagina=1):
     #if pag == None:
     page = request.GET.get('page', pagina)
 
-
     paginator = Paginator(usuario_list, 20)
     try:
         usuarios = paginator.page(page)

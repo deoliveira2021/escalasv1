@@ -375,9 +375,17 @@ def listar_dispensas(request, idmilitar, idcirculo, pagina=1):
 
     # este código só funciona em PostgreSQL, soma 1 para poder contar o dia do fim
     # o argumento int é para voltar número sem vírgula
-    queryset = '''SELECT *, EXTRACT(day FROM(AGE(datafim+1, datainicio))):: int AS dias
-           FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
-           ORDER BY datainicio'''
+    # queryset = '''SELECT *, EXTRACT(day FROM(AGE(datafim+1, datainicio))):: int AS dias
+    #        FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
+    #        ORDER BY datainicio'''
+
+
+      #este código só funciona em mysql
+    queryset = '''SELECT *, DATEDIFF (datafim+1,datainicio) AS 'dias'
+        FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
+        ORDER BY datainicio'''
+
+    
 
     dispensas = Dispensas.objects.raw(queryset, [idmilitar, idcirculo])
     page = request.GET.get('page', pagina)

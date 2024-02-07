@@ -15,4 +15,4 @@ urlpatterns = [
 
 #       re_path(r'^', (views.cadastrarMilitar), name='cadastrarMilitar'),
        #re_path(r'^contato/$', views.contact, name='contact'),
-]
+ ]
