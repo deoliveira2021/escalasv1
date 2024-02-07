@@ -308,28 +308,4 @@
     {% endif %}
   </div>
 {% endif %}
-
-<!-- 
-{% if escalado_em.has_other_pages %}
-  <ul class="breadcrumb">
-    {% if escalado_em.has_previous %}
-      <li><a href="?page={{ escalado_em.previous_page_number }}">&laquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
-    {% endif %}
-    {% for i in escalado_em.paginator.page_range %}
-      {% if escalado_em.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(Pág Atual)</span></span></li>
-      {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if escalado_em.has_next %}
-      <li><a href="?page={{ escalado_em.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
--->
 {% endblock %}

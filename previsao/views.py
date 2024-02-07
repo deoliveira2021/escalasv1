@@ -77,7 +77,7 @@ def dispensado(idmilitar, idcirculo, diaescala):
     return dispensado
 
 
-# esse método verifica se o militar está concorrendo à esquala a que corresponde
+# esse método verifica se o militar está concorrendo à escala a que corresponde
 # o dia da escala repassado pelo parâmetro diaEscala
 def concorreVerPretaDiasSemana(idmilitar, idcirculo, idescala, diaEscala):
     queryset = DesignarEscala.objects.filter(idmilitar=idmilitar,

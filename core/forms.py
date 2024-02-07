@@ -106,7 +106,6 @@ class feriadosForm(forms.ModelForm):
 
 #editar designação
 class EditarDesignacaoForm(forms.ModelForm):
-
     class Meta:
         model = DesignarEscala
         fields = (['idcirculo', 'idmilitar', 'idescala',

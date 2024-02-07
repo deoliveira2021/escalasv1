@@ -53,6 +53,14 @@ def nomeDiaSemana(data):
 
     return dia
 
+def podeDesignar(idmilitar,idescala,idcirculo):
+    #verifica se o militar já está concorrendo a essa escala, se já estiver, não cadastra novamente
+    queryset = DesignarEscala.objects.filter(idmilitar=idmilitar,
+                                             idcirculo=idcirculo, idescala=idescala)
+    
+    #Se a queryset.count() diferente de zero, o militar já foi designado para essa escala
+    return (queryset.count() == 0)
+
 @login_required
 def listar_designacao(request, idmilitar, idcirculo):
     queryset = DesignarEscala.objects.raw('''SELECT DISTINCT(a.idmilitar), a.*,
@@ -87,18 +95,20 @@ def escalar(request, idmilitar=None, idcirculo=None):
         form_designacao = SalvarDesignacao(request.POST)
         form_folgas = SalvarFolgas(request.POST)
         if form_designacao.is_valid() & form_folgas.is_valid():
-            designado = form_designacao.save()
+            # designado = form_designacao.save()
 
             idmilitar = form_designacao.cleaned_data['idmilitar']
             idcirculo = form_designacao.cleaned_data['idcirculo']
             idescala = form_designacao.cleaned_data['idescala']
             red = form_folgas.cleaned_data['realred']
             black = form_folgas.cleaned_data['realblack']
-
-            folgas = ControlarFolgas(idmilitar=idmilitar, idcirculo=idcirculo,
-            idescala=idescala, red=red, black=black, realred=red,
-            realblack=black)
-            folgas.save()
+            if podeDesignar(idmilitar,idescala,idcirculo):
+                print("entrou no método podeDesignar!")
+                designado = form_designacao.save()
+                folgas = ControlarFolgas(idmilitar=idmilitar, idcirculo=idcirculo,
+                idescala=idescala, red=red, black=black, realred=red,
+                realblack=black)
+                folgas.save()
 
             #folgas = form_folgas.save()
             return redirect('core:escalar', idmilitar, idcirculo)
