@@ -28,6 +28,7 @@ class SalvarFolgas(forms.ModelForm):
 
     ESCALA_CHOICES= [(-1,'Selecione uma escala')]
     ESCALA_CHOICES+=Escala.objects.values_list('id', 'descricao')
+    print("Passou em salvar folgas")
     idescala = forms.ChoiceField(label='Escala', required=True, initial=-1, choices=ESCALA_CHOICES)
 
     def save (self, commit=True):

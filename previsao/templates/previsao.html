@@ -66,14 +66,14 @@
           {% if escalado.vermelha%}
               <font color="red">
                 {%if escalado.nomesubstituto%}
-                  {{ escalado.nomeguerra}}-({{ escalado.nomesubstituto }})
+                  {{ escalado.nomesubstituto }} - ({{ escalado.nomeguerra}})
                 {%else%}
                   {{ escalado.nomeguerra }}
                 {%endif%}
           {%else %}
           <font color="#777" >
             {%if escalado.nomesubstituto%}
-              {{  escalado.nomeguerra  }}-({{ escalado.nomesubstituto }})
+              {{ escalado.nomesubstituto }} - ({{  escalado.nomeguerra  }})
             {%else%}
               {{ escalado.nomeguerra }}
             {%endif%}

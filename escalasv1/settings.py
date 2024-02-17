@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'dbbackup',  # adicionando django-dbbackup
+
     # usada para renderizar os campos dos forms nos templates
     'widget_tweaks',
     # 'sms',
@@ -100,16 +102,16 @@ WSGI_APPLICATION = 'escalasv1.wsgi.application'
 #     }
 if DEBUG:
     #para usar o mysql/mariaDB
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'escalasv',
-            'USER': 'mysql',
-            'PASSWORD': '191001',
-            'HOST': 'localhost',
-            'PORT': '3306',  # 8000 is default
-        }
-    }
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.mysql',
+    #         'NAME': 'escalasv',
+    #         'USER': 'mysql',
+    #         'PASSWORD': '191001',
+    #         'HOST': 'localhost',
+    #         'PORT': '3306',  # 8000 is default
+    #     }
+    # }
 #    para usar o sqlite3
 #    DATABASES = {
 #        'default': {
@@ -118,16 +120,16 @@ if DEBUG:
 #        }
 #    }
 #     Para usar o postgresql
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': 'escaladebug',
-#             'USER': 'postgres',
-#             'PASSWORD': '191001',
-#             'HOST': 'localhost',
-#             'PORT': '5432',  # 8000 is default
-#         }
-#     }
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'escaladebug',
+            'USER': 'postgres',
+            'PASSWORD': '191001',
+            'HOST': 'localhost',
+            'PORT': '5432',  # 8000 is default
+        }
+    }
 else:
 #     Para usar o postgresql
     DATABASES = {
@@ -241,3 +243,6 @@ try:
 except ImportError:
     pass
 """
+
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage' #o que salvar
+DBBACKUP_STORAGE_OPTIONS = {'location': 'backups/'} # onde salvar

@@ -55,11 +55,9 @@ def nomeDiaSemana(data):
 
 def podeDesignar(idmilitar,idescala,idcirculo):
     #verifica se o militar já está concorrendo a essa escala, se já estiver, não cadastra novamente
-    queryset = DesignarEscala.objects.filter(idmilitar=idmilitar,
-                                             idcirculo=idcirculo, idescala=idescala)
-    
-    #Se a queryset.count() diferente de zero, o militar já foi designado para essa escala
-    return (queryset.count() == 0)
+    podedesignar = not (DesignarEscala.objects.filter(idmilitar=idmilitar,idcirculo=idcirculo, idescala=idescala).exists())
+       
+    return (podedesignar)
 
 @login_required
 def listar_designacao(request, idmilitar, idcirculo):
@@ -86,6 +84,7 @@ def listar_designacao(request, idmilitar, idcirculo):
 
 @login_required
 def escalar(request, idmilitar=None, idcirculo=None):
+    
     militar = get_object_or_404(Militar, id=idmilitar, idcirculo=idcirculo)
     escalas = Escala.objects.all().filter(idcirculo=idcirculo)
 
@@ -103,7 +102,6 @@ def escalar(request, idmilitar=None, idcirculo=None):
             red = form_folgas.cleaned_data['realred']
             black = form_folgas.cleaned_data['realblack']
             if podeDesignar(idmilitar,idescala,idcirculo):
-                print("entrou no método podeDesignar!")
                 designado = form_designacao.save()
                 folgas = ControlarFolgas(idmilitar=idmilitar, idcirculo=idcirculo,
                 idescala=idescala, red=red, black=black, realred=red,
@@ -113,6 +111,7 @@ def escalar(request, idmilitar=None, idcirculo=None):
             #folgas = form_folgas.save()
             return redirect('core:escalar', idmilitar, idcirculo)
     else:
+        print("passou em escalar")
         form_designacao = SalvarDesignacao()
         form_folgas = SalvarFolgas()
 
@@ -136,8 +135,10 @@ def editar_escalar(request, iddesignacao):
     idcirculo = queryset[0].idcirculo
     idescala = queryset[0].idescala
     militar = get_object_or_404(Militar, id=idmilitar, idcirculo=idcirculo)
-    #escalas = Escala.objects.all().filter(idcirculo=idcirculo)
-
+    
+    #adicionado em 14FEV24
+    escalas = Escala.objects.all().filter(idcirculo=idcirculo)
+    
     queryset_folgas = ControlarFolgas.objects.filter(idmilitar=idmilitar,
                       idcirculo=idcirculo, idescala=idescala)
 
@@ -145,9 +146,10 @@ def editar_escalar(request, iddesignacao):
     black = queryset_folgas[0].realblack
     queryset_folgas.update(red=red, black=black)
 
-    template_name = 'designarescalas.html'
+    template_name = 'editar_designacao.html'
+
     context = {}
-    #print(queryset)
+
     if request.method == 'POST':
         form_designacao = EditarDesignacaoForm(request.POST, instance=queryset[0])
         form_folgas = EditarFolgas(request.POST, instance=queryset_folgas[0])
@@ -164,10 +166,14 @@ def editar_escalar(request, iddesignacao):
         form_folgas = EditarFolgas(instance=queryset_folgas[0])
 
     escalado_em = listar_designacao(request, idmilitar, idcirculo)
+    idescala = queryset[0].idescala
 
+    list_escalas = []
+    nome_escala = Escala.objects.filter(id=idescala).last().descricao
+    list_escalas = {'id': iddesignacao, 'nome': nome_escala}
     context = {'form_designacao': form_designacao, 'form_folgas':form_folgas,
                 'militar': militar, 'escalas':escalas,
-                'escalado_em': escalado_em
+                'escalado_em': escalado_em, 'lista_escalas':list_escalas,
     }
 
     return render(request, template_name, context)
@@ -187,14 +193,12 @@ def delete_escalar(request, iddesignacao):
     template_name = 'excluir_designacao.html'
 
     if request.method == 'POST':
-        if queryset.count()>0:
-            if queryset_folgas.count()>0:
+        if queryset.exists():
+            if queryset_folgas.exists():
                 queryset_folgas.delete()
+            
             queryset.delete()
-            #a mensagem não ficou legal, por isso comentei!
-            #messages.success(
-            #    request, 'Os dados da sua conta foram alterados com sucesso'
-            #)
+            
             return redirect('core:escalar', idmilitar, idcirculo)
     else:
         form_designacao = DeleteDesignacaoForm(instance=queryset[0])
@@ -385,15 +389,15 @@ def listar_dispensas(request, idmilitar, idcirculo, pagina=1):
 
     # este código só funciona em PostgreSQL, soma 1 para poder contar o dia do fim
     # o argumento int é para voltar número sem vírgula
-    # queryset = '''SELECT *, EXTRACT(day FROM(AGE(datafim+1, datainicio))):: int AS dias
-    #        FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
-    #        ORDER BY datainicio'''
+    queryset = '''SELECT *, EXTRACT(day FROM(AGE(datafim+1, datainicio))):: int AS dias
+           FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
+           ORDER BY datainicio'''
 
 
       #este código só funciona em mysql
-    queryset = '''SELECT *, DATEDIFF (datafim+1,datainicio) AS 'dias'
-        FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
-        ORDER BY datainicio'''
+    # queryset = '''SELECT *, DATEDIFF (datafim+1,datainicio) AS 'dias'
+    #     FROM core_dispensas WHERE idmilitar =%s AND idcirculo =%s
+    #     ORDER BY datainicio'''
 
     
 
