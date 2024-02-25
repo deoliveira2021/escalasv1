@@ -30,7 +30,7 @@ TEMPLATE_DEBUG = False
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # se DEBUG for False, configurar ALLOWED_HOSTS para todos(*)
 # Allow all host headers
-# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -42,17 +42,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'dbbackup',  # adicionando django-dbbackup
-
-    # usada para renderizar os campos dos forms nos templates
-    'widget_tweaks',
-    # 'sms',
-
+    #meus app
     'core',
     'pessoal',
     'previsao',
     'servico',
     'usuario',
+
+    #apps de terceiros, instalados via pip install
+    'widget_tweaks', # usada para renderizar os campos dos forms nos templates
+    'dbbackup',  # adicionando django-dbbackup
+    # 'sms', #usado para enviar sms, porém, não foi implementado pq não encontrei apps livre, só proprietário!
 ]
 
 MIDDLEWARE = [
@@ -208,9 +208,7 @@ DATE_INPUT_FORMATS = ['%d/%m/%Y']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Allow all host headers
-ALLOWED_HOSTS = ['*']
-
-#ALLOWED_HOSTS = ['192.168.0.5', 'escalasv']
+#ALLOWED_HOSTS = ['*']
 
 PROJECT_ROOT = os.path.abspath(os.path.join(__file__, os.pardir))
 
