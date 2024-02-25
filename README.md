@@ -6,10 +6,10 @@ certifi==2022.12.7
 charset-normalizer==3.0.1
 click==8.1.3
 dj-database-url==1.2.0
-Django==3.2.18
-django-widget-tweaks==1.4.12
+Django
+django-widget-tweaks
 Flask==2.2.3
-gunicorn==20.1.0
+gunicorn
 idna==3.4
 importlib-metadata==6.0.0
 itsdangerous==2.1.2
@@ -17,7 +17,7 @@ Jinja2==3.1.2
 MarkupSafe==2.1.2
 MouseInfo==0.1.3
 Pillow==9.4.0
-psycopg2==2.9.5
+psycopg2
 PyAutoGUI==0.9.53
 PyGetWindow==0.0.9
 PyMsgBox==1.0.9
@@ -36,3 +36,4 @@ urllib3==1.26.14
 Werkzeug==2.2.3
 wikipedia==1.4.0
 zipp==3.15.0
+django-dbbackup
