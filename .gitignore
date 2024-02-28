@@ -1,2 +1,4 @@
 gitToken
 *.pyc
+db.sqlite3*
+/backups/
