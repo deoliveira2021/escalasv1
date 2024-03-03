@@ -1,11 +1,4 @@
-gitToken
-*.pyc
-<<<<<<< HEAD
-db.sqlite3*
-/backups/
-=======
 ./backup
 db.sqlite3
 gittoken
 dockerhubtoken
->>>>>>> 325b1b2 (Commit em 03MAR2024- alterações diversas: template previsão, desabilitando botão salvar se usuário não for adm, desabilitando botão gerar pdf se não exitir nenhuma previsão, no cadastro de usuário, desabilitei o campo adm? quando é cadastro inicial ou o usuário que está cadastrando outro, não é administrador.)
