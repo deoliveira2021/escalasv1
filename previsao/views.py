@@ -234,9 +234,10 @@ def podeSalvarServico():
     with connection.cursor() as cursor:
         query = 'SELECT DISTINCT(data) FROM previsao_previsao GROUP BY data'
         cursor.execute(query)
-        if cursor.rowcount > 3:
-            return False
-    return True
+    return cursor.rowcount
+    #     if (cursor.rowcount > 3 or cursor.rowcount<=0):
+    #         return False
+    # return True
 
 
 # salva os serviços de acordo com a previsão
@@ -447,6 +448,7 @@ def listar_previsao(request, pagina=1, nrporpagina=22, descricao=None, nomeguerr
 # @login_required
 def previsao(request):
     podeSalvar = False
+    podeGerarPDF = False
 
     inicio = datetime.today()
     final = inicio + timedelta(1)
@@ -460,7 +462,6 @@ def previsao(request):
             if (dataInicio != None) & (dataFim != None):
                 limparPrevisao()
                 rodaprevisao(dataInicio, dataFim)
-                print('passou aqui')
             return redirect('previsao:previsao')
     else:
         sql = Servicos.objects.last()
@@ -471,8 +472,15 @@ def previsao(request):
         form = FormPrevisao()
 
     previstos = listar_previsao(request)
-    podeSalvar = podeSalvarServico()
-    context = {'form': form, 'previstos': previstos, 'podeSalvar': podeSalvar, 'inicio': inicio, 'final': final}
+    print(podeSalvarServico())
+    podeSalvar = ((podeSalvarServico() >0) & (podeSalvarServico() <=3))
+    print(podeSalvar)
+    podeGerarPDF = (podeSalvarServico()>0)
+    context = {'form': form, 'previstos': previstos, 
+               'podeSalvar': podeSalvar, 'inicio': inicio, 
+               'final': final,
+               'podeGerarPDF': podeGerarPDF
+               }
 
     return render(request, template_name, context)
 

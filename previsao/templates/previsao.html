@@ -166,8 +166,16 @@
         {% endif %}
       </td>
       <td >
-        <a href="{% url 'previsao:GeneratePDF'%}" class="pure-button button-small"
-        readonly={{user.is_staff}}>Gerar PDF</a>
+        {% if user.is_staff %}
+          {% if podeGerarPDF %}
+            <button type="submit" class="pure-button button-small"
+            formaction="{% url 'previsao:GeneratePDF' %}">Gerar PDF</button>
+          {%else%}
+            <button type="submit" class="pure-button button-small" disabled>Gerar PDF</button>
+          {%endif%}
+        {%else%}
+          <button type="submit" class="pure-button button-small" disabled>Gerar PDF</button>
+        {%endif%}
       </td>
       <td colspan="6">
         {% if user.is_staff %}

@@ -87,9 +87,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     tel2 = models.CharField('Telefone 2', max_length=15, null=True, blank=True)
     data_nasc = models.DateField('Data Nascimento', null=True, blank=True)
     data_praca = models.DateField('Data de Praça',null=True, blank=True)
-    is_active = models.BooleanField('Está ativo?', blank=True, default=True)
+    is_active = models.BooleanField('Ativo?', blank=True, default=True)
     IS_STAFF_CHOICES= [(1, "SIM"), (0, "NÃO")]
-    is_staff = models.BooleanField('Administrador?', blank=True, default=0, choices=IS_STAFF_CHOICES)
+    is_staff = models.BooleanField('Adm?', blank=True, default=0, choices=IS_STAFF_CHOICES)
     data_cadastro = models.DateTimeField('Data de Cadastro', auto_now_add=True)
 
     objects = UserManager()

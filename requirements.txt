@@ -1,12 +1,11 @@
 # escalasv1
 #requisitos para lançar
-asgiref==3.6.0
 beautifulsoup4==4.11.2
 certifi==2022.12.7
 charset-normalizer==3.0.1
 click==8.1.3
 dj-database-url==1.2.0
-Django
+Django == 4.2.1, <=4.3
 django-widget-tweaks
 Flask==2.2.3
 gunicorn

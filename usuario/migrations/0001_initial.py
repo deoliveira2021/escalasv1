@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('data_nasc', models.DateField(blank=True, null=True, verbose_name='Data Nascimento')),
                 ('data_praca', models.DateField(blank=True, null=True, verbose_name='Data de Praça')),
                 ('is_active', models.BooleanField(blank=True, default=True, verbose_name='Está ativo?')),
-                ('is_staff', models.BooleanField(blank=True, choices=[(1, 'SIM'), (0, 'NÃO')], default=0, verbose_name='Administrador?')),
+                ('is_staff', models.BooleanField(blank=True, choices=[(1, 'SIM'), (0, 'NÃO')], default=0, verbose_name='Adm?')),
                 ('data_cadastro', models.DateTimeField(auto_now_add=True, verbose_name='Data de Cadastro')),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups')),
                 ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions')),

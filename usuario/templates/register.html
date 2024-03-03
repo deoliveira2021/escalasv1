@@ -108,8 +108,15 @@
       </div>      
       <td colspan="5" width="5%">
       <div class="control-group" align="center">
-          {{ form.is_staff.label_tag }}
-        {{ form.is_staff }}
+        {{ form.is_staff.label_tag }}
+        {%if user.is_staff %}
+          {{ form.is_staff }}
+        {%else%}
+          <!-- se o usuário atual não é administrador,desabilita o campo que permite 
+            ajustar como administrador ou não o suário que está sendo cadastrado
+          --> 
+          {%render_field form.is_staff readonly=true disabled=true%}
+        {%endif%}        
         {{ form.is_staff.errors }}       
       </div>      
       <td colspan="8" width="5%">
