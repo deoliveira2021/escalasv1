@@ -18,8 +18,8 @@
   <tbody>
     {% for usuario in usuarios %}
       <tr bgcolor="ebebeb">
-        <td align = center >{{ usuario.posto_get_display }}</td>
-        <td align = center >{{ usuario.nome }}</td>
+        <td align = left >{{ usuario.get_posto_display }}</td>
+        <td align = left >{{ usuario.nome }}</td>
         <td align = center >{{ usuario.username }}</td>
         <td>{{ usuario.nome_guerra }}</td>
         <td >{{ usuario.email }}</td>
