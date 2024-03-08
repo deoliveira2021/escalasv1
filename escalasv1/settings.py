@@ -10,27 +10,51 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 import os
+from pathlib import Path
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from dotenv import load_dotenv
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent
+#DATA_DIR = BASE_DIR.parent / 'data' / 'web'
+
+# DOTENV
+load_dotenv(BASE_DIR.parent / 'dotenv_files' / '.env', override=True)
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')&fb*^@5tavz=%v$!qvdcj7u6im)j+le*wr*qbr7poh$9eahm9'
+SECRET_KEY = os.getenv('SECRET_KEY', 'change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+DEBUG = bool(int(os.getenv('DEBUG', 0)))
 
-TEMPLATE_DEBUG = False
+ALLOWED_HOSTS = [
+    h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',')
+    if h.strip()
+]
 
-# Honor the 'X-Forwarded-Proto' header for request.is_secure()
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# se DEBUG for False, configurar ALLOWED_HOSTS para todos(*)
-# Allow all host headers
-ALLOWED_HOSTS = ['*']
+# # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# # Quick-start development settings - unsuitable for production
+# # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+
+# # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = ')&fb*^@5tavz=%v$!qvdcj7u6im)j+le*wr*qbr7poh$9eahm9'
+
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
+# # DEBUG = False
+
+# TEMPLATE_DEBUG = False
+
+# # Honor the 'X-Forwarded-Proto' header for request.is_secure()
+# # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# # se DEBUG for False, configurar ALLOWED_HOSTS para todos(*)
+# # Allow all host headers
+# ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -88,8 +112,50 @@ WSGI_APPLICATION = 'escalasv1.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE', 'change-me'),
+            'NAME': 'escaladebug',
+            'USER': os.getenv('POSTGRES_USER', 'change-me'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
+            'HOST': os.getenv('POSTGRES_HOST', 'change-me'),
+            'PORT': os.getenv('POSTGRES_PORT', 'change-me'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE', 'change-me'),
+            'NAME': os.getenv('POSTGRES_DB', 'change-me'),
+            'USER': os.getenv('POSTGRES_USER', 'change-me'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
+            'HOST': os.getenv('POSTGRES_HOST', 'change-me'),
+            'PORT': os.getenv('POSTGRES_PORT', 'change-me'),
+        }
+    }
+
 
 # if DEBUG:
+#     #para usar o mysql/mariaDB
+#     # DATABASES = {
+#     #     'default': {
+#     #         'ENGINE': 'django.db.backends.mysql',
+#     #         'NAME': 'escalasv',
+#     #         'USER': 'mysql',
+#     #         'PASSWORD': '191001',
+#     #         'HOST': 'localhost',
+#     #         'PORT': '3306',  # 8000 is default
+#     #     }
+#     # }
+# #    para usar o sqlite3
+# #    DATABASES = {
+# #        'default': {
+# #            'ENGINE': 'django.db.backends.sqlite3',
+# #            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# #        }
+# #    }
+# #     Para usar o postgresql
 #     DATABASES = {
 #         'default': {
 #             'ENGINE': 'django.db.backends.postgresql',
@@ -100,66 +166,36 @@ WSGI_APPLICATION = 'escalasv1.wsgi.application'
 #             'PORT': '5432',  # 8000 is default
 #         }
 #     }
-if DEBUG:
-    #para usar o mysql/mariaDB
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.mysql',
-    #         'NAME': 'escalasv',
-    #         'USER': 'mysql',
-    #         'PASSWORD': '191001',
-    #         'HOST': 'localhost',
-    #         'PORT': '3306',  # 8000 is default
-    #     }
-    # }
-#    para usar o sqlite3
-#    DATABASES = {
-#        'default': {
-#            'ENGINE': 'django.db.backends.sqlite3',
-#            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#        }
-#    }
-#     Para usar o postgresql
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'escaladebug',
-            'USER': 'postgres',
-            'PASSWORD': '191001',
-            'HOST': 'localhost',
-            'PORT': '5432',  # 8000 is default
-        }
-    }
-else:
-#     Para usar o postgresql
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'escalasv',
-            'USER': 'postgres',
-            'PASSWORD': '191001',
-            'HOST': 'localhost',
-            'PORT': '5432',   # 8000 is default
-        }
-    }
-#     para usar o sqlite3
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.sqlite3',
-    #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #     }
-    # }
-#     Para usar o mysql
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.mysql',
-    #         'NAME': 'escalasv',
-    #         'USER': 'mysql',
-    #         'PASSWORD': '191001',
-    #         'HOST': 'localhost',
-    #         'PORT': '3306',  # 8000 is default
-    #     }
-    # }
+# else:
+# #     Para usar o postgresql
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': 'escalasv',
+#             'USER': 'postgres',
+#             'PASSWORD': '191001',
+#             'HOST': 'localhost',
+#             'PORT': '5432',   # 8000 is default
+#         }
+#     }
+# #     para usar o sqlite3
+#     # DATABASES = {
+#     #     'default': {
+#     #         'ENGINE': 'django.db.backends.sqlite3',
+#     #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     #     }
+#     # }
+# #     Para usar o mysql
+#     # DATABASES = {
+#     #     'default': {
+#     #         'ENGINE': 'django.db.backends.mysql',
+#     #         'NAME': 'escalasv',
+#     #         'USER': 'mysql',
+#     #         'PASSWORD': '191001',
+#     #         'HOST': 'localhost',
+#     #         'PORT': '3306',  # 8000 is default
+#     #     }
+#     # }
 
 # AUTENTICAÇÃO
 LOGIN_URL = 'usuario:login'
@@ -215,7 +251,9 @@ PROJECT_ROOT = os.path.abspath(os.path.join(__file__, os.pardir))
 #==================== ADD ON 04FEV24 =========================#
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [ os.path.join(BASE_DIR,'core/static') ]
+#STATICFILES_DIRS = [ os.path.join(BASE_DIR,'core/static') ] // era assim antes de introduzir o .env file
+STATICFILES_DIRS = [ Path.joinpath(BASE_DIR.parent,'core/static') ]
+
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 

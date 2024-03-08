@@ -6,6 +6,7 @@ from core.mail import send_mail_template
 from core.utils import generate_hash_key
 
 from .models import PasswordReset
+from pessoal.models import Militar
 
 
 #import para enviar SMS
@@ -80,6 +81,7 @@ class RegisterForm(forms.ModelForm):
         model = User
         fields = ['username', 'nome', 'email', 'sexo', 'is_staff', 'posto',
                   'cpf','nome_guerra','tel1', 'tel2','data_nasc','data_praca']
+        
 
 class Register_staffForm(forms.ModelForm):
     password1 = forms.CharField(label='Senha', widget=forms.PasswordInput)

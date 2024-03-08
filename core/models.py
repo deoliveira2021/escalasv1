@@ -50,7 +50,6 @@ class Escala(models.Model):
 
 """
 
-
 # -- Cria a Tabela de controlar folgas
 class ControlarFolgas(models.Model):
 #    idmilitar = models.ForeignKey(pessoalModel.Militar,
@@ -103,7 +102,6 @@ class DesignarEscala(models.Model):
         ordering = ['-id']
 
     def get_absolute_url(self):
-        #print('passou no get_absolute_url de DesignarEscala')
         from django.urls import reverse
         return reverse('core:escalar', args=[self.idmilitar, self.idcirculo])
 

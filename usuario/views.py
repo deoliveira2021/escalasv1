@@ -12,18 +12,36 @@ from core.utils import generate_hash_key
 
 from .forms import RegisterForm, Register_staffForm, EditAccountForm, PasswordResetForm
 from .models import PasswordReset
+from pessoal.models import Militar
+from pessoal.views import definirCirculo
+
+## - Método para cadastrar militar, a partir do cadastro de usuário.
+def cadastrarMilitar(militar):
+    cpf         = militar[0][1]
+    circulo     = definirCirculo(militar[1][1])
+    posto       = militar[1][1]
+    nome        = militar[2][1]
+    nome_guerra = militar[3][1]
+    sexo        = militar[4][1]
+    email       = militar[5][1]
+    tel1        = militar[6][1]
+    data_nasc   = militar[7][1]
+    data_praca  = militar[8][1]
+    insertMilitar = Militar(cpf = cpf, idcirculo = circulo, posto = posto, nome = nome, 
+                        nome_guerra = nome_guerra, sexo = sexo, email=email, 
+                        tel1=tel1, data_nasc=data_nasc, data_praca=data_praca)      
+    return insertMilitar.save() 
+
 
 User = get_user_model()
 
-#@login_required
-#def listar_militares(request, pag=None): não funcionou passando a página
 def listar_usuarios(request, pagina=1):
     usuario_list = User.objects.all()
 
     #if pag == None:
     page = request.GET.get('page', pagina)
 
-    paginator = Paginator(usuario_list, 20)
+    paginator = Paginator(usuario_list.order_by("id"), 20)
     try:
         usuarios = paginator.page(page)
     except PageNotAnInteger:
@@ -38,11 +56,29 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
+            #pega dados do militar para salvar na tabela militar.
+            militar = [
+                ('cpf', form.cleaned_data['cpf']),
+                ('posto', form.cleaned_data['posto']),
+                ('nome', form.cleaned_data['nome']),
+                ('nome_guerra', form.cleaned_data['nome_guerra']),
+                ('sexo', form.cleaned_data['sexo']),
+                ('email', form.cleaned_data['email']),
+                ('tel1', form.cleaned_data['tel1']),
+                ('data_nasc', form.cleaned_data['data_nasc']),
+                ('data_praca', form.cleaned_data['data_praca']),
+            ]   
+            cadastrarMilitar(militar)         
+            #Salva o usuário.
             user = form.save()
+
+            ########### Código usado para autenticar o usuário. ###############
             user = authenticate(
                 username=user.username, password=form.cleaned_data['password1']
             )
             login(request, user)
+            ###################################################################
+
             return redirect('core:home')
     else:
         form = RegisterForm()
@@ -61,11 +97,8 @@ def register_staff(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            """user = authenticate(
-                username=user.username, password=form.cleaned_data['password1']
-            )
-            login(request, user)"""
-            return redirect('core:home')
+            #return redirect('core:home')
+            return redirect('usuario:register_staff')
     else:
         form = Register_staffForm()
     context = {

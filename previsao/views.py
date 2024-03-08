@@ -226,19 +226,13 @@ def limparPrevisao():
     Previsao.objects.all().delete()
     return
 
-
+# método que verifia se pode salvar o serviço, para poder salvar, é necessário que
+# que o número máximo de datas distintas (DISTINCT(data)) seja três
 def podeSalvarServico():
-    # len(Previsao.objects.raw('SELECT DISTINCT(data), id FROM previsao_previsao GROUP BY data, id'))<=3
-
-    # trecho abaixo comentado por usar sql puro
     with connection.cursor() as cursor:
         query = 'SELECT DISTINCT(data) FROM previsao_previsao GROUP BY data'
         cursor.execute(query)
     return cursor.rowcount
-    #     if (cursor.rowcount > 3 or cursor.rowcount<=0):
-    #         return False
-    # return True
-
 
 # salva os serviços de acordo com a previsão
 def salvarServico(request):
@@ -472,9 +466,7 @@ def previsao(request):
         form = FormPrevisao()
 
     previstos = listar_previsao(request)
-    print(podeSalvarServico())
     podeSalvar = ((podeSalvarServico() >0) & (podeSalvarServico() <=3))
-    print(podeSalvar)
     podeGerarPDF = (podeSalvarServico()>0)
     context = {'form': form, 'previstos': previstos, 
                'podeSalvar': podeSalvar, 'inicio': inicio, 

@@ -9,7 +9,6 @@ from django.contrib.admin import widgets
 from .models import *
 
 class escalasForm(forms.ModelForm):
-
     corrida = forms.BooleanField(label ='Escala Corrida?', required=False)
 
     def save(self, commit=True):
@@ -25,7 +24,6 @@ class escalasForm(forms.ModelForm):
         )
 
 class SalvarFolgas(forms.ModelForm):
-
     ESCALA_CHOICES= [(-1,'Selecione uma escala')]
     ESCALA_CHOICES+=Escala.objects.values_list('id', 'descricao')
     print("Passou em salvar folgas")

@@ -9,6 +9,29 @@ from .forms import *
 from .models import Militar
 from core.models import *
 
+#método que busca o círculo do militar para salvar
+def definirCirculo(posto):
+    # o índice começa em 5 aqui para montar uma correspondência com todos os postos
+    # existentes no Exército, assim teríamos:
+    # 1 - Marechal
+    # 2 - Gen de Exército
+    # 3 - Gen de Divisão
+    # 4 - Gen Brigada
+    # e os demais, conforme abaixo enumerados:
+    # POSTO_CHOICES = [(5, "Cel"), (6, "T Cel"), (7, "Maj"),
+    #          (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
+    #          (12, "S Ten"), (13, "1º Sgt"), (14, "2º Sgt"), (15, "3º Sgt"),
+    #          (16, "Cb"), (17, "SD")]
+
+    circulo = 0 # Círculo de oficiais
+
+    if (posto>11) & (posto < 16):
+        circulo = 1 # Círculo de Subtenentes e Sargentos
+    else:
+        if (posto >=16) & (posto <=17):
+            circulo = 2 # Círculo de Cabos e Soldados
+    return circulo
+
 @login_required
 #def listar_militares(request, pag=None): não funcionou passando a página
 def listar_militares(request, pagina=1):
@@ -57,7 +80,6 @@ def editar_militar(request,idmilitar,idcirculo, pagina):
     context = {}
     if request.method == 'POST':
         print(request.method)
-
         form = MilitarForm(request.POST, instance=sqlmilitar[0])
         if form.is_valid():
             form.save()

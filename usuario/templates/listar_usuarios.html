@@ -7,8 +7,9 @@
       <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Usuários cadastrados</font></b></font></div>
     </th>
     <tr bgcolor="cccccc">
+      <th>Posto/Grad</th>
       <th>Nome Completo</th>
-      <th>User Name</th>
+      <th>Usuário</th>
       <th>Nome de Guerra</th>
       <th>e-mail</th>
       <th>Adm?</th>
@@ -17,6 +18,7 @@
   <tbody>
     {% for usuario in usuarios %}
       <tr bgcolor="ebebeb">
+        <td align = center >{{ usuario.posto_get_display }}</td>
         <td align = center >{{ usuario.nome }}</td>
         <td align = center >{{ usuario.username }}</td>
         <td>{{ usuario.nome_guerra }}</td>

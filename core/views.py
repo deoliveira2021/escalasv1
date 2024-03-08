@@ -30,11 +30,7 @@ from previsao import views as my_previsao
 
 
 def home(request):
-    #my_previsao.previsao(request)
-    #my_previsao.listar_previsao(request)
-    #return render(request, 'home.html')
     return redirect('previsao:previsao') # redireciona para a previsão
-    #return render(request, 'previsao.html')
 
 def nomeDiaSemana(data):
     DIAS = [
@@ -84,7 +80,6 @@ def listar_designacao(request, idmilitar, idcirculo):
 
 @login_required
 def escalar(request, idmilitar=None, idcirculo=None):
-    
     militar = get_object_or_404(Militar, id=idmilitar, idcirculo=idcirculo)
     escalas = Escala.objects.all().filter(idcirculo=idcirculo)
 
@@ -128,7 +123,6 @@ def escalar(request, idmilitar=None, idcirculo=None):
     return render(request, template_name, context)
 
 @login_required
-#def editar_escalar(request, idmilitar, idcirculo, iddesignacao):
 def editar_escalar(request, iddesignacao):
     queryset = DesignarEscala.objects.filter(id=iddesignacao)
     idmilitar = queryset[0].idmilitar
@@ -185,7 +179,6 @@ def delete_escalar(request, iddesignacao):
     idcirculo = queryset[0].idcirculo
     idescala = queryset[0].idescala
     militar = get_object_or_404(Militar, id=idmilitar, idcirculo=idcirculo)
-    #escalas = Escala.objects.all().filter(idcirculo=idcirculo)
 
     queryset_folgas = ControlarFolgas.objects.filter(idmilitar=idmilitar,
                       idcirculo=idcirculo, idescala=idescala)
@@ -198,7 +191,6 @@ def delete_escalar(request, iddesignacao):
                 queryset_folgas.delete()
             
             queryset.delete()
-            
             return redirect('core:escalar', idmilitar, idcirculo)
     else:
         form_designacao = DeleteDesignacaoForm(instance=queryset[0])
