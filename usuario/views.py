@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from core.utils import generate_hash_key
+from django.http import HttpResponse
 
 from .forms import RegisterForm, Register_staffForm, EditAccountForm, PasswordResetForm
 from .models import PasswordReset
@@ -16,7 +17,7 @@ from pessoal.models import Militar
 from pessoal.views import definirCirculo
 
 ## - Método para cadastrar militar, a partir do cadastro de usuário.
-def cadastrarMilitar(militar):
+def cadastrarMilitar(request, militar):
     cpf         = militar[0][1]
     circulo     = definirCirculo(militar[1][1])
     posto       = militar[1][1]
@@ -29,8 +30,13 @@ def cadastrarMilitar(militar):
     data_praca  = militar[8][1]
     insertMilitar = Militar(cpf = cpf, idcirculo = circulo, posto = posto, nome = nome, 
                         nome_guerra = nome_guerra, sexo = sexo, email=email, 
-                        tel1=tel1, data_nasc=data_nasc, data_praca=data_praca)      
-    return insertMilitar.save() 
+                        tel1=tel1, data_nasc=data_nasc, data_praca=data_praca)
+    try:
+        insertMilitar.save()
+        return HttpResponse('Militar Cadastrado com Sucesso!')
+    finally:   
+        return HttpResponse('Erro ao tentar cadastrar Militar!')
+    
 
 
 User = get_user_model()
@@ -38,10 +44,9 @@ User = get_user_model()
 def listar_usuarios(request, pagina=1):
     usuario_list = User.objects.all()
 
-    #if pag == None:
     page = request.GET.get('page', pagina)
 
-    paginator = Paginator(usuario_list.order_by("id"), 20)
+    paginator = Paginator(usuario_list, 20)
     try:
         usuarios = paginator.page(page)
     except PageNotAnInteger:
@@ -68,7 +73,8 @@ def register(request):
                 ('data_nasc', form.cleaned_data['data_nasc']),
                 ('data_praca', form.cleaned_data['data_praca']),
             ]   
-            cadastrarMilitar(militar)         
+            #chama o método que vai cadastrar o militar com os dados do usuário.
+            cadastrarMilitar(request, militar)         
             #Salva o usuário.
             user = form.save()
 
@@ -79,7 +85,8 @@ def register(request):
             login(request, user)
             ###################################################################
 
-            return redirect('core:home')
+            #return redirect('core:home')
+            return redirect('usuario:register')
     else:
         form = RegisterForm()
     context = {

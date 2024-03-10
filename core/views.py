@@ -103,7 +103,6 @@ def escalar(request, idmilitar=None, idcirculo=None):
                 realblack=black)
                 folgas.save()
 
-            #folgas = form_folgas.save()
             return redirect('core:escalar', idmilitar, idcirculo)
     else:
         print("passou em escalar")

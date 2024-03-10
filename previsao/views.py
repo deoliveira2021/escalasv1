@@ -638,7 +638,7 @@ def GeneratePDF(request):
         x -= 15
         p.drawString(47, x, '{}: {} - {}'.
                      format(escalado.descricao, getPostoGraduacao(escalado.posto), escalado.nomeguerra))
-        print(escalado.posto)
+        #print(escalado.posto)
 
     # Close the PDF object cleanly, and we're done.
     p.showPage()

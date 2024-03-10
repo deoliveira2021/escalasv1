@@ -79,7 +79,6 @@ def editar_militar(request,idmilitar,idcirculo, pagina):
     template_name = 'editar_pessoal.html'
     context = {}
     if request.method == 'POST':
-        print(request.method)
         form = MilitarForm(request.POST, instance=sqlmilitar[0])
         if form.is_valid():
             form.save()
@@ -89,8 +88,6 @@ def editar_militar(request,idmilitar,idcirculo, pagina):
             #)
             return redirect('pessoal:cadastrarMilitar')
     else:
-        print(request.method)
-
         form = MilitarForm(instance=sqlmilitar[0])
 
     militares = listar_militares(request, pagina)

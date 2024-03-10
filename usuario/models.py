@@ -109,7 +109,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'Usuário'
         verbose_name_plural = 'Usuários'
-
+        ordering = ['posto']
 
 class PasswordReset(models.Model):
 

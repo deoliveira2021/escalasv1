@@ -9,8 +9,8 @@
     <tr bgcolor="cccccc">
       <th>Posto/Grad</th>
       <th>Nome Completo</th>
-      <th>Usuário</th>
       <th>Nome de Guerra</th>
+      <th>Usuário</th>
       <th>e-mail</th>
       <th>Adm?</th>
     </tr>
@@ -18,12 +18,21 @@
   <tbody>
     {% for usuario in usuarios %}
       <tr bgcolor="ebebeb">
-        <td align = left >{{ usuario.get_posto_display }}</td>
+        <td align = center >{{ usuario.get_posto_display }}</td>
         <td align = left >{{ usuario.nome }}</td>
-        <td align = center >{{ usuario.username }}</td>
         <td>{{ usuario.nome_guerra }}</td>
+        <td align = center >{{ usuario.username }}</td>
         <td >{{ usuario.email }}</td>
-        <td >{{ usuario.get_is_staff_display }}</td>
+        <td >
+          <div align="center">
+            {% if usuario.is_staff == True %}
+              <input type="checkbox" name="selected_options" checked disabled>
+            {% else %}
+              <input type="checkbox" name="selected_options" disabled>
+            {% endif %}
+          </div>            
+<!--         {{ usuario.get_is_staff_display }} -->
+        </td>
       </tr>
     {% endfor %}
   </tbody>

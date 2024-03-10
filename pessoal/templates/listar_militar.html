@@ -22,7 +22,16 @@
         <td align = center >{{ militar.get_posto_display }}</td>
         <td>{{ militar.nome }}</td>
         <td >{{ militar.nome_guerra }}</td>
-        <td align = center >{{ militar.get_pronto_display }}</td>
+        <td align = center >
+          <div align="center">
+            {% if militar.pronto == True %}
+              <input type="checkbox" name="selected_options" checked disabled>
+            {% else %}
+              <input type="checkbox" name="selected_options" disabled>
+            {% endif %}
+          </div>                    
+<!--          {{ militar.get_pronto_display }} -->
+        </td>
         <td align = center ><a href="{% url 'core:escalar' militar.id militar.idcirculo %}">Designar</a></td>
         <td align = center >
           <a href="{% url 'core:dispensar' militar.id militar.idcirculo %}">
@@ -36,10 +45,12 @@
               Editar
           </a>
         </td>
-        <td align = center >
+        <td align = center>
           <a href="{% url 'pessoal:delete_militar' militar.id militar.idcirculo militares.number %}">
-          <i class="fa fa-trash"></i>
-          Excluir
+          <font color = "RED">
+            <i class="fa fa-trash"></i>
+            Excluir
+          </font>
           </a>
         </td>
       </tr>

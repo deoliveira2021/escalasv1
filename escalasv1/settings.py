@@ -30,34 +30,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv('DEBUG', 0)))
 
-ALLOWED_HOSTS = [
-    h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',')
-    if h.strip()
-]
-
-# # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# # Quick-start development settings - unsuitable for production
-# # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-# # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = ')&fb*^@5tavz=%v$!qvdcj7u6im)j+le*wr*qbr7poh$9eahm9'
-
-# # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-# # DEBUG = False
-
 # TEMPLATE_DEBUG = False
 
-# # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-# # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# # se DEBUG for False, configurar ALLOWED_HOSTS para todos(*)
-# # Allow all host headers
-# ALLOWED_HOSTS = ['*']
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -127,75 +102,19 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENGINE', 'change-me'),
-            'NAME': os.getenv('POSTGRES_DB', 'change-me'),
+#            'NAME': os.getenv('POSTGRES_DB', 'change-me'),
+            'NAME': 'escaladebug',
             'USER': os.getenv('POSTGRES_USER', 'change-me'),
             'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
             'HOST': os.getenv('POSTGRES_HOST', 'change-me'),
             'PORT': os.getenv('POSTGRES_PORT', 'change-me'),
         }
     }
+    # SECURE_SSL_REDIRECT     = True
+    # CSRF_COOKIE_SECURE      = True
+    # SESSION_COOKIE_SECURE   = True
+    # SECURE_HSTS_SECONDS     = True
 
-
-# if DEBUG:
-#     #para usar o mysql/mariaDB
-#     # DATABASES = {
-#     #     'default': {
-#     #         'ENGINE': 'django.db.backends.mysql',
-#     #         'NAME': 'escalasv',
-#     #         'USER': 'mysql',
-#     #         'PASSWORD': '191001',
-#     #         'HOST': 'localhost',
-#     #         'PORT': '3306',  # 8000 is default
-#     #     }
-#     # }
-# #    para usar o sqlite3
-# #    DATABASES = {
-# #        'default': {
-# #            'ENGINE': 'django.db.backends.sqlite3',
-# #            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-# #        }
-# #    }
-# #     Para usar o postgresql
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': 'escaladebug',
-#             'USER': 'postgres',
-#             'PASSWORD': '191001',
-#             'HOST': 'localhost',
-#             'PORT': '5432',  # 8000 is default
-#         }
-#     }
-# else:
-# #     Para usar o postgresql
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': 'escalasv',
-#             'USER': 'postgres',
-#             'PASSWORD': '191001',
-#             'HOST': 'localhost',
-#             'PORT': '5432',   # 8000 is default
-#         }
-#     }
-# #     para usar o sqlite3
-#     # DATABASES = {
-#     #     'default': {
-#     #         'ENGINE': 'django.db.backends.sqlite3',
-#     #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     #     }
-#     # }
-# #     Para usar o mysql
-#     # DATABASES = {
-#     #     'default': {
-#     #         'ENGINE': 'django.db.backends.mysql',
-#     #         'NAME': 'escalasv',
-#     #         'USER': 'mysql',
-#     #         'PASSWORD': '191001',
-#     #         'HOST': 'localhost',
-#     #         'PORT': '3306',  # 8000 is default
-#     #     }
-#     # }
 
 # AUTENTICAÇÃO
 LOGIN_URL = 'usuario:login'
@@ -244,7 +163,10 @@ DATE_INPUT_FORMATS = ['%d/%m/%Y']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Allow all host headers
-#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',')
+    if h.strip()
+]
 
 PROJECT_ROOT = os.path.abspath(os.path.join(__file__, os.pardir))
 
