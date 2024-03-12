@@ -8,10 +8,11 @@
     </th>
     <tr bgcolor="cccccc">
       <th>Antig</th>
+      <th>OM</th>
       <th>Posto/Grad</th>
       <th>Nome Completo</th>
       <th>Nome de Guerra</th>
-      <th>Pronto?</th>
+      <th>Pronto</th>
       <th colspan="4">Ações</th>
     </tr>
   </thead>
@@ -19,6 +20,7 @@
     {% for militar in militares %}
       <tr bgcolor="ebebeb">
         <td align = center >{{ militar.antiguidade }}</td>
+        <td align = center >{{ militar.get_codom_display }}</td>
         <td align = center >{{ militar.get_posto_display }}</td>
         <td>{{ militar.nome }}</td>
         <td >{{ militar.nome_guerra }}</td>
@@ -32,11 +34,16 @@
           </div>                    
 <!--          {{ militar.get_pronto_display }} -->
         </td>
-        <td align = center ><a href="{% url 'core:escalar' militar.id militar.idcirculo %}">Designar</a></td>
+        <td align = center >
+          <a href="{% url 'core:escalar' militar.id militar.idcirculo %}">
+            <i class="fa fa-book"></i>
+            Designar
+          </a>
+        </td>
         <td align = center >
           <a href="{% url 'core:dispensar' militar.id militar.idcirculo %}">
             <i class="fa fa-book"></i>
-            Disp/Férias?
+            Afastamentos
           </a>
         </td>
         <td align = center >

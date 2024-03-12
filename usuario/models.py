@@ -79,6 +79,13 @@ class User(AbstractBaseUser, PermissionsMixin):
              (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
              (12, "S Ten"), (13, "1º Sgt"), (14, "2º Sgt"), (15, "3º Sgt"),
              (16, "Cb"), (17, "SD")]
+    
+
+    OM_CHOICES = [(6122, "40º BI"),(1503, "23º BC"),(1438, "Ba Adm Gu F"),(62117, "10º CGCFEx"),
+                  (37820, "16ª Cia PE"),(15297, "52º CT"),(20404, "CMF"),(24679, "Cmdo 10ª RM"),
+                  (30619, "Cia C 10ª RM"),(40709, "10º D Sup"),(59808, "H Ge Fortaleza"),
+                  (65060, "Pq R Mnt/10"),
+    ]
 
     posto = models.IntegerField('Posto/Graduação', null=True, choices = POSTO_CHOICES, blank=True)
     GENDER_CHOICES =((1, "Masculino"), (2, "Feminino"), )
@@ -91,6 +98,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     IS_STAFF_CHOICES= [(1, "SIM"), (0, "NÃO")]
     is_staff = models.BooleanField('Adm?', blank=True, default=0, choices=IS_STAFF_CHOICES)
     data_cadastro = models.DateTimeField('Data de Cadastro', auto_now_add=True)
+    codom = models.IntegerField('OM', null=True, choices = OM_CHOICES, blank=True)
 
     objects = UserManager()
 

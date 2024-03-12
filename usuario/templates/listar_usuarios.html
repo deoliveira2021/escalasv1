@@ -7,6 +7,7 @@
       <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Usuários cadastrados</font></b></font></div>
     </th>
     <tr bgcolor="cccccc">
+      <th>OM</th>
       <th>Posto/Grad</th>
       <th>Nome Completo</th>
       <th>Nome de Guerra</th>
@@ -18,6 +19,7 @@
   <tbody>
     {% for usuario in usuarios %}
       <tr bgcolor="ebebeb">
+        <td align = center >{{ usuario.get_codom_display }}</td>
         <td align = center >{{ usuario.get_posto_display }}</td>
         <td align = left >{{ usuario.nome }}</td>
         <td>{{ usuario.nome_guerra }}</td>

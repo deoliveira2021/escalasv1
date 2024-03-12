@@ -80,7 +80,7 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'nome', 'email', 'sexo', 'is_staff', 'posto',
-                  'cpf','nome_guerra','tel1', 'tel2','data_nasc','data_praca']
+                  'cpf','nome_guerra','tel1', 'tel2','data_nasc','data_praca', 'codom']
         
 
 class Register_staffForm(forms.ModelForm):
@@ -107,7 +107,7 @@ class Register_staffForm(forms.ModelForm):
         model = User
         fields = (['username', 'email', 'sexo', 'posto', 'nome', 'nome_guerra',
         'cpf', 'data_nasc','data_praca','tel1', 'tel2',
-        'is_active', 'is_staff']
+        'is_active', 'is_staff', 'codom']
         )
 
 

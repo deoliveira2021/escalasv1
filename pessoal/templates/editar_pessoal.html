@@ -7,70 +7,96 @@
   {% csrf_token %}
   <table class="table full" align="center">
     <tr bgcolor="#2F4F4F">
-      <td colspan="20">
+      <td colspan="40">
       <div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Editar cadastro de Militar</b></font></div></td>
     </tr>
     {{ form.non_field_errors }}
     <tr bgcolor="ebebeb">
       <td colspan="5" width="5%">
+        <div>
+          {{ form.codom.label_tag }}
+        </div>
         <div class="control-group">
-            {{ form.idcirculo.label_tag }}
+            {{ form.codom }}
+            {{ form.codom.errors }}
+        </div>
+      </td>
+      <td colspan="5" width="5%">
+        <div>
+          {{ form.idcirculo.label_tag }}
+        </div>
+        <div class="control-group">
             {{ form.idcirculo }}
             {{ form.idcirculo.errors }}
         </div>
       </td>
-      <td colspan="5" width="5%">
+      <td colspan="5" width="10%">
+        <div>
+          {{ form.posto.label_tag }}
+        </div>
         <div class="control-group">
-            {{ form.posto.label_tag }}
             {{ form.posto }}
             {{ form.posto.errors }}
         </div>
       </td>
-      <td colspan="5" width="18%">
+      <td colspan="5" width="15%">
+        <div>
+          {{ form.nome.label_tag }}
+        </div>
         <div class="control-group">
-            {{ form.nome.label_tag }}
             {{ form.nome }}
             {{ form.nome.errors }}
         </div>
       </td>
-      <td colspan="5" width="18%">
+      <td colspan="5" width="15%">
+        <div>
+          {{ form.nome_guerra.label_tag }}
+        </div>
         <div class="control-group">
-            {{ form.nome_guerra.label_tag }}
             {{ form.nome_guerra }}
             {{ form.nome_guerra.errors }}
         </div>
       </td>
 		</tr>
+  </table>
+  <table class="table full" align="center">
     <tr bgcolor="ebebeb">
-      <td colspan="4" width="5%">
+      <td colspan="5" width="5%">
+        <div>
+          {{ form.antiguidade.label_tag }}
+        </div>
         <div class="control-group">
-            {{ form.antiguidade.label_tag }}
             {{ form.antiguidade }}
             {{ form.antiguidade.errors }}
         </div>
       </td>
-      <td colspan="4" width="5%">
-        <div class="control-group" align="center">
-            {{ form.pronto.label_tag }}
-            {{ form.pronto }}
-            {{ form.pronto.errors }}
+      <td colspan="5" width="20%">
+        <div>
+          {{ form.email.label_tag }}
         </div>
-      </td>
-      <td colspan="4" width="18%">
         <div class="control-group">
-            {{ form.email.label_tag }}
             {{ form.email }}
             {{ form.email.errors }}
         </div>
       </td>
-      <td colspan="4" width="18%">
+      <td colspan="5" width="20%">
+        <div>
+          {{ form.tel1.label_tag }}
+        </div>
         <div class="control-group">
-            {{ form.tel1.label_tag }}
             {{ form.tel1 }}
             {{ form.tel1.errors }}
         </div>
       </td>
-      <td colspan="4"></td>
+      <td colspan="5" width="5%">
+        <div class="control-group" align="center">
+          {{ form.pronto.label_tag }}
+        </div>
+        <div class="control-group" align="center">
+            {{ form.pronto }}
+            {{ form.pronto.errors }}
+        </div>
+      </td>     
     </tr>
 	</table>
 

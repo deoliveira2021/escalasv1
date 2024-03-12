@@ -58,7 +58,7 @@ def cadastrarMilitar(request):
     if request.method == 'POST':
         form = MilitarForm(request.POST)
         if form.is_valid():
-            militar = form.save()
+            form.save()
             return redirect('pessoal:cadastrarMilitar')
     else:
         form = MilitarForm()

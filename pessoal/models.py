@@ -69,9 +69,18 @@ class Militar(models.Model):
     antiguidade = models.IntegerField('Antiguidade', null=False, blank=False, default=1)
 
     PRONTO_CHOICES= [(0, "NÃO"), (1, "SIM")]
-    pronto = models.BooleanField('Pronto?', choices= PRONTO_CHOICES,
+    pronto = models.BooleanField('Pronto', choices= PRONTO_CHOICES,
     default=1, blank=False, null=True)
     ticado = models.BooleanField('Marcado?', default=True)
+
+    OM_CHOICES = [(6122, "40º BI"),(1503, "23º BC"),(1438, "Ba Adm Gu F"),(62117, "10º CGCFEx"),
+                  (37820, "16ª Cia PE"),(15297, "52º CT"),(20404, "CMF"),(24679, "Cmdo 10ª RM"),
+                  (30619, "Cia C 10ª RM"),(40709, "10º D Sup"),(59808, "H Ge Fortaleza"),
+                  (65060, "Pq R Mnt/10"),
+    ]
+
+    codom = models.IntegerField('OM', null=True, choices = OM_CHOICES, blank=True)
+
 
     #objects = UserManager()
 

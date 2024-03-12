@@ -24,12 +24,11 @@ from .models import Militar
 #        'cpf', 'data_nasc','data_praca','tel1', 'tel2',]
 #        )
 
-
 class MilitarForm(forms.ModelForm):
-    pronto = forms.BooleanField(label ='Pronto?', initial=1, required=False)
+    pronto = forms.BooleanField(label ='Pronto', initial=1, required=False)
     class Meta:
         model = Militar
         fields = (['idcirculo','posto', 'antiguidade',
                     'pronto', 'nome', 'nome_guerra',
-                    'email',  'tel1', 'tel2' ]
+                    'email',  'tel1', 'tel2', 'codom' ]
         )
