@@ -20,7 +20,9 @@
       <th colspan="2" align = "center">Posto/Grad</th>
       <th colspan="4" align = "center">Nome</th>
       <th colspan="2" align = "center">Folga</th>
-      <th colspan="3" align = "center">Ações</th>
+      {% if user.is_superuser %}
+        <th colspan="3" align = "center">Ações</th>
+      {%endif%}
     </tr>
   </thead>
   <tbody>
@@ -89,7 +91,7 @@
           {%endif%}
         </td>
         <td colspan="3" align = center >
-          {% if user.is_staff %}
+          {% if user.is_superuser %}
               <a href="{% url 'previsao:trocar_servico' escalado.id previstos.number %}" name="trocar">
               <i class="fa fa-edit"></i>
               {% if escalado.vermelha%}
@@ -98,113 +100,119 @@
               {%else %}
               <font color="#3b8bba" >
                 Trocar
-                </a>
               {%endif%}
+            </a>
           {% else %}
-            <a href="#">
+            <!-- <a href="#">
               <i class="fa fa-edit"></i>
                 Trocar
-            </a>
+            </a> -->
           {% endif %}
         </td>
       </tr>
     {% endfor %}
   </tbody>
-  </table>
-  <table>
-  <tfoot >
-    {{ form.non_field_errors }}
-    <tr bgcolor="#ebebeb">
-      <td ><font face="Arial" size="2">De:</td>
-      <td >
-        {% if user.is_staff%}
-          <input type="date" name="dataInicio" value="{{inicio |date:"Y-m-d" }}" id="idinicio">
-        {% else %}
-          <input type="date" name="dataInicio" value="{{inicio |date:"Y-m-d" }}" id="idinicio" readonly>
-        {% endif %}
-    </td>
-      <td ><font face="Arial" size="2">At&eacute;:</td>
-      <td >
-        {% if user.is_staff%}
-          <input type="date" name="dataFim" value="{{final |date:"Y-m-d" }}" id="idfim" >
-        {% else %}
-          <input type="date" name="dataFim" value="{{final |date:"Y-m-d" }}" id="idfim" readonly>
-        {% endif %}
-      </td>
-      <td >
-       <input type="text" id="escalaSearch" name="searchEscala"
-        placeholder="Filtrar pela Escala..."
-        aria-label="Search through site content" size="30">
-      </td>
-       <td>
-           <span class="input-group-addon">
-            <button  name="filtrarescala" class="fa fa-search"
-            style="background:transparent;border:none" id="btn-Escala"
-            formaction="{% url 'previsao:filtrar' %}"></button>
-           </span>
-       </td>
-       <td colspan="2">
-           <input type="text" id="nguerra" name="searchMilitar"
-           placeholder="Filtrar pelo nome de Guerra..."
-           aria-label="Search through site content" size="30">
-
-       </td>
-       <td>
-         <span class="input-group-addon">
-          <button name="filtrarnome" class="fa fa-search" id="btn-Name"
-          style="background:transparent;border:none"
-          formaction="{% url 'previsao:filtrar' %}"></button>
-         </span>
-       </td>
-
-       <td>
-        {% if user.is_staff%}
-          <button type="submit" class="pure-button button-small", id="idexecutar"
-          formaction="{% url 'previsao:previsao' %}">Executar</button>
-        {% else %}
-          <button type="submit" class="pure-button button-small" disabled>Executar</button>
-        {% endif %}
-      </td>
-      <td >
-        {% if user.is_staff %}
-          {% if podeGerarPDF %}
-            <button type="submit" class="pure-button button-small"
-            formaction="{% url 'previsao:GeneratePDF' %}">Gerar PDF</button>
-          {%else%}
-            <button type="submit" class="pure-button button-small" disabled>Gerar PDF</button>
-          {%endif%}
-        {%else%}
-          <button type="submit" class="pure-button button-small" disabled>Gerar PDF</button>
-        {%endif%}
-      </td>
-      <td colspan="6">
-        {% if user.is_staff %}
-          {% if podeSalvar %}
-            <button type="submit" class="pure-button button-small"
-            formaction="{% url 'previsao:salvarServico' %}">Salvar Serviços</button>
-          {% else %}
-            <button type="submit" class="pure-button button-small" disabled>Salvar Serviços</button>  
-          {% endif %}
-        {% else %}
-          <button type="submit" class="pure-button button-small" disabled>Salvar Serviços</button>
-        {% endif %}
-      </td>
-      <td colspan="6">
-        {% if user.is_staff %}
-          {% if podeSalvar %}
-            <button type="submit" class="pure-button button-small"
-            formaction="{% url 'previsao:notificar_escalado' %}">Notificar Escalado</button>
-          {% else %}
-            <button type="submit" class="pure-button button-small" disabled>Notificar Via WhatsApp</button>
-          {% endif %}
-        {% else %}
-          <button type="submit" class="pure-button button-small" disabled>Notificar Via WhatsApp</button>
-        {% endif %}
-      </td>
-
-    </tr>
-  </tfoot>
 </table>
+{% if user.is_staff%}
+  <table class="table full">
+    <tfoot >
+      {{ form.non_field_errors }}
+      <tr bgcolor="#ebebeb">
+        <td >
+          <font face="Arial" size="2">De:
+        </td>
+          <!-- linhas  com o código {% if user.is_staff %} {% else %} e {% endif %} foram comentadas porque 
+            essa verificação foi levado para fora da tabela, que só será exibida se o usuário for administrador-->        
+        <td >
+          <!-- {% if user.is_staff%} -->
+            <input type="date" name="dataInicio" value="{{inicio |date:"Y-m-d" }}" id="idinicio">
+          <!-- {% else %}
+            <input type="date" name="dataInicio" value="{{inicio |date:"Y-m-d" }}" id="idinicio" readonly>
+          {% endif %} -->
+        </td>
+        <td >
+          <font face="Arial" size="2">At&eacute;:
+        </td>
+        <td >
+          <!-- {% if user.is_staff%} -->
+            <input type="date" name="dataFim" value="{{final |date:"Y-m-d" }}" id="idfim" >
+          <!-- {% else %}
+            <input type="date" name="dataFim" value="{{final |date:"Y-m-d" }}" id="idfim" readonly>
+          {% endif %} -->
+        </td>
+        <td >
+        <input type="text" id="escalaSearch" name="searchEscala"
+          placeholder="Filtrar pela Escala..."
+          aria-label="Search through site content" size="30">
+        </td>
+        <td>
+            <span class="input-group-addon">
+              <button  name="filtrarescala" class="fa fa-search"
+              style="background:transparent;border:none" id="btn-Escala"
+              formaction="{% url 'previsao:filtrar' %}"></button>
+            </span>
+        </td>
+        <td colspan="2">
+            <input type="text" id="nguerra" name="searchMilitar"
+            placeholder="Filtrar pelo nome de Guerra..."
+            aria-label="Search through site content" size="30">
+
+        </td>
+        <td>
+          <span class="input-group-addon">
+            <button name="filtrarnome" class="fa fa-search" id="btn-Name"
+            style="background:transparent;border:none"
+            formaction="{% url 'previsao:filtrar' %}"></button>
+          </span>
+        </td>
+        <td>
+          <!-- {% if user.is_staff%} -->
+            <button type="submit" class="pure-button button-small", id="idexecutar"
+            formaction="{% url 'previsao:previsao' %}">Executar</button>
+          <!-- {% else %}
+            <button type="submit" class="pure-button button-small" disabled>Executar</button>
+          {% endif %} -->
+        </td>
+        <td >
+          <!-- {% if user.is_staff %} -->
+            {% if podeGerarPDF %}
+              <button type="submit" class="pure-button button-small"
+              formaction="{% url 'previsao:GeneratePDF' %}">Gerar PDF</button>
+            {%else%}
+              <button type="submit" class="pure-button button-small" disabled>Gerar PDF</button>
+            {%endif%}
+          <!-- {%else%}
+            <button type="submit" class="pure-button button-small" disabled>Gerar PDF</button>
+          {%endif%} -->
+        </td>
+        <td colspan="6">
+          <!-- {% if user.is_staff %} -->
+            {% if podeSalvar %}
+              <button type="submit" class="pure-button button-small"
+              formaction="{% url 'previsao:salvarServico' %}">Salvar Serviços</button>
+            {% else %}
+              <button type="submit" class="pure-button button-small" disabled>Salvar Serviços</button>  
+            {% endif %}
+          <!-- {% else %}
+            <button type="submit" class="pure-button button-small" disabled>Salvar Serviços</button>
+          {% endif %} -->
+        </td>
+        <td colspan="6">
+          <!-- {% if user.is_staff %} --> 
+            {% if podeSalvar %}
+              <button type="submit" class="pure-button button-small"
+              formaction="{% url 'previsao:notificar_escalado' %}">Notificar Escalado</button>
+            {% else %}
+              <button type="submit" class="pure-button button-small" disabled>Notificar Via WhatsApp</button>
+            {% endif %}
+          <!-- {% else %}
+            <button type="submit" class="pure-button button-small" disabled>Notificar Via WhatsApp</button>
+          {% endif %} -->
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+{% endif %}
 </form>
 <!-- codigo responsável pela paginação-->
 {% if previstos.has_other_pages %}

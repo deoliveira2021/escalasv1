@@ -34,12 +34,14 @@
           </div>                    
 <!--          {{ militar.get_pronto_display }} -->
         </td>
+        {% if user.is_superuser %}
         <td align = center >
           <a href="{% url 'core:escalar' militar.id militar.idcirculo %}">
             <i class="fa fa-book"></i>
             Designar
           </a>
         </td>
+        {% endif %}
         <td align = center >
           <a href="{% url 'core:dispensar' militar.id militar.idcirculo %}">
             <i class="fa fa-book"></i>

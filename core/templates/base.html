@@ -22,12 +22,15 @@
         <ul>
             {% if user.is_authenticated %}
               <li class="pure-menu-selected"><a href="{% url 'servico:servicos' %}">Serviços</a></li>
-              {% if user.is_staff %}
+              {% if user.is_superuser %}
                 <li><a href="{% url 'core:escalas' %}">Escalas</a></li>
                 <li><a href="{% url 'pessoal:cadastrarMilitar' %}">Pessoal</a></li>
                 <li><a href="{% url 'core:feriados' %}">Feriados</a></li>
                 <li><a href="{% url 'usuario:register_staff' %}">Usuários</a></li>
               {% endif %}
+              {% if user.is_staff %}
+                <li><a href="{% url 'pessoal:cadastrarMilitar' %}">Pessoal</a></li>
+              {% endif %}            
               <li><a href="{% url 'usuario:logout' %}">Sair</a></li>
             {% else %}
               <li><a href="{% url 'usuario:login' %}">Fazer Login</a></li>

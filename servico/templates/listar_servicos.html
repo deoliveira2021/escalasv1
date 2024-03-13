@@ -90,63 +90,58 @@
     {% endfor %}
   </tbody>
   </table>
-  <table>
-  <tfoot >
-    {{ form.non_field_errors }}
-    <tr bgcolor="#ebebeb">
-      <td ><font face="Arial" size="2">De:</td>
-      <td >
-        {% if user.is_staff%}
-          <input type="date" name="dataInicio" value={{datetime.now}} id="idinicio">
-        {% else %}
-          <input type="date" name="dataInicio" value={{datetime.now}} id="idinicio" readonly>
-        {% endif %}
-    </td>
-      <td ><font face="Arial" size="2">At&eacute;:</td>
-      <td >
-        {% if user.is_staff%}
-          <input type="date" name="dataFim" value="{{datetime.date.today|date:'Y-m-d' }}" id="idfim" >
-        {% else %}
-          <input type="date" name="dataFim" value="{{datetime.date.today}}" id="idfim" readonly>
-        {% endif %}
-      </td>
-      <td >
-<!--        {#% render_field form.searchEscala size="30" placeholder="Filtrar pela Escala..."%}
--->     <input type="text" id="escalaSearch" name="searchEscala"
-        placeholder="Filtrar pela Escala..."
-        aria-label="Search through site content" size="30">
+  <!-- a tabela de rodapé, só será exibida se o usuário for administrador, is_staff -->
+  {% if user.is_staff%}
+      <table class="table full">
+      <tfoot >
+        {{ form.non_field_errors }}
+        <tr bgcolor="#ebebeb">
+          <td ><font face="Arial" size="2">De:</td>
+          <td >
+            <input type="date" name="dataInicio" value={{datetime.now}} id="idinicio">
+        </td>
+          <td ><font face="Arial" size="2">At&eacute;:</td>
+          <td >
+              <input type="date" name="dataFim" value="{{datetime.date.today|date:'Y-m-d' }}" id="idfim" >
+          </td>
+          <td >
+    <!--        {#% render_field form.searchEscala size="30" placeholder="Filtrar pela Escala..."%}
+    -->     <input type="text" id="escalaSearch" name="searchEscala"
+            placeholder="Filtrar pela Escala..."
+            aria-label="Search through site content" size="30">
 
-      </td>
-       <td>
-           <span class="input-group-addon">
-          <!--  <a href="{#% url 'previsao:filtrar' %}" class="fa fa-search"></a>-->
-            <button  name="filtrarescala" class="fa fa-search"
-            style="background:transparent;border:none"
-            formaction="{% url 'previsao:filtrar' %}"></button>
-           </span>
-       </td>
-       <td colspan="2">
-<!--         {#% render_field form.searchMilitar size="30" placeholder="Filtrar pelo nome de Guerra..."%}
--->
-           <input type="text" id="nguerra" name="searchMilitar"
-           placeholder="Filtrar pelo nome de Guerra..."
-           aria-label="Search through site content" size="30">
+          </td>
+          <td>
+              <span class="input-group-addon">
+              <!--  <a href="{#% url 'previsao:filtrar' %}" class="fa fa-search"></a>-->
+                <button  name="filtrarescala" class="fa fa-search"
+                style="background:transparent;border:none"
+                formaction="{% url 'previsao:filtrar' %}"></button>
+              </span>
+          </td>
+          <td colspan="2">
+    <!--         {#% render_field form.searchMilitar size="30" placeholder="Filtrar pelo nome de Guerra..."%}
+    -->
+              <input type="text" id="nguerra" name="searchMilitar"
+              placeholder="Filtrar pelo nome de Guerra..."
+              aria-label="Search through site content" size="30">
 
-       </td>
-       <td>
-         <span class="input-group-addon">
-          <button name="filtrarnome" class="fa fa-search"
-          style="background:transparent;border:none"
-          formaction="{% url 'previsao:filtrar' %}"></button>
-         </span>
-       </td>
-      <td >
-        <a href="{% url 'servico:GeneratePDF'%}" class="pure-button button-small"
-        readonly={{user.is_staff}}>Gerar PDF</a>
-      </td>
-    </tr>
-  </tfoot>
-</table>
+          </td>
+          <td>
+            <span class="input-group-addon">
+              <button name="filtrarnome" class="fa fa-search"
+              style="background:transparent;border:none"
+              formaction="{% url 'previsao:filtrar' %}"></button>
+            </span>
+          </td>
+          <td >
+            <a href="{% url 'servico:GeneratePDF'%}" class="pure-button button-small"
+            readonly={{user.is_superuser}}>Gerar PDF</a>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  {% endif %}
 </form>
 <!-- codigo responsável pela paginação-->
 {% if escalados.has_other_pages %}
