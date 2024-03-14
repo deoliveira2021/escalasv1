@@ -56,7 +56,6 @@ def servicos(request):
 
     return render(request, template_name, context)
 
-
 # função que gera pdf
 def GeneratePDF(request):
     # para gerar pdf

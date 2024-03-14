@@ -8,6 +8,8 @@ from django.contrib import messages
 from .forms import *
 from .models import Militar
 from core.models import *
+from django.contrib.auth import get_user_model
+from usuario.models import User
 
 #método que busca o círculo do militar para salvar
 def definirCirculo(posto):
@@ -35,7 +37,11 @@ def definirCirculo(posto):
 @login_required
 #def listar_militares(request, pag=None): não funcionou passando a página
 def listar_militares(request, pagina=1):
-    militar_list = Militar.objects.all()
+    user = request.user
+    if (user.is_superuser):
+        militar_list = Militar.objects.all()
+    else:
+        militar_list = Militar.objects.all().filter(codom=user.codom)
 
     #if pag == None:
     page = request.GET.get('page', pagina)

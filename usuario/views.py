@@ -85,8 +85,8 @@ def register(request):
             login(request, user)
             ###################################################################
 
-            #return redirect('core:home')
-            return redirect('usuario:register')
+            return redirect('core:home')
+            # return redirect('usuario:register')
     else:
         form = RegisterForm()
     context = {

@@ -26,13 +26,13 @@
         <td >{{ militar.nome_guerra }}</td>
         <td align = center >
           <div align="center">
-            {% if militar.pronto == True %}
+            <!-- {% if militar.pronto == True %}
               <input type="checkbox" name="selected_options" checked disabled>
             {% else %}
               <input type="checkbox" name="selected_options" disabled>
-            {% endif %}
+            {% endif %} -->
+            {{ militar.get_pronto_display }}
           </div>                    
-<!--          {{ militar.get_pronto_display }} -->
         </td>
         {% if user.is_superuser %}
         <td align = center >
