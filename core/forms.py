@@ -9,7 +9,7 @@ from django.contrib.admin import widgets
 from .models import *
 
 class escalasForm(forms.ModelForm):
-    corrida = forms.BooleanField(label ='Escala Corrida?', required=False)
+    corrida = forms.BooleanField(label ='Corrida', required=False)
 
     def save(self, commit=True):
         escala = super(escalasForm, self).save(commit=False)

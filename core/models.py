@@ -18,16 +18,16 @@ from pessoal import models as pessoalModel
 class Escala(models.Model):
 
     descricao = models.CharField('Descrição', max_length=40)
-    ticado = models.BooleanField('Marcado?', blank=True, default=True)
+    ticado = models.BooleanField('Marcado', blank=True, default=True)
     precedencia = models.IntegerField('Precedência',default=0)
     nrmilitaresnaescala = models.IntegerField('Nº Mil na Escala?', null=False, default=3)
     CIRCULO_CHOICES = [ (0, 'Oficial'), (1, 'ST/SGT'),(2, 'CB/SD'), (3, 'TODOS')]
     idcirculo = models.IntegerField('Círculo Hierárquico',null=False,
     choices=CIRCULO_CHOICES, blank=False)
-    qtdporescala = models.IntegerField('Qtos escalados por dia?',null=False, default=1)
+    qtdporescala = models.IntegerField('Qtde por dia',null=False, default=1)
     CORRIDA_CHOICES= [(1, "SIM"), (0, "NÃO")]
-    corrida = models.BooleanField('Escala Corrida?', choices= CORRIDA_CHOICES, default=0)
-    folgaminima = models.IntegerField('Folga Mínima?',null=False, default=1)
+    corrida = models.BooleanField('Corrida', choices= CORRIDA_CHOICES, default=0)
+    folgaminima = models.IntegerField('Folga Mínima',null=False, default=1)
 
     #objects = CourseManager()
 
