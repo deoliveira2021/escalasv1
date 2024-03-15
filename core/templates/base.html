@@ -11,9 +11,12 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
-    <script type="text/javascript">
-
-    </script>
+    <script type="text/javascript"></script>
+    <style>
+      body {min-height: 100%}
+      footer {position: absolute; height: 2.3rem; width: 100%; bottom: 0}
+      .position-relative {position: relative}
+    </style>
 </head>
 <body>
 <div class="header">
@@ -37,25 +40,46 @@
             {% endif %}
         </ul>
     </div>
-</div>
-<div class="content">
-    {% if messages %}
-    <div class="pure-g-r content-ribbon">
-        <aside class="pure-u-1">
-            {% for message in messages %}
-            <p>{{ message }}</p>
-            {% endfor %}
-        </aside>
-    </div>
-    {% endif %}
     {% block content %}{% endblock %}
-    <div class="footer">
-        Escala de Serviço - Desenvolvido por: Edvaldo Sousa e Sérgio Manfrin
-    </div>
 </div>
-<script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
-<!--
-<script src="../app.js"></script>
--->
 </body>
+<footer>
+  <table class="table full" align="center">
+    <tr bgcolor="#2d3e50">
+        <td colspan="15" width="30%">
+          {% if user.is_authenticated %}
+            <div>
+              <font face="Arial" size="3" color="#FFFFFF">
+                <!-- Usuário: {{user.username}} / Nome de Guerra: {{user.nome_guerra}} - OM: {{user.get_codom_display}} -->
+                Usuário: {{user.username}} - OM: {{user.get_codom_display}}
+              </font>
+            </div>         
+          {% endif %}
+        </td>
+        <td colspan="30" width="40%">
+          <div class="footer">
+            <font face="Arial" size="3" color="#FFFFFF">
+              <!-- <b> -->
+                Escala de Serviço - Desenvolvido por: Edvaldo Sousa e Sérgio Manfrin
+              <!-- </b> -->
+            </font>
+          </div>
+        </td>
+        <td colspan="5" width="30%">
+          <div class="content">
+            {% if messages %}
+            <div class="pure-g-r content-ribbon">
+                <aside class="pure-u-1">
+                    {% for message in messages %}
+                    <p>{{ message }}</p>
+                    {% endfor %}
+                </aside>
+            </div>
+            {% endif %}
+          </div>    
+        </td>
+        <script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
+    </tr>
+   </table>
+</footer>
 </html>

@@ -397,14 +397,14 @@ def rodaprevisao(dataInicio, dataFim):
 
 
 def listar_previsao(request, pagina=1, nrporpagina=22, descricao=None, nomeguerra=None):
-    teste = "SELECT b.id, a.id as idmilitar, a.posto,a.antiguidade,\
-            b.nomeguerra, b.folga,b.data,b.dia, b.nomesubstituto,\
-            b.vermelha, c.descricao FROM pessoal_militar a, previsao_previsao b,\
-            core_escala c WHERE a.id=b.idmilitar AND c.id=b.idescala AND\
-            a.idcirculo=b.idcirculo ORDER BY b.data, c.precedencia, b.idcirculo,\
-            a.antiguidade"
+    # teste = "SELECT b.id, a.id as idmilitar, a.posto,a.antiguidade,\
+    #         b.nomeguerra, b.folga,b.data,b.dia, b.nomesubstituto,\
+    #         b.vermelha, c.descricao FROM pessoal_militar a, previsao_previsao b,\
+    #         core_escala c WHERE a.id=b.idmilitar AND c.id=b.idescala AND\
+    #         a.idcirculo=b.idcirculo ORDER BY b.data, c.precedencia, b.idcirculo,\
+    #         a.antiguidade"
 
-    sqlmilitar = "SELECT b.id, a.id as idmilitar, a.posto, a.antiguidade,\
+    sqlmilitar = "SELECT b.id, a.id as idmilitar, a.posto, a.codom, a.antiguidade,\
     b.nomeguerra, b.folga, b.data, b.dia, b.nomesubstituto, b.vermelha,\
     c.descricao FROM pessoal_militar a, previsao_previsao b, core_escala c\
     WHERE a.id=b.idmilitar AND c.id=b.idescala AND a.idcirculo=b.idcirculo\

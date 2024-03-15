@@ -84,7 +84,7 @@ def register(request):
             )
             login(request, user)
             ###################################################################
-
+            request.user.message_set.create(message="Login Realizado com Sucesso.")
             return redirect('core:home')
             # return redirect('usuario:register')
     else:

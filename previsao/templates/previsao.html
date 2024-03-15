@@ -10,7 +10,7 @@
   {% csrf_token %}
 <table class="table full"  cellspacing="1" cellpadding="2"  align="center" id="minhaTabela">
   <thead>
-    <th colspan="17" bgcolor="#6699CC">
+    <th colspan="21" bgcolor="#6699CC">
       <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Previsão da Escala de Serviço</font></b></font></div>
     </th>
     <tr>
@@ -19,6 +19,7 @@
       <th colspan="2" align = "center">Escala</th>
       <th colspan="2" align = "center">Posto/Grad</th>
       <th colspan="4" align = "center">Nome</th>
+      <th colspan="4" align = "center">OM</th>
       <th colspan="2" align = "center">Folga</th>
       {% if user.is_superuser %}
         <th colspan="3" align = "center">Ações</th>
@@ -73,7 +74,7 @@
                   {{ escalado.nomeguerra }}
                 {%endif%}
           {%else %}
-          <font color="#777" >
+            <font color="#777" >
             {%if escalado.nomesubstituto%}
               {{ escalado.nomesubstituto }} - ({{  escalado.nomeguerra  }})
             {%else%}
@@ -81,6 +82,19 @@
             {%endif%}
           {%endif%}
         </td>
+        <!-- ----------- -->
+        <td colspan="4" align = center >
+          {% if escalado.vermelha%}
+            <font color="red">
+            {{ escalado.get_codom_display}}
+            </font>
+          {%else %}
+            <font color="#777" >
+            {{ escalado.get_codom_display}}
+            </font>
+          {%endif%}
+        </td>     
+        <!-- ------    -->
         <td colspan="2" align = center >
           {% if escalado.vermelha%}
               <font color="red">
@@ -102,11 +116,6 @@
                 Trocar
               {%endif%}
             </a>
-          {% else %}
-            <!-- <a href="#">
-              <i class="fa fa-edit"></i>
-                Trocar
-            </a> -->
           {% endif %}
         </td>
       </tr>
