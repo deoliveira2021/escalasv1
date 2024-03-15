@@ -9,12 +9,6 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.conf import settings
 
-# imports até o dia 15nov2021
-#from django.db import models
-#from django.core import validators
-#from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin,
-#    UserManager)
-#from django.conf import settings
 
 class UserManager(BaseUserManager):
     def _create_user(self, username, email, password, is_staff, is_superuser, rank,
@@ -45,8 +39,9 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+
     username = models.CharField(
-        'Nome de Usuário', max_length=30, unique=True,
+        'Usuário', max_length=50, unique=True,
         validators=[validators.RegexValidator(re.compile('^[\w.@+-]+$'),
             'O nome de usuário só pode conter letras, digitos ou os '
             'seguintes caracteres: @/./+/-/_', 'invalid')]
@@ -54,7 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('E-mail', unique=True)
     nome = models.CharField('Nome Completo', max_length=100, null=True, blank=True)
     cpf = models.CharField(
-        'CPF', max_length=11, null=True,
+        'CPF', max_length=11, null=True, blank=False, unique=True,
         validators=[validators.RegexValidator(re.compile(r"[0-9]"),
             'CPF só pode conter digitos de 0 a 9', 'invalid')],
     )
@@ -79,31 +74,34 @@ class User(AbstractBaseUser, PermissionsMixin):
              (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
              (12, "S Ten"), (13, "1º Sgt"), (14, "2º Sgt"), (15, "3º Sgt"),
              (16, "Cb"), (17, "SD")]
-    
+    posto = models.IntegerField('Posto/Grad', null=True, choices = POSTO_CHOICES, blank=True)
+
+    GENDER_CHOICES =((1, "Masculino"), (2, "Feminino"), )
+    sexo = models.IntegerField('Gênero', null=True, choices=GENDER_CHOICES, blank=True)
+
+    tel1 = models.CharField('Celular', max_length=15, null=True, blank=True)
+    tel2 = models.CharField('Telefone', max_length=15, null=True, blank=True)
+    data_nasc = models.DateField('Nascido em', null=True, blank=True)
+    data_praca = models.DateField('Praça de',null=True, blank=True)
+    is_active = models.BooleanField('Ativo', blank=True, default=True)
+
+    IS_STAFF_CHOICES= [(1, "Administrador"), (0, "Comum")]
+    is_staff = models.BooleanField('Perfil', blank=True, default=0, choices=IS_STAFF_CHOICES)
+
+    data_cadastro = models.DateTimeField('Data de Cadastro', auto_now_add=True)
 
     OM_CHOICES = [(6122, "40º BI"),(1503, "23º BC"),(1438, "Ba Adm Gu F"),(62117, "10º CGCFEx"),
                   (37820, "16ª Cia PE"),(15297, "52º CT"),(20404, "CMF"),(24679, "Cmdo 10ª RM"),
                   (30619, "Cia C 10ª RM"),(40709, "10º D Sup"),(59808, "H Ge Fortaleza"),
-                  (65060, "Pq R Mnt/10"),
-    ]
-
-    posto = models.IntegerField('Posto/Graduação', null=True, choices = POSTO_CHOICES, blank=True)
-    GENDER_CHOICES =((1, "Masculino"), (2, "Feminino"), )
-    sexo = models.IntegerField('Gênero', null=True, choices=GENDER_CHOICES, blank=True)
-    tel1 = models.CharField('Telefone 1', max_length=15, null=True, blank=True)
-    tel2 = models.CharField('Telefone 2', max_length=15, null=True, blank=True)
-    data_nasc = models.DateField('Data Nascimento', null=True, blank=True)
-    data_praca = models.DateField('Data de Praça',null=True, blank=True)
-    is_active = models.BooleanField('Ativo?', blank=True, default=True)
-    IS_STAFF_CHOICES= [(1, "SIM"), (0, "NÃO")]
-    is_staff = models.BooleanField('Adm?', blank=True, default=0, choices=IS_STAFF_CHOICES)
-    data_cadastro = models.DateTimeField('Data de Cadastro', auto_now_add=True)
+                  (65060, "Pq R Mnt/10"), ]
     codom = models.IntegerField('OM', null=True, choices = OM_CHOICES, blank=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    # USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = ['email','codom','email','posto','cpf','tel1','nome','nome_guerra']
+    REQUIRED_FIELDS = ['codom','posto','cpf','tel1','nome','nome_guerra']
 
     def __str__(self):
         return self.nome or self.username
@@ -127,7 +125,7 @@ class PasswordReset(models.Model):
     )
     key = models.CharField('Chave', max_length=100, unique=True)
     created_at = models.DateTimeField('Criado em', auto_now_add=True)
-    confirmed = models.BooleanField('Confirmado?', default=False, blank=True)
+    confirmed = models.BooleanField('Confirmado', default=False, blank=True)
 
     def __str__(self):
         return '{0} em {1}'.format(self.user, self.created_at)

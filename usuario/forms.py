@@ -60,7 +60,7 @@ class PasswordResetForm(forms.Form):
 class RegisterForm(forms.ModelForm):
     password1 = forms.CharField(label='Senha', widget=forms.PasswordInput)
     password2 = forms.CharField(
-        label='Confirmação de Senha', widget=forms.PasswordInput
+        label='Repetir Senha', widget=forms.PasswordInput
     )
 
     def clean_password2(self):
@@ -73,20 +73,24 @@ class RegisterForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(RegisterForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])
+        user.username=(self.cleaned_data['email'])
         if commit:
             user.save()
         return user
 
     class Meta:
         model = User
-        fields = ['username', 'nome', 'email', 'sexo', 'is_staff', 'posto',
-                  'cpf','nome_guerra','tel1', 'tel2','data_nasc','data_praca', 'codom']
+        #Comentado em 15MAR24 pq o username passou a ser o e-mail do usuário
+        # fields = ['username', 'nome', 'email', 'sexo', 'is_staff', 'posto',
+        #           'cpf','nome_guerra','tel1', 'tel2','data_nasc','data_praca', 'codom']
+        fields = ['nome', 'email', 'sexo', 'is_staff', 'posto',
+                  'cpf','nome_guerra','tel1','data_nasc','data_praca', 'codom']
         
 
 class Register_staffForm(forms.ModelForm):
     password1 = forms.CharField(label='Senha', widget=forms.PasswordInput)
     password2 = forms.CharField(
-        label='Confirmação de Senha', widget=forms.PasswordInput
+        label='Repetir Senha', widget=forms.PasswordInput
     )
 
     def clean_password2(self):
@@ -99,17 +103,20 @@ class Register_staffForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(RegisterForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])
+        user.username=(self.cleaned_data['email'])
         if commit:
             user.save()
         return user
 
     class Meta:
         model = User
-        fields = (['username', 'email', 'sexo', 'posto', 'nome', 'nome_guerra',
-        'cpf', 'data_nasc','data_praca','tel1', 'tel2',
-        'is_active', 'is_staff', 'codom']
-        )
-
+        #Comentado em 15MAR24 pq o username passou a ser o e-mail do usuário
+        # fields = (['username', 'email', 'sexo', 'posto', 'nome', 'nome_guerra',
+        # 'cpf', 'data_nasc','data_praca','tel1', 'tel2',
+        # 'is_active', 'is_staff', 'codom']
+        # )
+        fields = ['email', 'sexo', 'posto', 'nome', 'nome_guerra',
+        'cpf', 'data_nasc','data_praca','tel1','is_active', 'is_staff', 'codom']
 
 class EditAccountForm(forms.ModelForm):
 

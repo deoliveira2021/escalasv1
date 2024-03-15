@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class = "splash">
+        <div class="pure-g-r">
+        </div>
+    </div>
+    <form class="pure-form pure-form-aligned" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <table align="center">
+                <tr bgcolor="#6699CC">
+                    <td colspan="45">
+                    <div align="center"><font face="Arial" size="4" color="#FFFFFF"><b>Informe seus dados de cadastro</b></font></div></td>
+                </tr>
+                {{ form.non_field_errors }}
+                <tr bgcolor="ebebeb">
+                    {% for field in form %}
+                    <div class="pure-control-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                    {% endfor %}
+
+                    <div class="pure-controls">
+                        <button type="submit" class="pure-button pure-button-primary">Entrar</button>
+                    </div>	      
+                    <p>
+                        Não é cadastrado? <a href="{% url 'usuario:register' %}" title="">Cadastre-se</a> <br />
+                        Esqueceu a senha? <a href="{% url 'usuario:password_reset' %}" title="">Nova senha</a> <br />
+                    </p>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+{% endblock %}

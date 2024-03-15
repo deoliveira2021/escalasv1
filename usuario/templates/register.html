@@ -68,13 +68,20 @@
         </div>
       </td>            
       <td colspan="5" width="25%">
-        <div class="control-group">
+        <!-- <div class="control-group">
             {{ form.username.label_tag }}
         </div>
         <div class="control-group">
               {{ form.username }}
             {{ form.username.errors }}
-        </div>
+        </div> -->
+        <div class="control-group">
+          {{ form.tel1.label_tag }}
+        </div>        
+        <div class="control-group">
+          {{ form.tel1 }}
+          {{ form.tel1.errors }}
+        </div>        
       </td>
     </tr>
     <tr bgcolor="ebebeb">
@@ -84,25 +91,7 @@
 
   <table>
     <tr bgcolor="ebebeb">
-      <td colspan="2" width="10%">
-        <div class="control-group">
-          {{ form.password1.label_tag }}
-        </div>
-        <div class="control-group">
-            {{ form.password1 }}
-            {{ form.password1.errors }}
-        </div>
-      </td>
-      <td colspan="3" width="15%">
-        <div class="control-group">
-          {{ form.password2.label_tag }}
-        </div>
-        <div class="control-group">
-            {{ form.password2 }}
-            {{ form.password2.errors }}
-        </div>
-      </td>		
-      <td colspan="5" width="10%">
+      <!-- <td colspan="5" width="10%">
         <div class="control-group">
             {{ form.tel1.label_tag }}
             {{ form.tel1 }}
@@ -115,7 +104,7 @@
             {{ form.tel2 }}
             {{ form.tel2.errors }}
         </div>
-      </td>
+      </td> -->
       <td colspan="5" width="10%">
         <div>
           {{ form.sexo.label_tag }}
@@ -157,7 +146,25 @@
           {{ form.data_praca.errors }}
         </div>
       </td>
-      </tr>
+      <td colspan="2" width="10%">
+        <div class="control-group">
+          {{ form.password1.label_tag }}
+        </div>
+        <div class="control-group">
+            {{ form.password1 }}
+            {{ form.password1.errors }}
+        </div>
+      </td>
+      <td colspan="3" width="15%">
+        <div class="control-group">
+          {{ form.password2.label_tag }}
+        </div>
+        <div class="control-group">
+            {{ form.password2 }}
+            {{ form.password2.errors }}
+        </div>
+      </td>		      
+    </tr>
 	</table>
 
   <table class="table full" align="center">
@@ -172,27 +179,4 @@
   </table>
 </fieldset>
 </form>
-<!--
-<div class="pure-g-r content-ribbon">
-    <div class="pure-u-1">
-        <h2>Informe seus dados</h2>
-        <form class="pure-form pure-form-stacked" method="post">
-            {% csrf_token %}
-            <fieldset>
-                  {{ form.non_field_errors }}
-                  {% for field in form %}
-                    <div class="pure-control-group">
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {{ field.errors }}
-                    </div>
-                  {% endfor %}
-                <div class="pure-controls">
-                    <button type="submit" class="pure-button pure-button-primary">Cadastrar</button>
-                </div>
-            </fieldset>
-        </form>
-    </div>
-</div>
--->
 {% endblock %}

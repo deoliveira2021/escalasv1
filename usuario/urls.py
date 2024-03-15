@@ -5,7 +5,6 @@ from . import views as usuario_views
 
 app_name = 'usuario'
 urlpatterns = [
-#       re_path(r'^entrar/$', LoginView.as_view(template_name='new_login.html'), name='login'),
        re_path(r'^entrar/$', LoginView.as_view(template_name='login.html'), name='login'),
        re_path(r'^sair/$', LogoutView.as_view(template_name='previsao.html'), name='logout'),
        re_path(r'^cadastre-se/$', usuario_views.register, name='register'),
