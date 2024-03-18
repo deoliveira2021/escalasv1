@@ -151,7 +151,8 @@
         {%elif request.GET.escala %}
           <a href="?page={{ escalados.previous_page_number }}&escala={{request.GET.escala}}" class="page-link">&laquo;</a>
         {%else%}
-          <a href="?page={{ escalados.previous_page_number }}" class="page-link">&laquo;</a>
+        <a href="?page={{ escalados.previous_page_number }}" class="page-link">&laquo;</a>
+        <a href="?page={{ escalados.previous_first_page }}" class="page-link"> Primeira &laquo;</a>
         {%endif%}
       {% endif %}
 
@@ -184,61 +185,16 @@
       {% if escalados.has_next %}
         {%if request.GET.militar %}
           <a href="?page={{ escalados.next_page_number }}&militar={{request.GET.militar}}" class="page-link"> &raquo;</a>
+          <a href="?page={{ escalados.paginator.num_pages }}&militar={{request.GET.militar}}">last &raquo;</a>
         {%elif request.GET.escala %}
           <a href="?page={{ escalados.next_page_number }}&escala={{request.GET.escala}}" class="page-link"> &raquo;</a>
         {%else%}
-          <a href="?page={{ escalados.next_page_number }}" class="page-link"> &raquo;</a>
+          <a href="?page={{ escalados.next_page_number }}" class="page-link"></a>
+          <a href="?page={{ escalados.paginator.num_pages }}">Última &raquo;</a>
         {%endif%}
       {% endif %}
     </div>
   {% endif %}
 </div>
-
-<!-- {% if escalados.has_other_pages %}
-  <div class="pagination">
-    {% if escalados.has_previous %}
-      {% if request.GET.militar %}
-        <a href="?page={{ escalados.previous_page_number }}&militar={{request.GET.militar}}">&laquo;</a>
-      {%elif request.GET.escala %}
-        <a href="?page={{ escalados.previous_page_number }}&escala={{request.GET.escala}}">&laquo;</a>
-      {%else%}
-        <a href="?page={{ escalados.previous_page_number }}">&laquo;</a>
-      {%endif%}
-    {% endif %}
-
-    {% for page_number in escalados.paginator.page_range %}
-      {% if request.GET.militar %}
-        {% if escalados.number == page_number %}
-          <a href="?page={{ page_number }}&militar={{request.GET.militar}}" class="active">{{ page_number }}</a>
-        {%else%}
-          <a href="?page={{ page_number }}&militar={{request.GET.militar}}">{{ page_number }}</a>
-        {%endif%}
-      {%elif request.GET.escala %}
-        {% if escalados.number == page_number %}
-          <a href="?page={{ page_number }}&escala={{request.GET.escala}}" class="active">{{ page_number }}</a>
-        {%else%}
-          <a href="?page={{ page_number }}&escala={{request.GET.escala}}">{{ page_number }}</a>
-        {%endif%}
-      {%else%}
-        {% if escalados.number == page_number %}
-          <a href="?page={{ page_number }}" class="active">{{ page_number }}</a>
-        {%else%}
-          <a href="?page={{ page_number }}">{{ page_number }}</a>
-        {%endif%}
-      {%endif%}
-    {% endfor %}
-
-    {% if escalados.has_next %}
-      {% if request.GET.militar %}
-        <a href="?page={{ escalados.next_page_number }}&militar={{request.GET.militar}}">&laquo;</a>
-      {%elif request.GET.escala %}
-        <a href="?page={{ escalados.next_page_number }}&escala={{request.GET.escala}}">&laquo;</a>
-      {%else%}
-        <a href="?page={{ escalados.next_page_number }}">&laquo;</a>
-      {%endif%}
-    {% endif %}
-
-  </div>
-{% endif %} -->
 
 {% endblock %}

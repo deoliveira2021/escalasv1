@@ -257,6 +257,7 @@
           <a href="?page={{ previstos.previous_page_number }}&escala={{request.GET.escala}}" class="page-link">&laquo;</a>
         {%else%}
           <a href="?page={{ previstos.previous_page_number }}" class="page-link">&laquo;</a>
+          <a href="?page={{ previstos.previous_first_page }}" class="page-link"> Primeira</a>
         {%endif%}
       {% endif %}
 
@@ -309,6 +310,7 @@
           <a href="?page={{ previstos.next_page_number }}&escala={{request.GET.escala}}" class="page-link"> &raquo;</a>
         {%else%}
           <a href="?page={{ previstos.next_page_number }}" class="page-link"> &raquo;</a>
+          <a href="?page={{ previstos.paginator.num_pages }}">Última</a>
         {%endif%}
       {% endif %}
     </div>
