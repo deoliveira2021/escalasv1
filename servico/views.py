@@ -10,7 +10,7 @@ from pessoal.models import Militar
 
 # from ..previsao.models import Previsao
 
-def listar_servicos(request, pagina=1, nrporpagina=15, descricao=None, nomeguerra=None):
+def listar_servicos(request, pagina=1, nrporpagina=22, descricao=None, nomeguerra=None):
     sqlmilitar = "SELECT b.id, a.id as idmilitar, a.posto, a.antiguidade,\
     b.nomeguerra, b.folga, b.data, b.dia, b.nomesubstituto, b.vermelha,\
     c.descricao FROM pessoal_militar a, servico_servicos b, core_escala c\
@@ -50,7 +50,12 @@ def listar_servicos(request, pagina=1, nrporpagina=15, descricao=None, nomeguerr
 def servicos(request):
     template_name = 'listar_servicos.html'
 
-    escalados = listar_servicos(request)
+    escala = request.GET.get('escala')
+    militar = request.GET.get('militar')   
+
+    print(escala, militar)
+
+    escalados = listar_servicos(request,1,22,escala,militar)
 
     context = {'escalados': escalados}
 

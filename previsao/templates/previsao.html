@@ -6,7 +6,7 @@
     <div class="pure-g-r">
     </div>
 </div>
-<form name="form" class="pure-form pure-form-aligned" method="post">
+<form name="formPrevisao" class="pure-form pure-form-aligned" method="POST">
   {% csrf_token %}
 <table class="table full"  cellspacing="1" cellpadding="2"  align="center" id="minhaTabela">
   <thead>
@@ -131,116 +131,188 @@
       <tr bgcolor="#ebebeb">
         <td >
           <font face="Arial" size="2">De:
-        </td>
-          <!-- linhas  com o código {% if user.is_staff %} {% else %} e {% endif %} foram comentadas porque 
-            essa verificação foi levada para fora da tabela, que só será exibida se o usuário for administrador-->        
+        </td>       
         <td >
-          <!-- {% if user.is_staff%} -->
             <input type="date" name="dataInicio" value="{{inicio |date:"Y-m-d" }}" id="idinicio">
-          <!-- {% else %}
-            <input type="date" name="dataInicio" value="{{inicio |date:"Y-m-d" }}" id="idinicio" readonly>
-          {% endif %} -->
         </td>
         <td >
           <font face="Arial" size="2">At&eacute;:
         </td>
         <td >
-          <!-- {% if user.is_staff%} -->
             <input type="date" name="dataFim" value="{{final |date:"Y-m-d" }}" id="idfim" >
-          <!-- {% else %}
-            <input type="date" name="dataFim" value="{{final |date:"Y-m-d" }}" id="idfim" readonly>
-          {% endif %} -->
         </td>
         <td >
-        <input type="text" id="escalaSearch" name="searchEscala"
+          <!-- {% if request.POST.militar %}
+            <input name="escala" type="text" value="{{request.POST.escala}}"
+            placeholder="Filtrar pela Escala..."
+            aria-label="Search through site content" size="30">
+          {%else%}
+            <input name="escala" type="text" value="{{request.GET.escala}}"
+            placeholder="Filtrar pela Escala..."
+            aria-label="Search through site content" size="30">
+          {%endif%} -->
+          <input name="escala" type="text"
           placeholder="Filtrar pela Escala..."
           aria-label="Search through site content" size="30">
         </td>
-        <td>
-            <span class="input-group-addon">
-              <button  name="filtrarescala" class="fa fa-search"
-              style="background:transparent;border:none" id="btn-Escala"
-              formaction="{% url 'previsao:filtrar' %}"></button>
-            </span>
-        </td>
-        <td colspan="2">
-            <input type="text" id="nguerra" name="searchMilitar"
+
+        <td colspan="0">
+          <!-- {% if request.POST.militar %}          
+            <input name="militar" type="text" value="{{request.POST.militar}}"
             placeholder="Filtrar pelo nome de Guerra..."
             aria-label="Search through site content" size="30">
-
+          {%else%}
+            <input name="militar" type="text" value="{{request.GET.militar}}"
+            placeholder="Filtrar pelo nome de Guerra..."
+            aria-label="Search through site content" size="30">
+          {%endif%} -->
+          <input name="militar" type="text"
+          placeholder="Filtrar pelo nome de Guerra..."
+          aria-label="Search through site content" size="30">          
         </td>
         <td>
           <span class="input-group-addon">
-            <button name="filtrarnome" class="fa fa-search" id="btn-Name"
-            style="background:transparent;border:none"
-            formaction="{% url 'previsao:filtrar' %}"></button>
+              <button name="filtar" class="fa fa-search" id="btn-Name"
+              style="background:transparent;border:none"
+              formaction="{% url 'previsao:filtrar'%}"></button>        
           </span>
         </td>
         <td>
-          <!-- {% if user.is_staff%} -->
             <button type="submit" class="pure-button button-small", id="idexecutar"
             formaction="{% url 'previsao:previsao' %}">Executar</button>
-          <!-- {% else %}
-            <button type="submit" class="pure-button button-small" disabled>Executar</button>
-          {% endif %} -->
         </td>
         <td >
-          <!-- {% if user.is_staff %} -->
             {% if podeGerarPDF %}
               <button type="submit" class="pure-button button-small"
               formaction="{% url 'previsao:GeneratePDF' %}">Gerar PDF</button>
             {%else%}
               <button type="submit" class="pure-button button-small" disabled>Gerar PDF</button>
             {%endif%}
-          <!-- {%else%}
-            <button type="submit" class="pure-button button-small" disabled>Gerar PDF</button>
-          {%endif%} -->
         </td>
         <td colspan="6">
-          <!-- {% if user.is_staff %} -->
             {% if podeSalvar %}
               <button type="submit" class="pure-button button-small"
               formaction="{% url 'previsao:salvarServico' %}">Salvar Serviços</button>
             {% else %}
               <button type="submit" class="pure-button button-small" disabled>Salvar Serviços</button>  
             {% endif %}
-          <!-- {% else %}
-            <button type="submit" class="pure-button button-small" disabled>Salvar Serviços</button>
-          {% endif %} -->
         </td>
         <td colspan="6">
-          <!-- {% if user.is_staff %} --> 
             {% if podeSalvar %}
               <button type="submit" class="pure-button button-small"
               formaction="{% url 'previsao:notificar_escalado' %}">Notificar Escalado</button>
             {% else %}
               <button type="submit" class="pure-button button-small" disabled>Notificar Via WhatsApp</button>
             {% endif %}
-          <!-- {% else %}
-            <button type="submit" class="pure-button button-small" disabled>Notificar Via WhatsApp</button>
-          {% endif %} -->
         </td>
       </tr>
     </tfoot>
   </table>
 {% endif %}
 </form>
+
 <!-- codigo responsável pela paginação-->
-{% if previstos.has_other_pages %}
-  <div class="pagination">
-    {% if previstos.has_previous %}
-      <a href="?page={{ previstos.previous_page_number }}">&laquo;</a>
-    {% endif %}
-    {% for i in previstos.paginator.page_range %}
-      {% if previstos.number == i %}
-        <a href="?page={{ i }}" class="active">{{ i }}</a>
-      {% else %}
-        <a href="?page={{ i }}">{{ i }}</a>
+<!-- <div class="container">
+  {% if previstos.has_other_pages %}
+      <div class="pagination">
+          {% if previstos.has_previous %}
+              <a href="?page={{ previstos.previous_page_number }}" class="page-link">&laquo;</a>
+          {% else %}
+              <a class="page-link">&laquo;</a>
+          {% endif %}
+
+          {% with start_page=previstos.number|add:'-1' %}
+              {% with end_page=previstos.number|add:'1' %}
+                  {% for page_num in previstos.paginator.page_range %}
+                      {% if page_num == previstos.number %}
+                          <a class="page-link">{{ page_num }}</a>
+                      {% elif page_num >= start_page and page_num <= end_page %}
+                          <a href="?page={{ page_num }}" class="page-link">{{ page_num }}</a>
+                      {% endif %}
+                  {% endfor %}
+              {% endwith %}
+          {% endwith %}
+
+          {% if previstos.has_next %}
+              <a href="?page={{ previstos.next_page_number }}" class="page-link">&raquo;</a>
+          {% else %}
+              <a class="page-link">&raquo;</a>
+          {% endif %}
+      </div>
+  {% endif %}
+</div>   -->
+
+<div class="container" align="center">
+  {% if previstos.has_other_pages %}
+    <div class="pagination">
+      {% if previstos.has_previous %}
+        {% if request.POST.militar %}
+          <a href="?page={{ previstos.previous_page_number }}&militar={{request.POST.militar}}" class="page-link">&laquo;</a>
+        {%elif request.GET.militar %}
+          <a href="?page={{ previstos.previous_page_number }}&militar={{request.GET.militar}}" class="page-link">&laquo;</a>
+
+        {%elif request.POST.escala %}
+          <a href="?page={{ previstos.previous_page_number }}&escala={{request.POST.escala}}" class="page-link">&laquo;</a>
+        {%elif request.GET.escala %}
+          <a href="?page={{ previstos.previous_page_number }}&escala={{request.GET.escala}}" class="page-link">&laquo;</a>
+        {%else%}
+          <a href="?page={{ previstos.previous_page_number }}" class="page-link">&laquo;</a>
+        {%endif%}
       {% endif %}
-    {% endfor %}
-    {% if previstos.has_next %}
-      <a href="?page={{ previstos.next_page_number }}">&raquo;</a>
-    {% endif %}
-  </div>
-{% endif %}
+
+      {% with start_page=previstos.number|add:'-1' %}
+        {% with end_page=previstos.number|add:'10' %}
+          {% for page_number in previstos.paginator.page_range %}
+            {% if request.POST.militar %}
+              {% if previstos.number == page_number %}
+                <a href="?page={{ page_number }}&militar={{request.POST.militar}}" class="active">{{ page_number }}</a>
+              {% elif page_number >= start_page and end_page >= page_number  %}
+                <a href="?page={{ page_number }}&militar={{request.POST.militar}}" class="page-link">{{ page_number }}</a>
+              {%endif%}
+            {%elif request.GET.militar %}
+              {% if previstos.number == page_number %}
+                <a href="?page={{ page_number }}&militar={{request.GET.militar}}" class="active">{{ page_number }}</a>
+              {% elif page_number >= start_page and end_page >= page_number  %}
+                <a href="?page={{ page_number }}&militar={{request.GET.militar}}" class="page-link">{{ page_number }}</a>
+              {%endif%}
+            {%elif request.POST.escala %}
+              {% if previstos.number == page_number %}
+                <a href="?page={{ page_number }}&escala={{request.POST.escala}}" class="active">{{ page_number }}</a>
+              {% elif page_number >= start_page and end_page >= page_number  %}
+                <a href="?page={{ page_number }}&escala={{request.POST.escala}}" class="page-link">{{ page_number }}</a>
+              {%endif%}
+            {%elif request.GET.escala %}
+              {% if previstos.number == page_number %}
+                <a href="?page={{ page_number }}&escala={{request.GET.escala}}" class="active">{{ page_number }}</a>
+              {% elif page_number >= start_page and end_page >= page_number  %}
+                <a href="?page={{ page_number }}&escala={{request.GET.escala}}" class="page-link">{{ page_number }}</a>
+              {%endif%}
+            {%else%}
+              {% if previstos.number == page_number %}
+                <a href="?page={{ page_number }}" class="active">{{ page_number }}</a>
+              {% elif page_number >= start_page and end_page >= page_number  %}
+                <a href="?page={{ page_number }}" class="page-link">{{ page_number }}</a>
+              {%endif%}
+            {%endif%}
+          {% endfor %}
+        {% endwith %}
+      {% endwith %}
+      
+      {% if previstos.has_next %}
+        {% if request.POST.militar %}
+          <a href="?page={{ previstos.next_page_number }}&militar={{request.POST.militar}}" class="page-link"> &raquo;</a>
+        {%elif request.GET.militar %}
+          <a href="?page={{ previstos.next_page_number }}&militar={{request.GET.militar}}" class="page-link"> &raquo;</a>
+        {%elif request.POST.escala %}
+          <a href="?page={{ previstos.next_page_number }}&escala={{request.POST.escala}}" class="page-link"> &raquo;</a>
+        {%elif request.GET.escala %}
+          <a href="?page={{ previstos.next_page_number }}&escala={{request.GET.escala}}" class="page-link"> &raquo;</a>
+        {%else%}
+          <a href="?page={{ previstos.next_page_number }}" class="page-link"> &raquo;</a>
+        {%endif%}
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
 {% endblock %}

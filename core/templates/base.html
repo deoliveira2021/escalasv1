@@ -13,8 +13,8 @@
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
     <script type="text/javascript"></script>
     <style>
-      body {min-height: 100%}
-      footer {position: absolute; height: 2.3rem; width: 100%; bottom: 0}
+      body {min-height: 100vh}
+      footer {position: absolute; height: 2.5rem; width: 100%; bottom: 1}
       .position-relative {position: relative}
     </style>
 </head>
@@ -50,7 +50,6 @@
           {% if user.is_authenticated %}
             <div>
               <font face="Arial" size="3" color="#FFFFFF">
-                <!-- Usuário: {{user.username}} / Nome de Guerra: {{user.nome_guerra}} - OM: {{user.get_codom_display}} -->
                 Usuário: {{user.username}} - OM: {{user.get_codom_display}}
               </font>
             </div>         
@@ -60,7 +59,7 @@
           <div class="footer">
             <font face="Arial" size="3" color="#FFFFFF">
               <!-- <b> -->
-                Escala de Serviço - Desenvolvido por: Edvaldo Sousa e Sérgio Manfrin
+                Escala de Serviço - Desenvolvido por: Edvaldo <b>de Oliveira</b> Sousa e Sérgio <b>Manfrin</b>
               <!-- </b> -->
             </font>
           </div>

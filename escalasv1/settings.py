@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'servico',
     'usuario',
 
+
     #apps de terceiros, instalados via pip install
     'widget_tweaks', # usada para renderizar os campos dos forms nos templates
     'dbbackup',  # adicionando django-dbbackup

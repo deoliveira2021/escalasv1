@@ -22,7 +22,8 @@
                 </div>
             </fieldset>
             <p>
-                Não é cadastrado? <a href="{% url 'usuario:register' %}" title="">Cadastre-se</a> <br />
+                <!-- Comentado em 15MAR24 para não mais permitir cadastros de usuários sem controle do administrador -->
+                <!-- Não é cadastrado? <a href="{% url 'usuario:register' %}" title="">Cadastre-se</a> <br /> -->
                 Esqueceu a senha? <a href="{% url 'usuario:password_reset' %}" title="">Nova senha</a> <br />
             </p>
         </form>

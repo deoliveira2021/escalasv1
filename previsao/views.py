@@ -396,14 +396,13 @@ def rodaprevisao(dataInicio, dataFim):
     return intervalo
 
 
-def listar_previsao(request, pagina=1, nrporpagina=22, descricao=None, nomeguerra=None):
+def listar_previsao(request, pagina=1, nrporpagina=23, descricao=None, nomeguerra=None):
     # teste = "SELECT b.id, a.id as idmilitar, a.posto,a.antiguidade,\
     #         b.nomeguerra, b.folga,b.data,b.dia, b.nomesubstituto,\
     #         b.vermelha, c.descricao FROM pessoal_militar a, previsao_previsao b,\
     #         core_escala c WHERE a.id=b.idmilitar AND c.id=b.idescala AND\
     #         a.idcirculo=b.idcirculo ORDER BY b.data, c.precedencia, b.idcirculo,\
     #         a.antiguidade"
-
     sqlmilitar = "SELECT b.id, a.id as idmilitar, a.posto, a.codom, a.antiguidade,\
     b.nomeguerra, b.folga, b.data, b.dia, b.nomesubstituto, b.vermelha,\
     c.descricao FROM pessoal_militar a, previsao_previsao b, core_escala c\
@@ -478,17 +477,19 @@ def previsao(request):
 
 
 def filtrar(request):
+
     template_name = 'previsao.html'
-    if (request.method == 'POST'):
-        form = FormPrevisao(request.POST)
-    else:
-        form = FormPrevisao()
 
-    filtroEscala = form['searchEscala'].value()
-    filtroMilitar = form['searchMilitar'].value()
-    previstos = listar_previsao(request, 1, 15, filtroEscala, filtroMilitar)
+    escala = request.GET.get('escala')
+    militar = request.GET.get('militar')   
 
-    context = {'form': form, 'previstos': previstos}
+    if(request.method == 'POST'):
+        escala = request.POST.get('escala')
+        militar = request.POST.get('militar')   
+ 
+    previstos = listar_previsao(request, 1, 23, escala, militar)
+
+    context = {'previstos': previstos}
 
     return render(request, template_name, context)
 
@@ -540,7 +541,7 @@ def trocar_servico(request, idprevisao, pagina):
     else:
         form = MilitarEscaladoForm(dados)
 
-    previstos = listar_previsao(request, pagina, 9)
+    previstos = listar_previsao(request, pagina, 18)
 
     list_substituto = []
     if nomesubstituto != None:

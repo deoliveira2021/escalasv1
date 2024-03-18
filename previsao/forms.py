@@ -2,8 +2,8 @@ from django import forms
 from .models import *
 
 class FormPrevisao(forms.Form):
-    searchEscala = forms.CharField(label= 'Escala', required=False, max_length=40)
-    searchMilitar = forms.CharField(label= 'Militar', required=False, max_length=40)
+    escala = forms.CharField(label= 'Escala', required=False, max_length=40)
+    militar = forms.CharField(label= 'Militar', required=False, max_length=40)
 
     ##### -- este código dentro dessa área de comentário é o original -- ######
     nome_guerra = forms.CharField(label= 'Nome de Guerra', required=False, max_length=40)
