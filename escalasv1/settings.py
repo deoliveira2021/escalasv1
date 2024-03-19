@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     #apps de terceiros, instalados via pip install
     'widget_tweaks', # usada para renderizar os campos dos forms nos templates
     'dbbackup',  # adicionando django-dbbackup
+    # 'pywhatkit',
     # 'sms', #usado para enviar sms, porém, não foi implementado pq não encontrei apps livre, só proprietário!
 ]
 

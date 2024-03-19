@@ -6,88 +6,90 @@
     </div>
 </div>
 <form name="form" class="pure-form pure-form-aligned" method="GET" >
-<table class="table full"  cellspacing="1" cellpadding="2"  align="center" id="minhaTabela">
-  <thead>
-    <th colspan="14" bgcolor="#6699CC">
-      <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Relação de Serviços tirados</font></b></font></div>
-    </th>
-    <tr bgcolor="cccccc">
-      <th colspan="2" align = "center">Data</th>
-      <th colspan="2" align = "center">Dia</th>
-      <th colspan="2" align = "center">Escala</th>
-      <th colspan="2" align = "center">Posto/Grad</th>
-      <th colspan="4" align = "center">Nome</th>
-      <th colspan="2" align = "center">Folga</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for escalado in escalados %}
-      <tr bgcolor="ebebeb">
-        <td colspan="2" align = center >
-        {% if escalado.vermelha%}
-        <font color="red">
-          {{ escalado.data }}
-        {%else %}
-         <font color="#777" >
-          {{ escalado.data }}
-        {%endif%}
-        </td>
-        <td colspan="2" align = center >
-          {% if escalado.vermelha %}
-              <font color="red">
-              {{ escalado.dia }}
-          {%else %}
-          <font color="#777" >
-            {{ escalado.dia }}
-          {%endif%}
-        </td>
-        <td colspan="2" align = left >
-          {% if escalado.vermelha%}
-              <font color="red">
-              {{ escalado.descricao }}
-          {%else %}
-          <font color="#777" >
-            {{ escalado.descricao }}
-          {%endif%}
-        </td>
-        <td colspan="2" align=left>
-          {% if escalado.vermelha%}
-              <font color="red">
-              {{ escalado.get_posto_display }}
-          {%else %}
-          <font color="#777" >
-            {{ escalado.get_posto_display }}
-          {%endif%}
-        </td>
-        <td colspan="4" align = left >
-          {% if escalado.vermelha%}
-              <font color="red">
-                {%if escalado.nomesubstituto%}
-                  {{ escalado.nomesubstituto }}
-                {%else%}
-                  {{ escalado.nomeguerra }}
-                {%endif%}
-          {%else %}
-          <font color="#777" >
-            {%if escalado.nomesubstituto%}
-              {{  escalado.nomesubstituto  }}
-            {%else%}
-              {{ escalado.nomeguerra }}
-            {%endif%}
-          {%endif%}
-        </td>
-        <td colspan="2" align = center >
-          {% if escalado.vermelha%}
-              <font color="red">
-              {{ escalado.folga }}
-          {%else %}
-          <font color="#777" >
-            {{ escalado.folga }}
-          {%endif%}
-        </td>
+  <!-- se o método do formulário for POST, deve-se descomentar a linha abaixo -->
+  <!-- {#% csrf_token %} --> 
+  <table class="table full"  cellspacing="1" cellpadding="2"  align="center" id="minhaTabela">
+    <thead>
+      <th colspan="14" bgcolor="#6699CC">
+        <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Relação de Serviços tirados</font></b></font></div>
+      </th>
+      <tr bgcolor="cccccc">
+        <th colspan="2" align = "center">Data</th>
+        <th colspan="2" align = "center">Dia</th>
+        <th colspan="2" align = "center">Escala</th>
+        <th colspan="2" align = "center">Posto/Grad</th>
+        <th colspan="4" align = "center">Nome</th>
+        <th colspan="2" align = "center">Folga</th>
       </tr>
-    {% endfor %}
-  </tbody>
+    </thead>
+    <tbody>
+      {% for escalado in escalados %}
+        <tr bgcolor="ebebeb">
+          <td colspan="2" align = center >
+          {% if escalado.vermelha%}
+          <font color="red">
+            {{ escalado.data }}
+          {%else %}
+          <font color="#777" >
+            {{ escalado.data }}
+          {%endif%}
+          </td>
+          <td colspan="2" align = center >
+            {% if escalado.vermelha %}
+                <font color="red">
+                {{ escalado.dia }}
+            {%else %}
+            <font color="#777" >
+              {{ escalado.dia }}
+            {%endif%}
+          </td>
+          <td colspan="2" align = left >
+            {% if escalado.vermelha%}
+                <font color="red">
+                {{ escalado.descricao }}
+            {%else %}
+            <font color="#777" >
+              {{ escalado.descricao }}
+            {%endif%}
+          </td>
+          <td colspan="2" align=left>
+            {% if escalado.vermelha%}
+                <font color="red">
+                {{ escalado.get_posto_display }}
+            {%else %}
+            <font color="#777" >
+              {{ escalado.get_posto_display }}
+            {%endif%}
+          </td>
+          <td colspan="4" align = left >
+            {% if escalado.vermelha%}
+                <font color="red">
+                  {%if escalado.nomesubstituto%}
+                    {{ escalado.nomesubstituto }}
+                  {%else%}
+                    {{ escalado.nomeguerra }}
+                  {%endif%}
+            {%else %}
+            <font color="#777" >
+              {%if escalado.nomesubstituto%}
+                {{  escalado.nomesubstituto  }}
+              {%else%}
+                {{ escalado.nomeguerra }}
+              {%endif%}
+            {%endif%}
+          </td>
+          <td colspan="2" align = center >
+            {% if escalado.vermelha%}
+                <font color="red">
+                {{ escalado.folga }}
+            {%else %}
+            <font color="#777" >
+              {{ escalado.folga }}
+            {%endif%}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
   <!-- a tabela de rodapé, só será exibida se o usuário for administrador, is_staff -->
   {% if user.is_staff%}
@@ -146,30 +148,102 @@
   {% if escalados.has_other_pages %}
     <div class="pagination">
       {% if escalados.has_previous %}
-        {%if request.GET.militar %}
-          <a href="?page={{ escalados.previous_page_number }}&militar={{request.GET.militar}}" class="page-link">&laquo;</a>
+        {% if request.POST.militar %}
+          {%if request.POST.escala %}
+            <a href="?page={{ escalados.previous_page_number }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="page-link">&laquo;</a>
+            <a href="?page={{ escalados.previous_first_page }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="page-link"> Primeira</a>
+          {%else%}
+            <a href="?page={{ escalados.previous_page_number }}&militar={{request.POST.militar}}" class="page-link">&laquo;</a>
+            <a href="?page={{ escalados.previous_first_page }}&militar={{request.POST.militar}}" class="page-link"> Primeira</a>
+          {% endif %}
+        {%elif request.GET.militar %}
+          {%if request.GET.escala %}
+            <a href="?page={{ escalados.previous_page_number }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="page-link">&laquo;</a>
+            <a href="?page={{ escalados.previous_first_page }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="page-link"> Primeira</a>
+          {%else%}
+            <a href="?page={{ escalados.previous_page_number }}&militar={{request.GET.militar}}" class="page-link">&laquo;</a>
+            <a href="?page={{ escalados.previous_first_page }}&militar={{request.GET.militar}}" class="page-link"> Primeira</a>
+          {%endif%}
+        {%elif request.POST.escala %}
+          {% if request.POST.militar %}
+            <a href="?page={{ escalados.previous_page_number }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="page-link">&laquo;</a>
+            <a href="?page={{ escalados.previous_first_page }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="page-link"> Primeira</a>
+          {%else%}
+            <a href="?page={{ escalados.previous_page_number }}&escala={{request.POST.escala}}" class="page-link">&laquo;</a>
+            <a href="?page={{ escalados.previous_first_page }}&escala={{request.POST.escala}}" class="page-link"> Primeira</a>
+          {%endif%}
         {%elif request.GET.escala %}
-          <a href="?page={{ escalados.previous_page_number }}&escala={{request.GET.escala}}" class="page-link">&laquo;</a>
+          {%if request.GET.militar %}          
+            <a href="?page={{ escalados.previous_page_number }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="page-link">&laquo;</a>
+            <a href="?page={{ escalados.previous_first_page }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="page-link"> Primeira</a>
+          {%else%}
+            <a href="?page={{ escalados.previous_page_number }}&escala={{request.GET.escala}}" class="page-link">&laquo;</a>
+            <a href="?page={{ escalados.previous_first_page }}&escala={{request.GET.escala}}" class="page-link"> Primeira</a>
+          {%endif%}
         {%else%}
-        <a href="?page={{ escalados.previous_page_number }}" class="page-link">&laquo;</a>
-        <a href="?page={{ escalados.previous_first_page }}" class="page-link"> Primeira &laquo;</a>
+          <a href="?page={{ escalados.previous_page_number }}" class="page-link">&laquo;</a>
+          <a href="?page={{ escalados.previous_first_page }}" class="page-link"> Primeira</a>
         {%endif%}
       {% endif %}
 
-      {% with start_page=escalados.number|add:'-1' %}
-        {% with end_page=escalados.number|add:'10' %}
+      {% with start_page=escalados.number|add:'-3' %}
+        {% with end_page=escalados.number|add:'3' %}
           {% for page_number in escalados.paginator.page_range %}
-             {%if request.GET.militar %}
+            {% if request.POST.militar %}
               {% if escalados.number == page_number %}
-                <a href="?page={{ page_number }}&militar={{request.GET.militar}}" class="active">{{ page_number }}</a>
+                {%if request.POST.escala %}
+                  <a href="?page={{ page_number }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="active">{{ page_number }}</a>
+                {%else%}
+                  <a href="?page={{ page_number }}&militar={{request.POST.militar}}" class="active">{{ page_number }}</a>
+                {%endif%}
               {% elif page_number >= start_page and end_page >= page_number  %}
-                <a href="?page={{ page_number }}&militar={{request.GET.militar}}" class="page-link">{{ page_number }}</a>
+                {%if request.POST.escala %}
+                  <a href="?page={{ page_number }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="page-link">{{ page_number }}</a>
+                {%else%}
+                  <a href="?page={{ page_number }}&militar={{request.POST.militar}}" class="page-link">{{ page_number }}</a>
+                {%endif%}
+              {%endif%}
+            {%elif request.GET.militar %}
+              {% if escalados.number == page_number %}
+                {%if request.GET.escala %}
+                  <a href="?page={{ page_number }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="active">{{ page_number }}</a>
+                {%else%}
+                  <a href="?page={{ page_number }}&militar={{request.GET.militar}}" class="active">{{ page_number }}</a>
+                {%endif%}
+              {% elif page_number >= start_page and end_page >= page_number  %}
+                {%if request.GET.escala %}
+                  <a href="?page={{ page_number }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="page-link">{{ page_number }}</a>
+                {%else%}
+                  <a href="?page={{ page_number }}&militar={{request.GET.militar}}" class="page-link">{{ page_number }}</a>
+                {%endif%}
+              {%endif%}
+            {%elif request.POST.escala %}
+              {% if escalados.number == page_number %}
+                {% if request.POST.militar %}
+                  <a href="?page={{ page_number }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="active">{{ page_number }}</a>
+                {%else%}
+                  <a href="?page={{ page_number }}&escala={{request.POST.escala}}" class="active">{{ page_number }}</a>
+                {%endif%}
+              {% elif page_number >= start_page and end_page >= page_number  %}
+                {% if request.POST.militar %}
+                  <a href="?page={{ page_number }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="page-link">{{ page_number }}</a>
+                {%else%}
+                  <a href="?page={{ page_number }}&escala={{request.POST.escala}}" class="page-link">{{ page_number }}</a>
+                {%endif%}
               {%endif%}
             {%elif request.GET.escala %}
               {% if escalados.number == page_number %}
-                <a href="?page={{ page_number }}&escala={{request.GET.escala}}" class="active">{{ page_number }}</a>
+                {% if request.GET.militar %}
+                  <a href="?page={{ page_number }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="active">{{ page_number }}</a>
+                {%else%}
+                  <a href="?page={{ page_number }}&escala={{request.GET.escala}}" class="active">{{ page_number }}</a>
+                {%endif%}
               {% elif page_number >= start_page and end_page >= page_number  %}
-                <a href="?page={{ page_number }}&escala={{request.GET.escala}}" class="page-link">{{ page_number }}</a>
+                {% if request.GET.militar %}
+                  <a href="?page={{ page_number }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="page-link">{{ page_number }}</a>
+                {%else%}
+                  <a href="?page={{ page_number }}&escala={{request.GET.escala}}" class="page-link">{{ page_number }}</a>
+                {%endif%}
               {%endif%}
             {%else%}
               {% if escalados.number == page_number %}
@@ -183,14 +257,43 @@
       {% endwith %}
       
       {% if escalados.has_next %}
-        {%if request.GET.militar %}
-          <a href="?page={{ escalados.next_page_number }}&militar={{request.GET.militar}}" class="page-link"> &raquo;</a>
-          <a href="?page={{ escalados.paginator.num_pages }}&militar={{request.GET.militar}}">last &raquo;</a>
+        {% if request.POST.militar %}
+          {%if request.POST.escala %}
+            <a href="?page={{ escalados.next_page_number }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="page-link"> &raquo;</a>
+            <a href="?page={{ escalados.paginator.num_pages }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}">Última</a>
+          {%else%}
+            <a href="?page={{ escalados.next_page_number }}&militar={{request.POST.militar}}" class="page-link"> &raquo;</a>
+            <a href="?page={{ escalados.paginator.num_pages }}&militar={{request.POST.militar}}">Última</a>
+          {%endif%}
+        {%elif request.GET.militar %}
+          {%if request.GET.escala %}
+            <a href="?page={{ escalados.next_page_number }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="page-link"> &raquo;</a>
+            <a href="?page={{ escalados.paginator.num_pages }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}">Última</a>
+          {%else%}
+            <a href="?page={{ escalados.next_page_number }}&militar={{request.GET.militar}}" class="page-link"> &raquo;</a>
+            <a href="?page={{ escalados.paginator.num_pages }}&militar={{request.GET.militar}}">Última</a>
+          {%endif%}
+
+        {%elif request.POST.escala %}
+          {% if request.POST.militar %}
+            <a href="?page={{ escalados.next_page_number }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}" class="page-link"> &raquo;</a>
+            <a href="?page={{ escalados.paginator.num_pages }}&militar={{request.POST.militar}}&escala={{request.POST.escala}}">Última</a>
+          {%else%}
+            <a href="?page={{ escalados.next_page_number }}&escala={{request.POST.escala}}" class="page-link"> &raquo;</a>
+            <a href="?page={{ escalados.paginator.num_pages }}&escala={{request.POST.escala}}">Última</a>
+          {%endif%}
         {%elif request.GET.escala %}
-          <a href="?page={{ escalados.next_page_number }}&escala={{request.GET.escala}}" class="page-link"> &raquo;</a>
+          {% if request.GET.militar %}
+            <a href="?page={{ escalados.next_page_number }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}" class="page-link"> &raquo;</a>
+            <a href="?page={{ escalados.paginator.num_pages }}&militar={{request.GET.militar}}&escala={{request.GET.escala}}">Última</a>
+          {%else%}
+            <a href="?page={{ escalados.next_page_number }}&escala={{request.GET.escala}}" class="page-link"> &raquo;</a>
+            <a href="?page={{ escalados.paginator.num_pages }}&escala={{request.GET.escala}}">Última</a>
+          {%endif%}
+
         {%else%}
-          <a href="?page={{ escalados.next_page_number }}" class="page-link"></a>
-          <a href="?page={{ escalados.paginator.num_pages }}">Última &raquo;</a>
+          <a href="?page={{ escalados.next_page_number }}" class="page-link"> &raquo;</a>
+          <a href="?page={{ escalados.paginator.num_pages }}">Última</a>
         {%endif%}
       {% endif %}
     </div>

@@ -13,7 +13,7 @@ from servico.models import Servicos
 from pessoal.models import Militar
 from core.models import *
 
-import escalasv1.settings
+from django.conf import settings
 
 # usado para fazer uma conexão direta com o banco de dados
 from django.db import connection
@@ -236,6 +236,7 @@ def podeSalvarServico():
 
 # salva os serviços de acordo com a previsão
 def salvarServico(request):
+    print("Passou em salvar serviço")
     # pega todos os objetos de previsão para inserir em serviços
     queryset_previsao = Previsao.objects.raw(
         '''SELECT * FROM previsao_previsao GROUP BY idmilitar, id'''
@@ -410,16 +411,23 @@ def listar_previsao(request, pagina=1, nrporpagina=23, descricao=None, nomeguerr
     "
     previsao_list = []
     if (descricao != None) & (descricao != ""):
-        # criterio = descricao+'%'
-        sqlmilitar += "AND c.descricao LIKE %s ORDER BY b.data,\
-        c.precedencia, b.idcirculo, a.antiguidade"
-        previsao_list = Militar.objects.raw(sqlmilitar, [descricao])
+        if(nomeguerra != None) & (nomeguerra != ""):
+            sqlmilitar += "AND c.descricao LIKE %s AND a.nome_guerra LIKE %s ORDER BY b.data,\
+            c.precedencia, b.idcirculo, a.antiguidade"
+            previsao_list = Militar.objects.raw(sqlmilitar, [descricao,nomeguerra])
+
+        else:
+            # criterio = descricao+'%'
+            sqlmilitar += "AND c.descricao LIKE %s ORDER BY b.data,\
+            c.precedencia, b.idcirculo, a.antiguidade"               
+            previsao_list = Militar.objects.raw(sqlmilitar, [descricao])
+
     elif (nomeguerra != None) & (nomeguerra != ""):
         # criterio = '%'+nomeguerra+'%'
         sqlmilitar += "AND a.nome_guerra LIKE %s ORDER BY b.data,\
         c.precedencia, b.idcirculo, a.antiguidade"
-
         previsao_list = Militar.objects.raw(sqlmilitar, [nomeguerra])
+
     else:
         sqlmilitar += " ORDER BY b.data, c.precedencia, b.idcirculo,\
         a.antiguidade"
@@ -440,6 +448,7 @@ def listar_previsao(request, pagina=1, nrporpagina=23, descricao=None, nomeguerr
 
 # @login_required
 def previsao(request):
+    print("passou em previsao")
     podeSalvar = False
     podeGerarPDF = False
 
@@ -469,29 +478,32 @@ def previsao(request):
     podeGerarPDF = (podeSalvarServico()>0)
     context = {'form': form, 'previstos': previstos, 
                'podeSalvar': podeSalvar, 'inicio': inicio, 
-               'final': final,
-               'podeGerarPDF': podeGerarPDF
+               'final': final,'podeGerarPDF': podeGerarPDF
                }
 
     return render(request, template_name, context)
 
-
 def filtrar(request):
-
+    print("passou em filtrar")
+    print(request.method)
     template_name = 'previsao.html'
 
     escala = request.GET.get('escala')
-    militar = request.GET.get('militar')   
+    militar = request.GET.get('militar') 
 
     if(request.method == 'POST'):
+        form = FormPrevisao(request.POST)
         escala = request.POST.get('escala')
-        militar = request.POST.get('militar')   
+        militar = request.POST.get('militar')
+    else:
+        form = FormPrevisao()         
+
  
     previstos = listar_previsao(request, 1, 23, escala, militar)
 
-    context = {'previstos': previstos}
+    context = {'form': form, 'previstos': previstos}
 
-    return render(request, template_name, context)
+    return render(request, template_name, context)  
 
 
 @login_required
@@ -561,6 +573,11 @@ def trocar_servico(request, idprevisao, pagina):
 
 # função que gera pdf
 def GeneratePDF(request):
+    print(request.method)
+    # import pdfkit
+    # pdfkit.from_file("previsao/templates/previsao.html")
+    # return redirect('previsao:previsao')
+
     # para gerar pdf
     import io
     from reportlab.pdfgen import canvas
@@ -594,9 +611,9 @@ def GeneratePDF(request):
     # See the ReportLab documentation for the full list of functionality.
     # p.drawString(100, 100, "Hello world.")
 
-    p.setTitle('Previsão da Escala de Serviço')
+    p.setTitle('PREVISÃO DE ESCALA DE SERVIÇO')
     p.setFont("Helvetica-Bold", 14)
-    p.drawString(245, 780, 'Previsão da Escala de Serviço')
+    p.drawString(255, 780, 'PREVISÃO DE ESCALA DE SERVIÇO')
     subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
     p.setFont("Helvetica-Bold", 12)
     p.setFillColor(fontColor)
@@ -658,8 +675,9 @@ def GeneratePDF(request):
 #*******************************************************************************************************************
 @login_required
 def notificar_escalado(request):
+    print("entrou em notificar escalado")
     # Importar biblicoteca para enviar mensagens pelo Web.WhatsApp
-    import pywhatkit
+    import pywhatkit as sendMsg
     sqlmilitar = "SELECT a.id, a.tel1, a.email, a.posto,a.antiguidade,b.nomeguerra,\
     b.folga,b.data,b.dia, b.folga,c.descricao FROM pessoal_militar a, \
     previsao_previsao b, core_escala c WHERE a.id=b.idmilitar AND \
@@ -667,6 +685,7 @@ def notificar_escalado(request):
     ORDER BY b.data, c.precedencia, b.idcirculo, a.antiguidade"
 
     previsao_list = Militar.objects.raw(sqlmilitar)
+    print(sqlmilitar)
     # previsao_list = Previsao.objects.raw(sqlmilitar)
     data = previsao_list[0].data
     dia = previsao_list[0].dia
@@ -682,14 +701,24 @@ def notificar_escalado(request):
         celular = "+55"+str(escalado.tel1)
         email = escalado.email
 
+        print(email, celular)
+
 
         mensagem = getPostoGraduacao(posto) + " "+ nome + " informo que o Sr está previsto para o serviço de "+ escala \
                    + " no dia " +data.strftime("%d/%m/%Y") + " - " + dia
 
         #método que envia a mensagem para o WhatsApp do militar
-        pywhatkit.sendwhatmsg_instantly(celular, mensagem,15)
+        try:
+            sendMsg.sendwhatmsg_instantly(celular, mensagem,15)
+            print("Message Sent!") #Prints success message in console
+        except: 
+            print("Error in sending the message")              
         #método que envia a mensagem para o e-mail cadastrado do militar
-        pywhatkit.send_mail("sousaedvaldo@gmail.com","pkgrdxihoolsqpbe","Escala de Serviço", mensagem,email)
+            
+        try:
+            sendMsg.send_mail("sousaedvaldo@gmail.com","pkgrdxihoolsqpbe","Escala de Serviço", mensagem,email)
+        except: 
+            print("Error in sending the message")
 
     return redirect('previsao:previsao')
 

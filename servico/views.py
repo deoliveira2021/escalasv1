@@ -18,16 +18,22 @@ def listar_servicos(request, pagina=1, nrporpagina=22, descricao=None, nomeguerr
     "
     servico_list = []
     if (descricao != None) & (descricao != ""):
-        # criterio = descricao+'%'
-        sqlmilitar += "AND c.descricao LIKE %s ORDER BY b.data DESC,\
-        c.precedencia, b.idcirculo, a.antiguidade"
-        servico_list = Militar.objects.raw(sqlmilitar, [descricao])
+        if(nomeguerra != None) & (nomeguerra != ""):
+            sqlmilitar += "AND c.descricao LIKE %s AND a.nome_guerra LIKE %s ORDER BY b.data DESC,\
+            c.precedencia, b.idcirculo, a.antiguidade"
+            servico_list = Militar.objects.raw(sqlmilitar, [descricao,nomeguerra])
+        else:
+            # criterio = descricao+'%'
+            sqlmilitar += "AND c.descricao LIKE %s ORDER BY b.data DESC,\
+            c.precedencia, b.idcirculo, a.antiguidade"               
+            servico_list = Militar.objects.raw(sqlmilitar, [descricao])
+
     elif (nomeguerra != None) & (nomeguerra != ""):
         # criterio = '%'+nomeguerra+'%'
         sqlmilitar += "AND a.nome_guerra LIKE %s ORDER BY b.data DESC,\
         c.precedencia, b.idcirculo, a.antiguidade"
-
         servico_list = Militar.objects.raw(sqlmilitar, [nomeguerra])
+
     else:
         sqlmilitar += " ORDER BY b.data DESC, c.precedencia, b.idcirculo,\
         a.antiguidade"
@@ -52,8 +58,6 @@ def servicos(request):
 
     escala = request.GET.get('escala')
     militar = request.GET.get('militar')   
-
-    print(escala, militar)
 
     escalados = listar_servicos(request,1,22,escala,militar)
 
