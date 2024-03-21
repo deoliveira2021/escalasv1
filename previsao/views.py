@@ -567,103 +567,13 @@ def trocar_servico(request, idprevisao, pagina):
 
 # função que gera pdf
 def GeneratePDF(request):
-    # print(request.method)
-    # # import pdfkit
-    # # pdfkit.from_file("previsao/templates/previsao.html")
-    # # return redirect('previsao:previsao')
-
     # # para gerar pdf
-    # import io
-    # from reportlab.pdfgen import canvas
-    # from reportlab.lib.pagesizes import letter, A4
-    # from reportlab.lib.units import inch
-    # from reportlab.lib.colors import black, red
-    # from django.http import FileResponse
-
-    # sqlmilitar = "SELECT a.id, a.posto,a.antiguidade,b.nomeguerra,\
-    # b.folga,b.data,b.dia, b.folga,c.descricao FROM pessoal_militar a, \
-    # previsao_previsao b, core_escala c WHERE a.id=b.idmilitar AND \
-    # c.id=b.idescala AND a.idcirculo=b.idcirculo \
-    # ORDER BY b.data, c.precedencia, b.idcirculo, a.antiguidade"
-
-    # previsao_list = Militar.objects.raw(sqlmilitar)
-    # #previsao_list = Previsao.objects.raw(sqlmilitar)
-
-    # data = previsao_list[0].data
-    # dia = previsao_list[0].dia
-    # fontColor = "black"
-    # if vermelha(data):
-    #     fontColor = "red"
-
-    # # Create a file-like buffer to receive PDF data.
-    # buffer = io.BytesIO()
-
-    # # Create the PDF object, using the buffer as its "file."
-    # p = canvas.Canvas(buffer)
-
-    # # Draw things on the PDF. Here's where the PDF generation happens.
-    # # See the ReportLab documentation for the full list of functionality.
-    # # p.drawString(100, 100, "Hello world.")
-
-    # p.setTitle('PREVISÃO DE ESCALA DE SERVIÇO')
-    # p.setFont("Helvetica-Bold", 14)
-    # p.drawString(255, 780, 'PREVISÃO DE ESCALA DE SERVIÇO')
-    # subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
-    # p.setFont("Helvetica-Bold", 12)
-    # p.setFillColor(fontColor)
-    # p.drawString(45, 760, subtitle)
-    # p.setFillColor(black)
-    # p.setFont("Helvetica", 12)
-    # # pdf.drawString(45,750, 'Escala             Posto/Grad          Militar')
-    # x = 750
-    # for escalado in previsao_list:
-    #     if (escalado.data != data):
-    #         x -= 20
-    #         data = escalado.data
-    #         dia = escalado.dia
-    #         fontColor = "black"
-    #         if vermelha(data):
-    #             fontColor = "red"
-
-    #         subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
-    #         p.setFont("Helvetica-Bold", 12)
-    #         p.setFillColor(fontColor)
-    #         p.drawString(45, x, subtitle)
-    #         p.setFont("Helvetica", 12)
-    #         p.setFillColor(black)
-    #         x -= 5
-
-    #     if x < 40:
-    #         x = 750
-    #         # adiciona uma nova página para continuar listando a escala
-    #         p.showPage()
-    #         p.setFont("Helvetica-Bold", 14)
-    #         p.drawString(245, 780, 'Previsão da Escala de Serviço')
-    #         subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
-    #         p.setFont("Helvetica-Bold", 12)
-    #         p.setFillColor(fontColor)
-    #         p.drawString(45, 760, subtitle)
-    #         p.setFont("Helvetica", 12)
-    #         p.setFillColor(black)
-    #         # pdf.drawString(45,750, 'Escala             Posto/Grad          Militar')
-
-    #     x -= 15
-    #     p.drawString(47, x, '{}: {} - {}'.
-    #                  format(escalado.descricao, getPostoGraduacao(escalado.posto), escalado.nomeguerra))
-    #     #print(escalado.posto)
-
-    # # Close the PDF object cleanly, and we're done.
-    # p.showPage()
-    # p.save()
-
-    # # FileResponse sets the Content-Disposition header so that browsers
-    # # present the option to save the file.
-    # buffer.seek(0)
-
-    # return FileResponse(buffer, as_attachment=True, filename='escalaSV.pdf')
-
-    from reportlab.lib.pagesizes import A4
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+    import io
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.lib.units import inch
+    from reportlab.lib.colors import black, red
+    from django.http import FileResponse
 
     sqlmilitar = "SELECT a.id, a.posto,a.antiguidade,b.nomeguerra,\
     b.folga,b.data,b.dia, b.folga,c.descricao FROM pessoal_militar a, \
@@ -673,32 +583,158 @@ def GeneratePDF(request):
 
     previsao_list = Militar.objects.raw(sqlmilitar)
 
-    #Cria uma lista vazia, depois vai adicionando listas, para passar como parâmetro para função
-    #Table do objeto pdf que recebe uma matriz de listas para gerar o PDF
-    data = []
-    data.append(['Data', 'Dia da Semana','Escala', 'Posto/Grad', 'Nome'])
+    data = previsao_list[0].data
+    dia = previsao_list[0].dia
+    fontColor = "black"
+    if vermelha(data):
+        fontColor = "red"
+
+    # Create a file-like buffer to receive PDF data.
+    buffer = io.BytesIO()
+
+    # Create the PDF object, using the buffer as its "file."
+    p = canvas.Canvas(buffer)
+
+    # Draw things on the PDF. Here's where the PDF generation happens.
+    # See the ReportLab documentation for the full list of functionality.
+    # p.drawString(100, 100, "Hello world.")
+
+    p.setTitle('PREVISÃO DE ESCALA DE SERVIÇO')
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(255, 780, 'PREVISÃO DE ESCALA DE SERVIÇO')
+    p.line(30,775,555,775)
+
+    # subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
+    subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+    p.setFont("Helvetica-Bold", 12)
+    p.setFillColor(fontColor)
+    p.drawString(45, 750, subtitle)
+    p.setFillColor(black)
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(45,760, 'Data  - dia da Semana')
+    p.drawString(235,760, 'Escala')
+    p.drawString(345,760, 'Posto/Grad')
+    p.drawString(465,760, 'Militar')
+    p.line(30,755,555,755)
+    # p.drawString(45,760, 'Data  - Dia da Semana      Escala             Posto/Grad          Militar')
+    y = 750
     for escalado in previsao_list:
-        data.append([escalado.data,escalado.dia,escalado.descricao,getPostoGraduacao(escalado.posto),escalado.nomeguerra])
+        if (escalado.data != data):
+            y -= 20
+            data = escalado.data
+            dia = escalado.dia
+            fontColor = "black"
+            if vermelha(data):
+                fontColor = "red"
 
-    pdf_filename = "tabela_estilizada.pdf"
-    pdf = SimpleDocTemplate(pdf_filename, pagesize=A4)
+            # subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
+            subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+            p.setFont("Helvetica-Bold", 12)
+            p.setFillColor(fontColor)
+            p.drawString(45, y, subtitle)
+            p.setFont("Helvetica", 12)
+            p.setFillColor(black)
+            y -= 5
 
-    table = Table(data)
+        if y < 40:
+            y = 760
+            # adiciona uma nova página para continuar listando a escala
+            p.showPage()
+            p.setFont("Helvetica-Bold", 14)
+            p.drawString(245, 780, 'Previsão da Escala de Serviço')
+            subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
+            p.setFont("Helvetica-Bold", 12)
+            p.setFillColor(fontColor)
+            p.drawString(45, 770, subtitle)
+            p.setFont("Helvetica", 12)
+            p.setFillColor(black)
+            # pdf.drawString(45,750, 'Escala             Posto/Grad          Militar')
 
-    # Estilo da tabela
-    style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), (0.2, 0.4, 0.6)),  # Cor de fundo para cabeçalho
-                        ('TEXTCOLOR', (0, 0), (-1, 0), (1, 1, 1)),  # Cor do texto no cabeçalho
-                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinhamento central
-                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold')])  # Fonte negrito para cabeçalho
+        y -= 15
+        # p.drawString(47, x, '{}: {} - {}'.
+        #              format(escalado.descricao, getPostoGraduacao(escalado.posto), escalado.nomeguerra))
+        p.drawString(235, y,escalado.descricao)
+        p.drawString(345, y,getPostoGraduacao(escalado.posto))
+        p.drawString(465, y,escalado.nomeguerra)
+        #print(escalado.posto)
 
-    table.setStyle(style)
+    # Close the PDF object cleanly, and we're done.
+    p.showPage()
+    p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+
+    return FileResponse(buffer, as_attachment=True, filename='escalaSV.pdf')
+
+    # from reportlab.lib.pagesizes import A4
+    # from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+    # from reportlab.lib.styles import (ParagraphStyle, getSampleStyleSheet)
+
+    # sqlmilitar = "SELECT a.id, a.posto,a.antiguidade,b.nomeguerra,\
+    # b.folga,b.data,b.dia, b.folga,c.descricao FROM pessoal_militar a, \
+    # previsao_previsao b, core_escala c WHERE a.id=b.idmilitar AND \
+    # c.id=b.idescala AND a.idcirculo=b.idcirculo \
+    # ORDER BY b.data, c.precedencia, b.idcirculo, a.antiguidade"
+
+    # previsao_list = Militar.objects.raw(sqlmilitar)
+
+    # data = previsao_list[0].data
+    # dia = previsao_list[0].dia
+    # fontColor = "black"
+    # if vermelha(data):
+    #     fontColor = "red"    
+
+    # #Cria uma lista vazia, depois vai adicionando listas, para passar como parâmetro para função
+    # #Table do objeto pdf que recebe uma matriz de listas para gerar o PDF
+    # dados = []
+    # dados.append(['Data', 'Dia da Semana','Escala', 'Posto/Grad', 'Nome'])
+    # for escalado in previsao_list:
+    #     dados.append([escalado.data,escalado.dia,escalado.descricao,getPostoGraduacao(escalado.posto),escalado.nomeguerra])
+
+    # pdf_filename = "tabela_estilizada.pdf"
+    # pdf = SimpleDocTemplate(pdf_filename, pagesize=A4)
+    
+    # elements = []
+    # styleSheet = getSampleStyleSheet()
+
+    # texto =  "Escala de Serviço para o dia: " + data.strftime("%d/%m/%Y") + " - " +dia
+ 
+    # tituloEstilo = ParagraphStyle('título',
+    #                         fontName="Helvetica-Bold",
+    #                         fontSize=12,
+    #                         parent=styleSheet['Heading2'],
+    #                         alignment=1,
+    #                         spaceAfter=14)
+
+    # # P = Paragraph(texto,styleSheet["Normal"])
+    # P = Paragraph(texto.upper(), tituloEstilo)
+    
+    # elements.append(P)
+
+    # table = Table(dados)
+
+    # # Estilo da tabela
+    # style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), (0.2, 0.4, 0.6)),  # Cor de fundo para cabeçalho
+    #                     ('TEXTCOLOR', (0, 0), (-1, 0), (1, 1, 1)),  # Cor do texto no cabeçalho
+    #                     ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinhamento central
+    #                     ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold')])  # Fonte negrito para cabeçalho
+
+    # table.setStyle(style)
 
     # elements.append(table)
 
-    # pdf.build(elements)
-    pdf.build([table])
+    # # print(texto)
 
-    return redirect('previsao:previsao')
+    # # elements.append(table)
+
+    # pdf.build(elements)
+
+    # # response = FileResponse(pdf, pdf_filename)
+    # # pdf.build([table])
+
+    # return redirect('previsao:previsao')
 
 
 #*******************************************************************************************************************
