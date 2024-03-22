@@ -134,22 +134,22 @@ def diadaSemana(diaEscala):
     return DIAS[diaEscala.weekday()]
 
 
-# retorna o Posto/Graduação
-def getPostoGraduacao(idPosto):
+# # retorna o Posto/Graduação
+# def getPostoGraduacao(idPosto):
     
-    POSTO = [(5, "Cel"), (6, "T Cel"), (7, "Maj"),
-             (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
-             (12, "S Ten"), (13, "1º Sgt"), (14, "2º Sgt"), (15, "3º Sgt"),
-             (16, "Cb"), (17, "SD")]
+#     POSTO = [(5, "Cel"), (6, "T Cel"), (7, "Maj"),
+#              (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
+#              (12, "S Ten"), (13, "1º Sgt"), (14, "2º Sgt"), (15, "3º Sgt"),
+#              (16, "Cb"), (17, "SD")]
 
-    # O primeiro elemento da lista é 0, (5,"Cel"), faz-se necessário subtarir 5 pq no banco
-    # o idPosto desse elemento é cinco, porém, como estamos acessando uma lista, precisamos
-    # do índice correto, que é zero, já para pegar o posto, propriamente dito, que está em
-    # uma tupla, precisamos apenas passar o índice do posto, que aqui SEMPRE será 1, vez que
-    # só temos os dois elementos idposto e posto, idPosto está no índice zero da dupla e o posto,
-    # propriamente dito, está no índice 1, daí porque usar o 1 no retorno da função!
-    id = idPosto - 5
-    return POSTO[id][1]
+#     # O primeiro elemento da lista é 0, (5,"Cel"), faz-se necessário subtarir 5 pq no banco
+#     # o idPosto desse elemento é cinco, porém, como estamos acessando uma lista, precisamos
+#     # do índice correto, que é zero, já para pegar o posto, propriamente dito, que está em
+#     # uma tupla, precisamos apenas passar o índice do posto, que aqui SEMPRE será 1, vez que
+#     # só temos os dois elementos idposto e posto, idPosto está no índice zero da dupla e o posto,
+#     # propriamente dito, está no índice 1, daí porque usar o 1 no retorno da função!
+#     id = idPosto - 5
+#     return POSTO[id][1]
 
 
 # verifica se o critério de folga mínima é obdecido, caso contrário,
@@ -601,14 +601,11 @@ def GeneratePDF(request):
     titulo = 'PREVISÃO DE ESCALA DE SERVIÇO'
     subtitulo = ' PARA O MÊS DE ' +nome_mes +' '+ str(data.year)
 
-    x = (525-len(titulo)*7)//2 #(metade do "tamanho" da fonte)
-
-    x1 = (525-len(subtitulo)*7)//2
     p.setTitle(titulo)
     p.setFont("Helvetica-Bold", 14)
     p.setFillColor(black)
-    p.drawString(x, 795, titulo)
-    p.drawString(x1, 780, subtitulo)
+    p.drawCentredString(300, 795, titulo)
+    p.drawCentredString(300, 780, subtitulo)
     p.line(30,775,555,775)
     p.setFillColor(olive, alpha=0.75 )
     p.rect(30,755,525,20, fill=True, stroke=False)    
@@ -621,7 +618,7 @@ def GeneratePDF(request):
     coluna3 = 'Posto/Grad'
     coluna4 = 'Militar'
     coluna5 = 'OM'
-    p.drawString(40,760,  coluna1.upper())
+    p.drawCentredString(105,760,  coluna1.upper())
     p.drawString(190,760, coluna2.upper())
     p.drawString(270,760, coluna3.upper())
     p.drawString(360,760, coluna4.upper())
@@ -674,8 +671,8 @@ def GeneratePDF(request):
             p.setTitle(titulo)
             p.setFont("Helvetica-Bold", 14)
             p.setFillColor(black)
-            p.drawString(x, 795, titulo)
-            p.drawString(x1, 780, subtitulo)
+            p.drawCentredString(300, 795, titulo)
+            p.drawCentredString(300, 780, subtitulo)
             p.line(30,775,555,775)
             p.setFillColor(olive, alpha=0.75 )
             p.rect(30,755,525,20, fill=True, stroke=False)    
@@ -719,9 +716,9 @@ def GeneratePDF(request):
         # p.drawString(47, x, '{}: {} - {}'.
         #              format(escalado.descricao, getPostoGraduacao(escalado.po>
         p.drawString(185, y-2,escalado.descricao)
-        p.drawString(265, y-2,getPostoGraduacao(escalado.posto))
+        p.drawString(265, y-2,escalado.get_posto_display())
         p.drawString(355, y-2,escalado.nomeguerra)
-        p.drawString(465, y-2,str(escalado.codom))
+        p.drawString(465, y-2,escalado.get_codom_display())
 
         #print(escalado.posto)
 
@@ -736,7 +733,7 @@ def GeneratePDF(request):
     # present the option to save the file.
     buffer.seek(0)
 
-    return FileResponse(buffer, as_attachment=True, filename='escalaSV.pdf')
+    return FileResponse(buffer, as_attachment=True, filename='Servicos Tirados.pdf')
 
     # from reportlab.lib.pagesizes import A4
     # from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
@@ -833,7 +830,7 @@ def notificar_escalado(request):
             data = escalado.data
             dia = escalado.dia
 
-        posto   = escalado.posto
+        posto   = escalado.get_posto_display()
         nome    = escalado.nomeguerra
         escala  = escalado.descricao
         celular = "+55"+str(escalado.tel1)
@@ -842,7 +839,9 @@ def notificar_escalado(request):
         print(email, celular)
 
 
-        mensagem = getPostoGraduacao(posto) + " "+ nome + " informo que o Sr está previsto para o serviço de "+ escala \
+        # mensagem = getPostoGraduacao(posto) + " "+ nome + " informo que o Sr está previsto para o serviço de "+ escala \
+        #            + " no dia " +data.strftime("%d/%m/%Y") + " - " + dia
+        mensagem = posto + " "+ nome + " informo que o Sr está previsto para o serviço de "+ escala \
                    + " no dia " +data.strftime("%d/%m/%Y") + " - " + dia
 
         #método que envia a mensagem para o WhatsApp do militar

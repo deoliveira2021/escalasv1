@@ -90,12 +90,6 @@ class Militar(models.Model):
     def __str__(self):
         return self.nome_guerra
     
-    def getOM (self,codom):
-        print(codom)
-        id = self.OM_CHOICES.index(codom,0)
-        print(id)
-        return self.OM_CHOICES[id][1]
-
     class Meta:
         verbose_name = 'Militar'
         verbose_name_plural = 'Militares'
