@@ -32,6 +32,25 @@ from previsao import views as my_previsao
 def home(request):
     return redirect('previsao:previsao') # redireciona para a previsão
 
+def obterMes(data):
+    MESES = [
+        'JANEIRO',
+        'FEVEREIRO',
+        'MARÇO',
+        'ABRIL',
+        'MAIO',
+        'JUNHO',
+        'JULHO',
+        'AGOSTO',
+        'SETEMBRO',
+        'OUTUBRO',
+        'NOVEMBRO',
+        'DEZEMBRO',
+    ]
+    mesNumerico = data.month-1
+    mes = MESES[mesNumerico]
+    return mes
+
 def nomeDiaSemana(data):
     DIAS = [
         'Segunda-feira',

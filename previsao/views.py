@@ -137,14 +137,6 @@ def diadaSemana(diaEscala):
 # retorna o Posto/Graduação
 def getPostoGraduacao(idPosto):
     
-    #Este código foi comentado em 04FEV24 porque estava dando problema com a numeração dos postos...
-    #Postos de acordo com o previsto no contracheque... não funciona com essa numeração dos postos
-    # POSTO= [(5, "Cel"), (6, "T Cel"), (7, "Maj"),
-    #     (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
-    #     (18, "S Ten"), (19, "1º Sgt"), (20, "2º Sgt"), (21, "3º Sgt"),
-    #     (22, "Cb EP"), (23, "Cb EV"), (24, "SD PQDT EP"), (27, "SD EP"), (28, "SD EV")]
-             
-    #Substituiu o código acima, para acertar 
     POSTO = [(5, "Cel"), (6, "T Cel"), (7, "Maj"),
              (8, "Cap"), (9, "1º Ten"), (10, "2º Ten"), (11, "Asp"),
              (12, "S Ten"), (13, "1º Sgt"), (14, "2º Sgt"), (15, "3º Sgt"),
@@ -572,10 +564,13 @@ def GeneratePDF(request):
     from reportlab.pdfgen import canvas
     from reportlab.lib.pagesizes import letter, A4
     from reportlab.lib.units import inch
-    from reportlab.lib.colors import black, red
+    from reportlab.lib.colors import black, red, Color, olive, green, white
+    from reportlab.graphics.shapes import Rect
     from django.http import FileResponse
+    from core.views import (obterMes, nomeDiaSemana)
 
-    sqlmilitar = "SELECT a.id, a.posto,a.antiguidade,b.nomeguerra,\
+
+    sqlmilitar = "SELECT a.id, a.posto, a.codom,a.antiguidade,b.nomeguerra,\
     b.folga,b.data,b.dia, b.folga,c.descricao FROM pessoal_militar a, \
     previsao_previsao b, core_escala c WHERE a.id=b.idmilitar AND \
     c.id=b.idescala AND a.idcirculo=b.idcirculo \
@@ -583,8 +578,13 @@ def GeneratePDF(request):
 
     previsao_list = Militar.objects.raw(sqlmilitar)
 
+
+
     data = previsao_list[0].data
     dia = previsao_list[0].dia
+    nome_mes = obterMes(data)
+    dia = nomeDiaSemana(data)
+
     fontColor = "black"
     if vermelha(data):
         fontColor = "red"
@@ -598,67 +598,137 @@ def GeneratePDF(request):
     # Draw things on the PDF. Here's where the PDF generation happens.
     # See the ReportLab documentation for the full list of functionality.
     # p.drawString(100, 100, "Hello world.")
+    titulo = 'PREVISÃO DE ESCALA DE SERVIÇO'
+    subtitulo = ' PARA O MÊS DE ' +nome_mes +' '+ str(data.year)
 
-    p.setTitle('PREVISÃO DE ESCALA DE SERVIÇO')
+    x = (525-len(titulo)*7)//2 #(metade do "tamanho" da fonte)
+
+    x1 = (525-len(subtitulo)*7)//2
+    p.setTitle(titulo)
     p.setFont("Helvetica-Bold", 14)
-    p.drawString(255, 780, 'PREVISÃO DE ESCALA DE SERVIÇO')
-    p.line(30,775,555,775)
-
-    # subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
-    subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
-    p.setFont("Helvetica-Bold", 12)
-    p.setFillColor(fontColor)
-    p.drawString(45, 750, subtitle)
     p.setFillColor(black)
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(45,760, 'Data  - dia da Semana')
-    p.drawString(235,760, 'Escala')
-    p.drawString(345,760, 'Posto/Grad')
-    p.drawString(465,760, 'Militar')
+    p.drawString(x, 795, titulo)
+    p.drawString(x1, 780, subtitulo)
+    p.line(30,775,555,775)
+    p.setFillColor(olive, alpha=0.75 )
+    p.rect(30,755,525,20, fill=True, stroke=False)    
+    
+
+    p.setFillColor(white)
+    p.setFont("Helvetica-Bold", 11)
+    coluna1 = 'Data  - dia da Semana'
+    coluna2 = 'Escala'
+    coluna3 = 'Posto/Grad'
+    coluna4 = 'Militar'
+    coluna5 = 'OM'
+    p.drawString(40,760,  coluna1.upper())
+    p.drawString(190,760, coluna2.upper())
+    p.drawString(270,760, coluna3.upper())
+    p.drawString(360,760, coluna4.upper())
+    p.drawString(470,760, coluna5.upper())
+
+    subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+    p.setFont("Helvetica", 11)
+    p.setFillColor(fontColor)
+    p.drawString(35, 735, subtitle)
+
+    #---------------------- linhas verticais ----------------------
+    p.line(180,775,180,755)
+    p.line(260,775,260,755)
+    p.line(350,775,350,755)
+    p.line(460,775,460,755)
+    #--------------------------------------------------------------
+
     p.line(30,755,555,755)
-    # p.drawString(45,760, 'Data  - Dia da Semana      Escala             Posto/Grad          Militar')
-    y = 750
+    p.setFont("Helvetica", 11)          
+    # p.drawString(45,760, 'Data  - Dia da Semana      Escala             Posto>
+    y = 755
     for escalado in previsao_list:
         if (escalado.data != data):
-            y -= 20
+            y -= 10
             data = escalado.data
             dia = escalado.dia
             fontColor = "black"
+
+            p.line(30,y,555,y)
+
             if vermelha(data):
                 fontColor = "red"
 
-            # subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
-            subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
-            p.setFont("Helvetica-Bold", 12)
-            p.setFillColor(fontColor)
-            p.drawString(45, y, subtitle)
-            p.setFont("Helvetica", 12)
-            p.setFillColor(black)
-            y -= 5
+            # subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + d>
+            if (y > 60):
+                subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+                p.setFont("Helvetica", 11)
+                p.setFillColor(fontColor)
+                p.drawString(35, y-21, subtitle)
+                p.setFont("Helvetica", 11)
+                p.setFillColor(black)
+                y -= 0
+            elif (y > 40):
+                p.drawString(35,y-12, 'Relatório gerado por: '+request.user.username + ' em: ' + datetime.now().strftime("%d/%m/%Y"))
 
-        if y < 40:
-            y = 760
+        if y < 60:
+            y = 755
             # adiciona uma nova página para continuar listando a escala
             p.showPage()
+            p.setTitle(titulo)
             p.setFont("Helvetica-Bold", 14)
-            p.drawString(245, 780, 'Previsão da Escala de Serviço')
-            subtitle = 'Para o dia: ' + data.strftime("%d/%m/%Y") + ' - ' + dia
-            p.setFont("Helvetica-Bold", 12)
-            p.setFillColor(fontColor)
-            p.drawString(45, 770, subtitle)
-            p.setFont("Helvetica", 12)
             p.setFillColor(black)
-            # pdf.drawString(45,750, 'Escala             Posto/Grad          Militar')
+            p.drawString(x, 795, titulo)
+            p.drawString(x1, 780, subtitulo)
+            p.line(30,775,555,775)
+            p.setFillColor(olive, alpha=0.75 )
+            p.rect(30,755,525,20, fill=True, stroke=False)    
+            
 
-        y -= 15
+            p.setFillColor(white)
+            p.setFont("Helvetica-Bold", 11)
+            coluna1 = 'Data  - dia da Semana'
+            coluna2 = 'Escala'
+            coluna3 = 'Posto/Grad'
+            coluna4 = 'Militar'
+            coluna5 = 'OM'
+            p.drawString(40,760,  coluna1.upper())
+            p.drawString(190,760, coluna2.upper())
+            p.drawString(270,760, coluna3.upper())
+            p.drawString(360,760, coluna4.upper())
+            p.drawString(470,760, coluna5.upper())
+
+            subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+            p.setFont("Helvetica", 11)
+            p.setFillColor(fontColor)
+            p.drawString(35, 735, subtitle)
+
+            #---------------------- linhas verticais ----------------------
+            p.line(180,775,180,755)
+            p.line(260,775,260,755)
+            p.line(350,775,350,755)
+            p.line(460,775,460,755)
+            #--------------------------------------------------------------
+
+            p.line(30,755,555,755)
+            p.setFont("Helvetica", 11)    
+            p.setFillColor(black)
+            # pdf.drawString(45,750, 'Escala             Posto/Grad          Mi>
+        p.line(180,y+0,180,y-22)
+        p.line(260,y+0,260,y-22)
+        p.line(350,y+0,350,y-22)
+        p.line(460,y+0,460,y-22)
+
+        y -= 12
         # p.drawString(47, x, '{}: {} - {}'.
-        #              format(escalado.descricao, getPostoGraduacao(escalado.posto), escalado.nomeguerra))
-        p.drawString(235, y,escalado.descricao)
-        p.drawString(345, y,getPostoGraduacao(escalado.posto))
-        p.drawString(465, y,escalado.nomeguerra)
+        #              format(escalado.descricao, getPostoGraduacao(escalado.po>
+        p.drawString(185, y-2,escalado.descricao)
+        p.drawString(265, y-2,getPostoGraduacao(escalado.posto))
+        p.drawString(355, y-2,escalado.nomeguerra)
+        p.drawString(465, y-2,str(escalado.codom))
+
         #print(escalado.posto)
 
     # Close the PDF object cleanly, and we're done.
+    
+    p.line(30,y,555,y)
+    
     p.showPage()
     p.save()
 
