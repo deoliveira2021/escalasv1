@@ -31,7 +31,6 @@ urlpatterns = [
 
        re_path(r'^admin/', admin.site.urls),
        
-#       re_path(r'^$', my_previsao.previsao, name='previsao'), impossível
 #       re_path(r'^listar-escalas', views.index, name='listar'),
        #re_path(r'^contato/$', views.contact, name='contact'),
 ]

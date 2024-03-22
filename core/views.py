@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # importar date para usar a função weekday para sar o dia da Semana
 from datetime import datetime
-from escalasv1 import settings
+from django.conf import settings
 
 #usado para fazer uma conexão direta com o banco de dados
 #from django.db import connection #esse método foi comentado pq nãoe está mais usando sql puro
@@ -26,7 +26,6 @@ from itertools import islice
 from .forms import *
 from .models import *
 from pessoal.models import Militar
-from previsao import views as my_previsao
 
 
 def home(request):
@@ -67,6 +66,197 @@ def nomeDiaSemana(data):
     dia = DIAS[weekday_numeric]
 
     return dia
+
+@login_required
+def gerarPDF(request, sql, titulo, subtitulo=None):
+    import io
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.lib.units import inch
+    from reportlab.lib.colors import black, red, olive, white
+    from previsao.views import vermelha
+
+    lista = Militar.objects.raw(sql)
+
+    data = lista[0].data
+    dia = lista[0].dia
+    nome_mes = obterMes(data)
+    dia = nomeDiaSemana(data)
+
+    if (subtitulo != None):
+        subtitulo += nome_mes + ' ' + str(data.year)
+
+    fontColor = "black"
+    if vermelha(data):
+        fontColor = "red"
+
+    # Create a file-like buffer to receive PDF data.
+    buffer = io.BytesIO()
+
+    # Create the PDF object, using the buffer as its "file."
+    p = canvas.Canvas(buffer)
+
+    p.setTitle(titulo)
+    p.setFont("Helvetica-Bold", 14)
+    p.setFillColor(black)
+    p.drawCentredString(300, 795, titulo)
+
+    if (subtitulo !=None): 
+        p.drawCentredString(300, 780, subtitulo)
+
+    p.line(30,775,555,775)
+    p.setFillColor(olive, alpha=0.75 )
+    p.rect(30,755,525,20, fill=True, stroke=False)    
+
+    comumFontSize = 11
+    p.setFillColor(white)
+    p.setFont("Helvetica-Bold", comumFontSize)
+    coluna1 = 'Data  - dia da Semana'
+    coluna2 = 'Escala'
+    coluna3 = 'Posto/Grad'
+    coluna4 = 'Militar'
+    coluna5 = 'OM'
+
+    p.drawCentredString(105,760,  coluna1.upper())
+    p.drawString(190,760, coluna2.upper())
+    p.drawString(270,760, coluna3.upper())
+    p.drawString(360,760, coluna4.upper())
+    p.drawString(470,760, coluna5.upper())
+
+    subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+    p.setFont("Helvetica", comumFontSize)
+    p.setFillColor(fontColor)
+    p.drawString(35, 735, subtitle)
+
+    #---------------------- linhas verticais ----------------------
+    p.line(180,775,180,755)
+    p.line(260,775,260,755)
+    p.line(350,775,350,755)
+    p.line(460,775,460,755)
+    #--------------------------------------------------------------
+
+    p.line(30,755,555,755)
+    p.setFont("Helvetica", comumFontSize)          
+
+    y = 755
+    nrlinhas = 0
+    deltaY = comumFontSize
+    for escalado in lista:
+        if (escalado.data != data):
+            y -= 10
+            data = escalado.data
+            dia = escalado.dia
+            fontColor = "black"
+
+            p.line(30,y,555,y)
+
+            # if vermelha(data):
+            #     fontColor = "red"
+
+            if (y > 60):
+                subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+                deltaY = comumFontSize*(nrlinhas)-1
+                # print(deltaY, nrlinhas)
+                p.setFont("Helvetica", comumFontSize)
+                p.setFillColor(fontColor)
+                p.drawString(35, y-deltaY, subtitle)
+                p.setFont("Helvetica", comumFontSize)
+                p.setFillColor(fontColor)
+                if(vermelha(data)):
+                    p.setFillColor(red, alpha=0.35 )
+                    p.rect(30,y-deltaY*nrlinhas+9,525,deltaY*nrlinhas-10, fill=True, stroke=False) 
+
+                p.setFillColor(fontColor)
+                # y -= 0
+                nrlinhas = 0
+                    
+                
+            elif (y > 40):
+                p.drawString(30,y-12, 'Usuário: '+request.user.username)
+                p.drawCentredString(300, y-12, ' Página: ' + str(p.getPageNumber()))
+                p.drawRightString(555,y-12, ' Data: '+ datetime.now().strftime("%d/%m/%Y")) 
+                             
+        nrlinhas += 1
+        if y < 60:
+            nrlinhas = 1
+            y = 755
+            # adiciona uma nova página para continuar listando a escala
+            p.showPage()
+            p.setTitle(titulo)
+            p.setFont("Helvetica-Bold", 14)
+            p.setFillColor(black)
+            p.drawCentredString(300, 795, titulo)
+            if (subtitulo !=None):
+                p.drawCentredString(300, 780, subtitulo)
+
+            p.line(30,775,555,775)
+            p.setFillColor(olive, alpha=0.75 )
+            p.rect(30,755,525,20, fill=True, stroke=False)    
+            
+
+            p.setFillColor(white)
+            p.setFont("Helvetica-Bold", comumFontSize)
+            coluna1 = 'Data  - dia da Semana'
+            coluna2 = 'Escala'
+            coluna3 = 'Posto/Grad'
+            coluna4 = 'Militar'
+            coluna5 = 'OM'
+            p.drawString(40,760,  coluna1.upper())
+            p.drawString(190,760, coluna2.upper())
+            p.drawString(270,760, coluna3.upper())
+            p.drawString(360,760, coluna4.upper())
+            p.drawString(470,760, coluna5.upper())
+
+            subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+            p.setFont("Helvetica", comumFontSize)
+            p.setFillColor(fontColor)
+            p.drawString(35, 735, subtitle)
+
+            #---------------------- linhas verticais ----------------------
+            p.line(180,775,180,755)
+            p.line(260,775,260,755)
+            p.line(350,775,350,755)
+            p.line(460,775,460,755)
+            #--------------------------------------------------------------
+
+            p.line(30,755,555,755)
+            p.setFont("Helvetica", comumFontSize)    
+            p.setFillColor(black)
+
+        p.line(180,y+0,180,y-22)
+        p.line(260,y+0,260,y-22)
+        p.line(350,y+0,350,y-22)
+        p.line(460,y+0,460,y-22)
+
+        y -= 12
+
+        p.drawString(185, y-2,escalado.descricao)
+        p.drawString(265, y-2,escalado.get_posto_display())
+        p.drawString(355, y-2,escalado.nomeguerra)
+        p.drawString(465, y-2,escalado.get_codom_display())
+
+    # Close the PDF object cleanly, and we're done.
+    
+    if (y > 60 & p.pageHasData()==False):
+        p.line(30,y-10,555,y-10)
+
+        y = 40
+        p.drawString(30,y-12, 'Usuário: '+request.user.username)
+        p.drawCentredString(300, y-12, ' Página: ' + str(p.getPageNumber()))
+        p.drawRightString(555,y-12, ' Data: '+ datetime.now().strftime("%d/%m/%Y"))
+
+    p.line(30,y,555,y)
+    
+    p.showPage()
+    p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+
+    return buffer
+
+
 
 def podeDesignar(idmilitar,idescala,idcirculo):
     #verifica se o militar já está concorrendo a essa escala, se já estiver, não cadastra novamente

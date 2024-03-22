@@ -2,8 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import FileResponse
-
 
 # para gerar o dict_dados
 from collections import defaultdict
@@ -545,6 +543,15 @@ def trocar_servico(request, idprevisao, pagina):
 
 # função que gera pdf
 def GeneratePDF(request):
+    # # para gerar pdf
+    import io
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.lib.units import inch
+    from reportlab.lib.colors import black, red, Color, olive, green, white
+    from reportlab.graphics.shapes import Rect
+    from django.http import FileResponse
+
     sqlmilitar = "SELECT a.id, a.posto, a.codom,a.antiguidade,b.nomeguerra,\
     b.folga,b.data,b.dia, b.folga,c.descricao FROM pessoal_militar a, \
     previsao_previsao b, core_escala c WHERE a.id=b.idmilitar AND \
@@ -557,6 +564,74 @@ def GeneratePDF(request):
     buffer = gerarPDF(request, sqlmilitar,titulo, subtitulo)
 
     return FileResponse(buffer, as_attachment=True, filename='Previsao da Escala de Serviço.pdf')
+
+    # from reportlab.lib.pagesizes import A4
+    # from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+    # from reportlab.lib.styles import (ParagraphStyle, getSampleStyleSheet)
+
+    # sqlmilitar = "SELECT a.id, a.posto,a.antiguidade,b.nomeguerra,\
+    # b.folga,b.data,b.dia, b.folga,c.descricao FROM pessoal_militar a, \
+    # previsao_previsao b, core_escala c WHERE a.id=b.idmilitar AND \
+    # c.id=b.idescala AND a.idcirculo=b.idcirculo \
+    # ORDER BY b.data, c.precedencia, b.idcirculo, a.antiguidade"
+
+    # previsao_list = Militar.objects.raw(sqlmilitar)
+
+    # data = previsao_list[0].data
+    # dia = previsao_list[0].dia
+    # fontColor = "black"
+    # if vermelha(data):
+    #     fontColor = "red"    
+
+    # #Cria uma lista vazia, depois vai adicionando listas, para passar como parâmetro para função
+    # #Table do objeto pdf que recebe uma matriz de listas para gerar o PDF
+    # dados = []
+    # dados.append(['Data', 'Dia da Semana','Escala', 'Posto/Grad', 'Nome'])
+    # for escalado in previsao_list:
+    #     dados.append([escalado.data,escalado.dia,escalado.descricao,getPostoGraduacao(escalado.posto),escalado.nomeguerra])
+
+    # pdf_filename = "tabela_estilizada.pdf"
+    # pdf = SimpleDocTemplate(pdf_filename, pagesize=A4)
+    
+    # elements = []
+    # styleSheet = getSampleStyleSheet()
+
+    # texto =  "Escala de Serviço para o dia: " + data.strftime("%d/%m/%Y") + " - " +dia
+ 
+    # tituloEstilo = ParagraphStyle('título',
+    #                         fontName="Helvetica-Bold",
+    #                         fontSize=12,
+    #                         parent=styleSheet['Heading2'],
+    #                         alignment=1,
+    #                         spaceAfter=14)
+
+    # # P = Paragraph(texto,styleSheet["Normal"])
+    # P = Paragraph(texto.upper(), tituloEstilo)
+    
+    # elements.append(P)
+
+    # table = Table(dados)
+
+    # # Estilo da tabela
+    # style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), (0.2, 0.4, 0.6)),  # Cor de fundo para cabeçalho
+    #                     ('TEXTCOLOR', (0, 0), (-1, 0), (1, 1, 1)),  # Cor do texto no cabeçalho
+    #                     ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinhamento central
+    #                     ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold')])  # Fonte negrito para cabeçalho
+
+    # table.setStyle(style)
+
+    # elements.append(table)
+
+    # # print(texto)
+
+    # # elements.append(table)
+
+    # pdf.build(elements)
+
+    # # response = FileResponse(pdf, pdf_filename)
+    # # pdf.build([table])
+
+    # return redirect('previsao:previsao')
 
 
 #*******************************************************************************************************************
@@ -599,15 +674,15 @@ def notificar_escalado(request):
         mensagem = posto + " "+ nome + " informo que o Sr está previsto para o serviço de "+ escala \
                    + " no dia " +data.strftime("%d/%m/%Y") + " - " + dia
 
+        #método que envia a mensagem para o WhatsApp do militar
         try:
-            #método que envia a mensagem para o WhatsApp do militar
             sendMsg.sendwhatmsg_instantly(celular, mensagem,15)
             print("Message Sent!") #Prints success message in console
         except: 
             print("Error in sending the message")              
+        #método que envia a mensagem para o e-mail cadastrado do militar
             
         try:
-            #método que envia a mensagem para o e-mail cadastrado do militar
             sendMsg.send_mail("sousaedvaldo@gmail.com","pkgrdxihoolsqpbe","Escala de Serviço", mensagem,email)
         except: 
             print("Error in sending the message")
