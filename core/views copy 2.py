@@ -67,28 +67,21 @@ def nomeDiaSemana(data):
 
     return dia
 
-def gerarRodape(request,p,y):
-    p.drawString(30,y-12, 'Usuário: '+request.user.username)
-    p.drawCentredString(300, y-12, ' Página: ' + str(p.getPageNumber()))
-    p.drawRightString(555,y-12, ' Data: '+ datetime.now().strftime("%d/%m/%Y"))
-    return True
-
 @login_required
 def gerarPDF(request, sql, titulo, subtitulo=None):
     import io
     from reportlab.pdfgen import canvas
     from reportlab.lib.pagesizes import letter, A4
     from reportlab.lib.units import inch
-    from reportlab.lib.colors import black, red, olive, white, blue
+    from reportlab.lib.colors import black, red, olive, white
     from previsao.views import vermelha
 
     lista = Militar.objects.raw(sql)
-    
+
     data = lista[0].data
     dia = lista[0].dia
     nome_mes = obterMes(data)
     dia = nomeDiaSemana(data)
-
 
     if (subtitulo != None):
         subtitulo += nome_mes + ' ' + str(data.year)
@@ -103,51 +96,37 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
     # Create the PDF object, using the buffer as its "file."
     p = canvas.Canvas(buffer)
 
-    # ------------ Configura fonte, tamanho e cor da fonte ------------
+    p.setTitle(titulo)
     p.setFont("Helvetica-Bold", 14)
     p.setFillColor(black)
-    # -----------------------------------------------------------------
-
-    # ----------------- Escreve o Título do relatório -----------------
-    p.setTitle(titulo)
     p.drawCentredString(300, 795, titulo)
-    # -----------------------------------------------------------------
 
-    # ---------------- Escreve o Subtítulo do relatório ---------------
     if (subtitulo !=None): 
         p.drawCentredString(300, 780, subtitulo)
-    # -----------------------------------------------------------------
 
-    # ----------------- Desenha o Cabeçalho da Tabela -----------------
     p.line(30,775,555,775)
     p.setFillColor(olive, alpha=0.75 )
     p.rect(30,755,525,20, fill=True, stroke=False)    
-    p.line(30,755,555,755)
-    # -----------------------------------------------------------------
 
-    # ------------ Configura fonte, tamanho e cor da fonte ------------
     comumFontSize = 11
     p.setFillColor(white)
     p.setFont("Helvetica-Bold", comumFontSize)
-    # -----------------------------------------------------------------
-
-    # ----------- Configura os campos das colunas da tabela -----------
     coluna1 = 'Data  - dia da Semana'
     coluna2 = 'Escala'
     coluna3 = 'Posto/Grad'
     coluna4 = 'Militar'
     coluna5 = 'OM'
-    # -----------------------------------------------------------------
 
-    # ---------------- Escreve os títulos das colunas  ----------------
-    #          upper é para deixar todas as letras maiúsculas         #
-    # -----------------------------------------------------------------   
     p.drawCentredString(105,760,  coluna1.upper())
     p.drawString(190,760, coluna2.upper())
     p.drawString(270,760, coluna3.upper())
     p.drawString(360,760, coluna4.upper())
     p.drawString(470,760, coluna5.upper())
-    # -----------------------------------------------------------------
+
+    # subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+    p.setFont("Helvetica", comumFontSize)
+    p.setFillColor(fontColor)
+    # p.drawString(35, 735, subtitle)
 
     #---------------------- linhas verticais ----------------------
     p.line(180,775,180,755)
@@ -156,90 +135,54 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
     p.line(460,775,460,755)
     #--------------------------------------------------------------
 
-    topoPagina = 755
-    rodapePagina = 40
-    y = topoPagina
-    areaUtil = topoPagina-rodapePagina
+    p.line(30,755,555,755)
+    p.setFont("Helvetica", comumFontSize)          
+
+    y = 755
     nrlinhas = 0
-    nrRegPorPag = 1
     deltaY = comumFontSize
-    nrRegAtual = 0
-
-    saltoTexto = 12
-    saltoLinhas = 5
-
-
-    # ------------ Configura fonte, tamanho e cor da fonte ------------
-    p.setFillColor(fontColor)
-    p.setFont("Helvetica", comumFontSize)   
-    #------------------------------------------------------------------
-
-    # - Faz uma varredura na lista para pegar todas escalas das datas -
     for escalado in lista:
-        # --------- este if faz a mudança do dia da escala ------------
         if (escalado.data != data):
-            nrRegAtual += 1
-            # nrRegPorPag = (areaUtil // ((nrlinhas-1)*comumFontSize+(nrlinhas-1)*18))
-            nrRegPorPag = (areaUtil // ((nrlinhas)*(saltoLinhas+saltoTexto)))
-            print(nrRegPorPag)
-            # print('atual e regporpaginas: ', nrRegAtual, nrRegPorPag)
-
-            # -----------------------------------------------------------
-            # O número 12 usado para calcular o deltaY é o equivalente ao 
-            # salto de 12 pixels que é dado entre cada linha y -= saltoTexto
-            # -----------------------------------------------------------
-            deltaY = (saltoTexto*(nrlinhas-1)//2) 
+            deltaY = (comumFontSize*(nrlinhas)//2)-1
             subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+            print(deltaY, nrlinhas)
             p.drawString(35, y+deltaY, subtitle)
-
-            # y -= 10
-            # y -= 6
-            y -= saltoLinhas                     
-            p.line(30,y,555,y)
-            # p.line(30,y-saltoLinhas,555,y-saltoLinhas)
-
-            #atualiza a data e o dia da semana para os valores do registro atual
+            y -= 10
             data = escalado.data
             dia = escalado.dia
-
-            #configura a cor para preta, para garantir que não seja impresso de outra cor
             fontColor = "black"
+
+            p.line(30,y,555,y)
 
             # if vermelha(data):
             #     fontColor = "red"
 
-            if ((nrRegAtual < nrRegPorPag)):
-                # print('Passou em regatual < regporpagina')
+            if (y > 60):
+                # subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+                # deltaY = comumFontSize*(nrlinhas)-1
+                # print(deltaY, nrlinhas)
+                # p.setFont("Helvetica", comumFontSize)
+                # p.setFillColor(fontColor)
+                # p.drawString(35, y-deltaY, subtitle)
+                # p.setFont("Helvetica", comumFontSize)
+                # p.setFillColor(fontColor)
                 if(vermelha(data)):
-                    print('vermelha')
                     p.setFillColor(red, alpha=0.35 )
-                    # print('O valor de y é: ',y)
-                    p.rect(30,y-(deltaY+(nrlinhas//2)*saltoTexto+2*saltoLinhas+1),525,deltaY+(saltoTexto*(nrlinhas//2)+2*saltoLinhas), fill=True, stroke=False)
-                    # print('O valor de y ajustado é: ',y-(deltaY+(nrlinhas//2)*saltoTexto+2*saltoLinhas)) 
-                    # print('Delta Y: ',deltaY)
+                    p.rect(30,y-deltaY*nrlinhas+9,525,deltaY*nrlinhas-10, fill=True, stroke=False) 
 
                 p.setFillColor(fontColor)
                 # y -= 0
                 nrlinhas = 0
-                # print('Registro atual: ',nrRegAtual)   
-                # print('Registros por página: ', nrRegPorPag)     
-
-            if (nrRegAtual == nrRegPorPag):
-                # print('passou aqui')
-                p.setFillColor(fontColor)
-                gerarRodape(request, p, y)
-            
-            # y -= 6                     
-            # y -= saltoLinhas                     
-        # if (y < 60):
-        # força quebra de página, pq a quantidade de registros é igual ao que cabe em uma página
-        if ((nrRegAtual == nrRegPorPag)):
-            nrRegAtual = 0
-            # print("Reg Atual: ", nrRegAtual, "Reg/pag: ", nrRegPorPag)
-            # print(nrlinhas)
+                    
+            elif (y > 40):
+                p.drawString(30,y-12, 'Usuário: '+request.user.username)
+                p.drawCentredString(300, y-12, ' Página: ' + str(p.getPageNumber()))
+                p.drawRightString(555,y-12, ' Data: '+ datetime.now().strftime("%d/%m/%Y")) 
+                             
+        if y < 60:
+            print(nrlinhas)
             nrlinhas = 1
             y = 755
-    
             # adiciona uma nova página para continuar listando a escala
             p.showPage()
             p.setTitle(titulo)
@@ -267,6 +210,11 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
             p.drawString(360,760, coluna4.upper())
             p.drawString(470,760, coluna5.upper())
 
+            # subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+            # p.setFont("Helvetica", comumFontSize)
+            # p.setFillColor(fontColor)
+            # p.drawString(35, 735, subtitle)
+
             #---------------------- linhas verticais ----------------------
             p.line(180,775,180,755)
             p.line(260,775,260,755)
@@ -280,33 +228,32 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
 
         nrlinhas += 1
 
-        p.line(180,y+0,180,y-(saltoLinhas+saltoTexto))
-        p.line(260,y+0,260,y-(saltoLinhas+saltoTexto))
-        p.line(350,y+0,350,y-(saltoLinhas+saltoTexto))
-        p.line(460,y+0,460,y-(saltoLinhas+saltoTexto))
+        p.line(180,y+0,180,y-22)
+        p.line(260,y+0,260,y-22)
+        p.line(350,y+0,350,y-22)
+        p.line(460,y+0,460,y-22)
 
-        # y -= 12
-        y -= saltoTexto
+        y -= 12
 
         p.drawString(185, y-2,escalado.descricao)
         p.drawString(265, y-2,escalado.get_posto_display())
         p.drawString(355, y-2,escalado.nomeguerra)
         p.drawString(465, y-2,escalado.get_codom_display())
-    # ----------------------- fim do for
-
 
     # Close the PDF object cleanly, and we're done.
     
     if (y > 60 & p.pageHasData()==False):
-        ## - Coloca os dados última escala.
+        ## - Coloca os dados da última escala.
         subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+        print(deltaY, nrlinhas)
         p.drawString(35, y+deltaY, subtitle)
 
-        # p.line(30,y-saltoLinhas,555,y- saltoLinhas)
+        p.line(30,y-10,555,y-10)
 
-        y -= saltoLinhas
-        p.setFillColor(fontColor)
-        gerarRodape(request, p, y)
+        y = 40
+        p.drawString(30,y-12, 'Usuário: '+request.user.username)
+        p.drawCentredString(300, y-12, ' Página: ' + str(p.getPageNumber()))
+        p.drawRightString(555,y-12, ' Data: '+ datetime.now().strftime("%d/%m/%Y"))
 
     p.line(30,y,555,y)
     

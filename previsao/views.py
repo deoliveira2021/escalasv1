@@ -426,7 +426,7 @@ def listar_previsao(request, pagina=1, nrporpagina=23, descricao=None, nomeguerr
 
 # @login_required
 def previsao(request):
-    print("passou em previsao")
+    # print("passou em previsao")
     podeSalvar = False
     podeGerarPDF = False
 
