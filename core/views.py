@@ -213,10 +213,19 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
                 if(vermelha(data)):
                     print('vermelha')
                     p.setFillColor(red, alpha=0.35 )
-                    # print('O valor de y é: ',y)
-                    p.rect(30,y-(deltaY+(nrlinhas//2)*saltoTexto+2*saltoLinhas+1),525,deltaY+(saltoTexto*(nrlinhas//2)+2*saltoLinhas), fill=True, stroke=False)
-                    # print('O valor de y ajustado é: ',y-(deltaY+(nrlinhas//2)*saltoTexto+2*saltoLinhas)) 
-                    # print('Delta Y: ',deltaY)
+                    # print('O valor de y é: ',y)                        
+                    deslocamento = (nrlinhas//2)+nrlinhas%2
+                    if(nrlinhas % 2 != 0):
+                        deslocamento = deltaY+deslocamento*saltoTexto+saltoLinhas
+                    else:
+                        deslocamento = deltaY+deslocamento*saltoTexto+2*saltoLinhas+1
+                        
+                    print("Deltay: ", deltaY, nrlinhas)
+                    print('Deslocamento', deslocamento)
+                    print('Y novo: ', y-deslocamento)
+                    # p.rect(30,y-(deltaY+(nrlinhas//2)*saltoTexto+2*saltoLinhas+1),525,deltaY+(saltoTexto*(nrlinhas//2)+2*saltoLinhas), fill=True, stroke=False)
+                    # p.rect(30,y-(deltaY+deslocamento*saltoTexto+saltoLinhas),525,deltaY+(saltoTexto*deslocamento+saltoLinhas), fill=True, stroke=False)
+                    p.rect(30,y-deslocamento,525,deslocamento, fill=True, stroke=False)
 
                 p.setFillColor(fontColor)
                 # y -= 0
@@ -234,10 +243,9 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
         # if (y < 60):
         # força quebra de página, pq a quantidade de registros é igual ao que cabe em uma página
         if ((nrRegAtual == nrRegPorPag)):
+            # print('deltay', deltaY, nrlinhas)
             nrRegAtual = 0
-            # print("Reg Atual: ", nrRegAtual, "Reg/pag: ", nrRegPorPag)
-            # print(nrlinhas)
-            nrlinhas = 1
+            nrlinhas = 0
             y = 755
     
             # adiciona uma nova página para continuar listando a escala
