@@ -160,7 +160,7 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
     rodapePagina = 40
     y = topoPagina
     areaUtil = topoPagina-rodapePagina
-    nrlinhas = 0
+    nrlinhas = 1
     nrRegPorPag = 1
     deltaY = comumFontSize
     nrRegAtual = 0
@@ -179,24 +179,28 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
         # --------- este if faz a mudança do dia da escala ------------
         if (escalado.data != data):
             nrRegAtual += 1
-            # nrRegPorPag = (areaUtil // ((nrlinhas-1)*comumFontSize+(nrlinhas-1)*18))
-            nrRegPorPag = (areaUtil // ((nrlinhas)*(saltoLinhas+saltoTexto)))
-            print(nrRegPorPag)
-            # print('atual e regporpaginas: ', nrRegAtual, nrRegPorPag)
+
+            divisor = (comumFontSize*(nrlinhas)+(saltoTexto-comumFontSize)*(nrlinhas-1)) - saltoLinhas 
+
+            print(nrlinhas,saltoLinhas,saltoTexto)
+            nrRegPorPag = round(areaUtil / divisor)
+            # print("Divisor: ", divisor)
 
             # -----------------------------------------------------------
-            # O número 12 usado para calcular o deltaY é o equivalente ao 
-            # salto de 12 pixels que é dado entre cada linha y -= saltoTexto
+            # Calcula o deltaY para centralizar a data/dia da semana
+            # saltoTexto é a distância dada entre as linhas do texto
             # -----------------------------------------------------------
-            deltaY = (saltoTexto*(nrlinhas-1)//2) 
+            deltaY = round((comumFontSize*(nrlinhas)+(saltoTexto-comumFontSize)*(nrlinhas-1)) / 2) - round(2.35*saltoLinhas) 
+            print('posicao da data: ', y+deltaY)
+
             subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
             p.drawString(35, y+deltaY, subtitle)
 
-            # y -= 10
-            # y -= 6
+            # -----------------------------------------------------------
+            # ---- saltoLinhas é usada para afastar a linha do texto ----
+            # -----------------------------------------------------------
             y -= saltoLinhas                     
             p.line(30,y,555,y)
-            # p.line(30,y-saltoLinhas,555,y-saltoLinhas)
 
             #atualiza a data e o dia da semana para os valores do registro atual
             data = escalado.data
@@ -209,43 +213,51 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
             #     fontColor = "red"
 
             if ((nrRegAtual < nrRegPorPag)):
-                # print('Passou em regatual < regporpagina')
                 if(vermelha(data)):
-                    print('vermelha')
-                    p.setFillColor(red, alpha=0.35 )
-                    # print('O valor de y é: ',y)                        
-                    deslocamento = (nrlinhas//2)+nrlinhas%2
-                    if(nrlinhas % 2 != 0):
-                        deslocamento = deltaY+deslocamento*saltoTexto+saltoLinhas
-                    else:
-                        deslocamento = deltaY+deslocamento*saltoTexto+2*saltoLinhas+1
+                    # print('vermelha')
+                    p.setFillColor(red, alpha=0.30 )
+
+                    # deslocamento = (nrlinhas//2)+nrlinhas%2
+                    deslocamento = deltaY+ round((comumFontSize*(nrlinhas)+(saltoTexto-comumFontSize)*(nrlinhas-1)) / 2) + saltoLinhas
+                    # deslocamento = (nrlinhas-nrlinhas%2)//2
+                    # if(nrlinhas % 2 != 0):
+                    #     deslocamento = deltaY+deslocamento*saltoTexto-2
+                    # else:
+                    #     deslocamento = deltaY+deslocamento*saltoTexto-2
+                    
+                    # # if(nrlinhas % 2 == 0):
+                    # #     deslocamento = deltaY+deslocamento*saltoTexto + saltoLinhas*2
+                    # # else:
+                    # #     deslocamento = deltaY+deslocamento*saltoTexto - nrlinhas%2
+
+
+                    # deslocamento = (nrlinhas//2)+nrlinhas%2
+                    # if(nrlinhas % 2 != 0):
+                    #     deslocamento = deltaY+deslocamento*saltoTexto+saltoLinhas
+                    # else:
+                    #     deslocamento = deltaY+deslocamento*saltoTexto+2*saltoLinhas+1
                         
-                    print("Deltay: ", deltaY, nrlinhas)
-                    print('Deslocamento', deslocamento)
-                    print('Y novo: ', y-deslocamento)
-                    # p.rect(30,y-(deltaY+(nrlinhas//2)*saltoTexto+2*saltoLinhas+1),525,deltaY+(saltoTexto*(nrlinhas//2)+2*saltoLinhas), fill=True, stroke=False)
-                    # p.rect(30,y-(deltaY+deslocamento*saltoTexto+saltoLinhas),525,deltaY+(saltoTexto*deslocamento+saltoLinhas), fill=True, stroke=False)
                     p.rect(30,y-deslocamento,525,deslocamento, fill=True, stroke=False)
 
-                p.setFillColor(fontColor)
-                # y -= 0
-                nrlinhas = 0
-                # print('Registro atual: ',nrRegAtual)   
-                # print('Registros por página: ', nrRegPorPag)     
+                p.setFillColor(fontColor)     
 
-            if (nrRegAtual == nrRegPorPag):
-                # print('passou aqui')
-                p.setFillColor(fontColor)
-                gerarRodape(request, p, y)
-            
-            # y -= 6                     
-            # y -= saltoLinhas                     
-        # if (y < 60):
+            # if (nrRegAtual == nrRegPorPag):
+            #     # print('passou aqui')
+            #     p.setFillColor(fontColor)
+            #     gerarRodape(request, p, y)
+
+            nrlinhas = 1    
         # força quebra de página, pq a quantidade de registros é igual ao que cabe em uma página
+            print('Registro Atual: ', nrRegAtual, 'Reg/página: ', nrRegPorPag, 'Linha: ', nrlinhas)
         if ((nrRegAtual == nrRegPorPag)):
-            # print('deltay', deltaY, nrlinhas)
+            p.setFillColor(fontColor)
+            gerarRodape(request, p, y)
+
+            print(nrlinhas,nrRegAtual,nrRegPorPag)
+
             nrRegAtual = 0
-            nrlinhas = 0
+            nrlinhas = 1
+            nrRegPorPag = 1
             y = 755
     
             # adiciona uma nova página para continuar listando a escala
@@ -293,28 +305,29 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
         p.line(350,y+0,350,y-(saltoLinhas+saltoTexto))
         p.line(460,y+0,460,y-(saltoLinhas+saltoTexto))
 
-        # y -= 12
         y -= saltoTexto
 
-        p.drawString(185, y-2,escalado.descricao)
-        p.drawString(265, y-2,escalado.get_posto_display())
-        p.drawString(355, y-2,escalado.nomeguerra)
-        p.drawString(465, y-2,escalado.get_codom_display())
+        if(escalado.nomeguerra=='BELTRANO'):
+            print('posicao de BELTRANO: ', y)
+        p.drawString(185, y,escalado.descricao)
+        p.drawString(265, y,escalado.get_posto_display())
+        p.drawString(355, y,escalado.nomeguerra)
+        p.drawString(465, y,escalado.get_codom_display())
     # ----------------------- fim do for
 
 
     # Close the PDF object cleanly, and we're done.
     
-    if (y > 60 & p.pageHasData()==False):
-        ## - Coloca os dados última escala.
-        subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
-        p.drawString(35, y+deltaY, subtitle)
+    # if (y > 60 & p.pageHasData()==False):
+    #     ## - Coloca os dados última escala.
 
-        # p.line(30,y-saltoLinhas,555,y- saltoLinhas)
+    #     ## - Coloca os dados última escala.
+    subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+    p.drawString(35, y+deltaY, subtitle)
 
-        y -= saltoLinhas
-        p.setFillColor(fontColor)
-        gerarRodape(request, p, y)
+    y -= saltoLinhas
+    p.setFillColor(fontColor)
+    gerarRodape(request, p, y)
 
     p.line(30,y,555,y)
     
