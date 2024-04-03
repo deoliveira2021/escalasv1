@@ -143,10 +143,10 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
     #          upper é para deixar todas as letras maiúsculas         #
     # -----------------------------------------------------------------   
     p.drawCentredString(105,760,  coluna1.upper())
-    p.drawString(190,760, coluna2.upper())
-    p.drawString(270,760, coluna3.upper())
-    p.drawString(360,760, coluna4.upper())
-    p.drawString(470,760, coluna5.upper())
+    p.drawCentredString(220,760, coluna2.upper())
+    p.drawCentredString(305,760, coluna3.upper())
+    p.drawCentredString(405,760, coluna4.upper())
+    p.drawCentredString(505,760, coluna5.upper())
     # -----------------------------------------------------------------
 
     #---------------------- linhas verticais ----------------------
@@ -192,7 +192,6 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
             # -----------------------------------------------------------
             deltaY = round((comumFontSize*(nrlinhas)+(saltoTexto-comumFontSize)*(nrlinhas-1)) / 2) - round(2.35*saltoLinhas) 
             print('posicao da data: ', y+deltaY)
-
             subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
             p.drawString(35, y+deltaY, subtitle)
 
@@ -216,39 +215,13 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
                 if(vermelha(data)):
                     # print('vermelha')
                     p.setFillColor(red, alpha=0.30 )
-
-                    # deslocamento = (nrlinhas//2)+nrlinhas%2
-                    deslocamento = deltaY+ round((comumFontSize*(nrlinhas)+(saltoTexto-comumFontSize)*(nrlinhas-1)) / 2) + saltoLinhas
-                    # deslocamento = (nrlinhas-nrlinhas%2)//2
-                    # if(nrlinhas % 2 != 0):
-                    #     deslocamento = deltaY+deslocamento*saltoTexto-2
-                    # else:
-                    #     deslocamento = deltaY+deslocamento*saltoTexto-2
-                    
-                    # # if(nrlinhas % 2 == 0):
-                    # #     deslocamento = deltaY+deslocamento*saltoTexto + saltoLinhas*2
-                    # # else:
-                    # #     deslocamento = deltaY+deslocamento*saltoTexto - nrlinhas%2
-
-
-                    # deslocamento = (nrlinhas//2)+nrlinhas%2
-                    # if(nrlinhas % 2 != 0):
-                    #     deslocamento = deltaY+deslocamento*saltoTexto+saltoLinhas
-                    # else:
-                    #     deslocamento = deltaY+deslocamento*saltoTexto+2*saltoLinhas+1
-                        
+                    deslocamento = deltaY+ round((comumFontSize*(nrlinhas)+(saltoTexto-comumFontSize)*(nrlinhas-1)) / 2) + saltoLinhas     
                     p.rect(30,y-deslocamento,525,deslocamento, fill=True, stroke=False)
 
                 p.setFillColor(fontColor)     
 
-            # if (nrRegAtual == nrRegPorPag):
-            #     # print('passou aqui')
-            #     p.setFillColor(fontColor)
-            #     gerarRodape(request, p, y)
-
             nrlinhas = 1    
         # força quebra de página, pq a quantidade de registros é igual ao que cabe em uma página
-            print('Registro Atual: ', nrRegAtual, 'Reg/página: ', nrRegPorPag, 'Linha: ', nrlinhas)
         if ((nrRegAtual == nrRegPorPag)):
             p.setFillColor(fontColor)
             gerarRodape(request, p, y)
@@ -260,7 +233,7 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
             nrRegPorPag = 1
             y = 755
     
-            # adiciona uma nova página para continuar listando a escala
+            # o método showPage() realiza a quebra de páginas no canvas
             p.showPage()
             p.setTitle(titulo)
             p.setFont("Helvetica-Bold", 14)
@@ -281,11 +254,11 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
             coluna3 = 'Posto/Grad'
             coluna4 = 'Militar'
             coluna5 = 'OM'
-            p.drawString(40,760,  coluna1.upper())
-            p.drawString(190,760, coluna2.upper())
-            p.drawString(270,760, coluna3.upper())
-            p.drawString(360,760, coluna4.upper())
-            p.drawString(470,760, coluna5.upper())
+            p.drawCentredString(105,760,  coluna1.upper())
+            p.drawCentredString(220,760, coluna2.upper())
+            p.drawCentredString(305,760, coluna3.upper())
+            p.drawCentredString(405,760, coluna4.upper())
+            p.drawCentredString(505,760, coluna5.upper())
 
             #---------------------- linhas verticais ----------------------
             p.line(180,775,180,755)
@@ -310,7 +283,7 @@ def gerarPDF(request, sql, titulo, subtitulo=None):
         if(escalado.nomeguerra=='BELTRANO'):
             print('posicao de BELTRANO: ', y)
         p.drawString(185, y,escalado.descricao)
-        p.drawString(265, y,escalado.get_posto_display())
+        p.drawCentredString(305, y,escalado.get_posto_display())
         p.drawString(355, y,escalado.nomeguerra)
         p.drawString(465, y,escalado.get_codom_display())
     # ----------------------- fim do for

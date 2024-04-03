@@ -545,18 +545,139 @@ def trocar_servico(request, idprevisao, pagina):
 
 # função que gera pdf
 def GeneratePDF(request):
-    sqlmilitar = "SELECT a.id, a.posto, a.codom,a.antiguidade,b.nomeguerra,\
+    # sqlmilitar = "SELECT a.id, a.posto, a.codom,a.antiguidade,b.nomeguerra,\
+    # b.folga,b.data,b.dia, b.folga,c.descricao FROM pessoal_militar a, \
+    # previsao_previsao b, core_escala c WHERE a.id=b.idmilitar AND \
+    # c.id=b.idescala AND a.idcirculo=b.idcirculo \
+    # ORDER BY b.data, c.precedencia, b.idcirculo, a.antiguidade"
+
+    # titulo = 'PREVISÃO DE ESCALA DE SERVIÇO'
+    # subtitulo = ' PARA O MÊS DE '
+
+    # buffer = gerarPDF(request, sqlmilitar,titulo, subtitulo)
+
+    # return FileResponse(buffer, as_attachment=True, filename='Previsao da Escala de Serviço.pdf')
+
+    from django.shortcuts import HttpResponse   
+    import io
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import A4
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+    from reportlab.lib.styles import (ParagraphStyle, getSampleStyleSheet)
+    from reportlab.lib import colors
+
+    sqlmilitar = "SELECT a.id, a.posto,a.antiguidade,b.nomeguerra,\
     b.folga,b.data,b.dia, b.folga,c.descricao FROM pessoal_militar a, \
     previsao_previsao b, core_escala c WHERE a.id=b.idmilitar AND \
     c.id=b.idescala AND a.idcirculo=b.idcirculo \
     ORDER BY b.data, c.precedencia, b.idcirculo, a.antiguidade"
 
-    titulo = 'PREVISÃO DE ESCALA DE SERVIÇO'
-    subtitulo = ' PARA O MÊS DE '
+    previsao_list = Militar.objects.raw(sqlmilitar)
 
-    buffer = gerarPDF(request, sqlmilitar,titulo, subtitulo)
+    data = previsao_list[0].data
+    dia = previsao_list[0].dia
+    
+    # Cria um buffer para "salvar" o pdf no buffer para depois ser retornado com um response.
+    buffer = io.BytesIO()
+    
+    #Cria uma lista vazia, depois vai adicionando listas, para passar como parâmetro para função   
+    dados = []
+    dados.append(['Data', 'Dia da Semana','Escala', 'Posto/Grad', 'Nome', 'OM'])
 
-    return FileResponse(buffer, as_attachment=True, filename='Previsao da Escala de Serviço.pdf')
+    style=[
+        ('GRID',(0,0),(-1,0),0.75,colors.black), #gera um grid todo fechado
+        ('INNERGRID',(0,1),(-1,-1),0.75,colors.black), #gera as linhas do grid sem as bordas das páginas
+        ]
+
+    nrlinhas = 1
+    nrRegAtual = 0
+    nrRegPorData = 0
+    for escalado in previsao_list:
+        if (nrRegAtual==0 and escalado.data == data):
+            dados.append([escalado.data.strftime("%d/%m/%Y"),escalado.dia,escalado.descricao,(escalado.get_posto_display()),escalado.nomeguerra, escalado.get_codom_display()])
+            nrRegAtual +=1
+        elif(nrRegAtual!=0 and escalado.data == data):
+            dados.append(['','',escalado.descricao,(escalado.get_posto_display()),escalado.nomeguerra, escalado.get_codom_display()])
+
+        if(vermelha(data)):
+            style.append(('BACKGROUND',(0,nrlinhas-1),(-1,nrlinhas-1),colors.pink))
+
+        if (escalado.data != data):
+            style.append(('SPAN',(0,nrlinhas-nrRegPorData),(0,nrlinhas-1)))
+            style.append(('VALIGN',(0,nrlinhas-nrRegPorData),(0,nrlinhas-1),'MIDDLE'))            
+            
+            style.append(('SPAN',(1,nrlinhas-nrRegPorData),(1,nrlinhas-1)))
+            style.append(('VALIGN',(1,nrlinhas-nrRegPorData),(1,nrlinhas-1),'MIDDLE'))
+            data = escalado.data
+            dados.append([escalado.data.strftime("%d/%m/%Y"),escalado.dia,escalado.descricao,(escalado.get_posto_display()),escalado.nomeguerra, escalado.get_codom_display()])
+            nrRegAtual +=1
+            nrRegPorData = 0
+        nrlinhas +=1
+        nrRegPorData +=1
+    
+    if (nrlinhas >=1 and nrRegPorData >0):
+            style.append(('SPAN',(0,nrlinhas-nrRegPorData),(0,nrlinhas-1)))
+            style.append(('VALIGN',(0,nrlinhas-nrRegPorData),(0,nrlinhas-1),'MIDDLE'))            
+            
+            style.append(('SPAN',(1,nrlinhas-nrRegPorData),(1,nrlinhas-1)))
+            style.append(('VALIGN',(1,nrlinhas-nrRegPorData),(1,nrlinhas-1),'MIDDLE'))   
+            style.append(('LINEBELOW', (0,-1), (-1,-1), 0.75, colors.black))     
+  
+    table = Table(dados,rowHeights=25,style=style,repeatRows=1)
+
+    pdf_filename = "tabela_estilizada.pdf"
+    pdf = SimpleDocTemplate(buffer, rightMargin=30,
+                            leftMargin=30, topMargin=30, bottomMargin=30)
+       
+    elements = []
+    styleSheet = getSampleStyleSheet()
+
+    texto =  "Escala de Serviço para o dia: " + data.strftime("%d/%m/%Y") + " - " +dia
+ 
+    tituloEstilo = ParagraphStyle('Titulo',
+                            fontName="Helvetica-Bold",
+                            fontSize=12,
+                            parent=styleSheet['Heading2'],
+                            alignment=1,
+                            spaceAfter=14)
+
+    P = Paragraph(texto,styleSheet["Normal"])
+    P = Paragraph(texto.upper(), tituloEstilo)
+    
+    elements.append(P)
+
+    # Estilo da tabela
+    style = TableStyle([
+                        # ('BACKGROUND', (0, 0), (-1, 0), (0.2, 0.4, 0.6)),  # Cor de fundo para cabeçalho
+                        ('BACKGROUND', (0, 0), (-1, 0), colors.olivedrab),  # Cor de fundo para cabeçalho
+                        ('TEXTCOLOR', (0, 0), (-1, 0), (1, 1, 1)),  # Cor do texto no cabeçalho
+                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinhamento central
+                        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),  # Alinhamento central                        
+                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold')])  # Fonte negrito para cabeçalho
+
+    table.setStyle(style)
+
+    elements.append(table)
+    rodape = request.user.username
+    rodape += '                        Data: ' + datetime.now().strftime("%d/%m/%Y")
+
+    estiloRodape = ParagraphStyle('Rodapé',
+                            fontName="Helvetica",
+                            fontSize=10,
+                            alignment=4,
+                            spaceAfter=10)
+      
+    P = Paragraph(rodape, estiloRodape)
+    elements.append(P)
+
+    pdf.build(elements)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename='+pdf_filename
+    response.write(buffer.getvalue())
+    buffer.close()
+
+    return response
 
 
 #*******************************************************************************************************************

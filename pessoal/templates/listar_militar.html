@@ -1,110 +1,90 @@
 {% extends "base.html" %}
 {% block content %}
 {% block pessoal %}{% endblock %}
-<table class="table full" align="center" id="minhaTabela">
-  <thead>
-    <th colspan="10" bgcolor="#6699CC">
-      <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Militares cadastrados</font></b></font></div>
-    </th>
-    <tr bgcolor="cccccc">
-      <th>Antig</th>
-      <th>OM</th>
-      <th>Posto/Grad</th>
-      <th>Nome Completo</th>
-      <th>Nome de Guerra</th>
-      <th>Pronto</th>
-      <th colspan="4">Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for militar in militares %}
-      <tr bgcolor="ebebeb">
-        <td align = center >{{ militar.antiguidade }}</td>
-        <td align = center >{{ militar.get_codom_display }}</td>
-        <td align = center >{{ militar.get_posto_display }}</td>
-        <td>{{ militar.nome }}</td>
-        <td >{{ militar.nome_guerra }}</td>
-        <td align = center >
-          <div align="center">
-            <!-- {% if militar.pronto == True %}
-              <input type="checkbox" name="selected_options" checked disabled>
-            {% else %}
-              <input type="checkbox" name="selected_options" disabled>
-            {% endif %} -->
-            {{ militar.get_pronto_display }}
-          </div>                    
-        </td>
-        {% if user.is_superuser %}
-        <td align = center >
-          <a href="{% url 'core:escalar' militar.id militar.idcirculo %}">
-            <i class="fa fa-book"></i>
-            Designar
-          </a>
-        </td>
-        {% endif %}
-        <td align = center >
-          <a href="{% url 'core:dispensar' militar.id militar.idcirculo %}">
-            <i class="fa fa-book"></i>
-            Afastamentos
-          </a>
-        </td>
-        <td align = center >
-          <a href="{% url 'pessoal:editar_militar' militar.id militar.idcirculo militares.number %}">
-            <i class="fa fa-edit"></i>
-              Editar
-          </a>
-        </td>
-        <td align = center>
-          <a href="{% url 'pessoal:delete_militar' militar.id militar.idcirculo militares.number %}">
-          <font color = "RED">
-            <i class="fa fa-trash"></i>
-            Excluir
-          </font>
-          </a>
-        </td>
+  <table class="table full" align="center" id="minhaTabela">
+    <thead>
+      <th colspan="10" bgcolor="#6699CC">
+        <div align="center"><font face="Arial" size="4"><b><font color="#FFFFFF">Militares cadastrados</font></b></font></div>
+      </th>
+      <tr bgcolor="cccccc">
+        <th>Antig</th>
+        <th>OM</th>
+        <th>Posto/Grad</th>
+        <th>Nome Completo</th>
+        <th>Nome de Guerra</th>
+        <th>Pronto</th>
+        <th colspan="4">Ações</th>
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% if militares.has_other_pages %}
-  <div class="pagination">
-    {% if militares.has_previous %}
-      <a href="?page={{ militares.previous_page_number }}">&laquo;</a>
-    {% endif %}
-    {% for i in militares.paginator.page_range %}
-      {% if militares.number == i %}
-        <a href="?page={{ i }}" class="active">{{ i }}</a>
-      {% else %}
-        <a href="?page={{ i }}">{{ i }}</a>
-      {% endif %}
-    {% endfor %}
-    {% if militares.has_next %}
-      <a href="?page={{ militares.next_page_number }}">&raquo;</a>
+    </thead>
+    <tbody>
+      {% for militar in militares %}
+        <tr bgcolor="ebebeb">
+          <td align = center >{{ militar.antiguidade }}</td>
+          <td align = center >{{ militar.get_codom_display }}</td>
+          <td align = center >{{ militar.get_posto_display }}</td>
+          <td>{{ militar.nome }}</td>
+          <td >{{ militar.nome_guerra }}</td>
+          <td align = center >
+            <div align="center">
+              <!-- {% if militar.pronto == True %}
+                <input type="checkbox" name="selected_options" checked disabled>
+              {% else %}
+                <input type="checkbox" name="selected_options" disabled>
+              {% endif %} -->
+              {{ militar.get_pronto_display }}
+            </div>                    
+          </td>
+          {% if user.is_superuser %}
+          <td align = center >
+            <a href="{% url 'core:escalar' militar.id militar.idcirculo %}">
+              <i class="fa fa-book"></i>
+              Designar
+            </a>
+          </td>
+          {% endif %}
+          <td align = center >
+            <a href="{% url 'core:dispensar' militar.id militar.idcirculo %}">
+              <i class="fa fa-book"></i>
+              Afastamentos
+            </a>
+          </td>
+          <td align = center >
+            <a href="{% url 'pessoal:editar_militar' militar.id militar.idcirculo militares.number %}">
+              <i class="fa fa-edit"></i>
+                Editar
+            </a>
+          </td>
+          <td align = center>
+            <a href="{% url 'pessoal:delete_militar' militar.id militar.idcirculo militares.number %}">
+            <font color = "RED">
+              <i class="fa fa-trash"></i>
+              Excluir
+            </font>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="container" align="center">
+    {% if militares.has_other_pages %}
+      <div class="pagination">
+        {% if militares.has_previous %}
+          <a href="?page={{ militares.previous_page_number }}">&laquo;</a>
+          <a href="?page={{ militares.previous_first_page }}">Primeira</a>
+        {% endif %}
+        {% for i in militares.paginator.page_range %}
+          {% if militares.number == i %}
+            <a href="?page={{ i }}" class="active">{{ i }}</a>
+          {% else %}
+            <a href="?page={{ i }}">{{ i }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if militares.has_next %}
+          <a href="?page={{ militares.next_page_number }}">&raquo;</a>
+          <a href="?page={{ militares.paginator.num_pages }}">Última</a>
+        {% endif %}
+      </div>
     {% endif %}
   </div>
-{% endif %}
-
-<!-- 
-{% if militares.has_other_pages %}
-  <ul class="breadcrumb">
-    {% if militares.has_previous %}
-      <li><a href="?page={{ militares.previous_page_number }}">&laquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
-    {% endif %}
-    {% for i in militares.paginator.page_range %}
-      {% if militares.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(Pág Atual)</span></span></li>
-      {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if militares.has_next %}
-      <li><a href="?page={{ militares.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-  {% endif %}
- -->
 {% endblock %}
