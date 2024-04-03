@@ -74,134 +74,244 @@ def gerarRodape(request,p,y):
     return True
 
 @login_required
-def gerarPDF(request, sql, titulo, nomeArquivo, subtitulo=None):
-    from previsao.views import vermelha
+def gerarPDF(request, sql, titulo, subtitulo=None):
     import io
-    from django.shortcuts import HttpResponse   
-    from reportlab.lib.pagesizes import A4
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
-    from reportlab.lib.styles import (ParagraphStyle, getSampleStyleSheet)
-    from reportlab.lib import colors
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.lib.units import inch
+    from reportlab.lib.colors import black, red, olive, white, blue
+    from previsao.views import vermelha
 
-    previsao_list = Militar.objects.raw(sql)
-
-    data = previsao_list[0].data
+    lista = Militar.objects.raw(sql)
+    
+    data = lista[0].data
+    dia = lista[0].dia
     nome_mes = obterMes(data)
-    
-    # Cria um buffer para "salvar" o pdf no buffer para depois ser retornado com um response.
+    dia = nomeDiaSemana(data)
+
+
+    if (subtitulo != None):
+        subtitulo += nome_mes + ' ' + str(data.year)
+
+    fontColor = "black"
+    if vermelha(data):
+        fontColor = "red"
+
+    # Create a file-like buffer to receive PDF data.
     buffer = io.BytesIO()
-    
-    #Cria uma lista vazia, depois vai adicionando listas, para passar como parâmetro para função   
-    dados = []
-    dados.append(['Data', 'Dia da Semana','Escala', 'Posto/Grad', 'Nome', 'OM'])
 
-    style=[
-        ('GRID',(0,0),(-1,0),0.75,colors.black), #gera um grid todo fechado
-        ('INNERGRID',(0,1),(-1,-1),0.75,colors.black), #gera as linhas do grid sem as bordas das páginas
-        ]
+    # Create the PDF object, using the buffer as its "file."
+    p = canvas.Canvas(buffer)
 
-    nrlinhas = 1
-    nrRegAtual = 0
-    nrRegPorData = 0
-    for escalado in previsao_list:
-        if (nrRegAtual==0 and escalado.data == data):
-            dados.append([escalado.data.strftime("%d/%m/%Y"),escalado.dia,escalado.descricao,(escalado.get_posto_display()),escalado.nomeguerra, escalado.get_codom_display()])
-            nrRegAtual +=1
-        elif(nrRegAtual!=0 and escalado.data == data):
-            dados.append(['','',escalado.descricao,(escalado.get_posto_display()),escalado.nomeguerra, escalado.get_codom_display()])
-
-        if(vermelha(data)):
-            style.append(('BACKGROUND',(0,nrlinhas-1),(-1,nrlinhas-1),colors.pink))
-
-        if (escalado.data != data):
-            style.append(('SPAN',(0,nrlinhas-nrRegPorData),(0,nrlinhas-1)))
-            style.append(('VALIGN',(0,nrlinhas-nrRegPorData),(0,nrlinhas-1),'MIDDLE'))            
-            
-            style.append(('SPAN',(1,nrlinhas-nrRegPorData),(1,nrlinhas-1)))
-            style.append(('VALIGN',(1,nrlinhas-nrRegPorData),(1,nrlinhas-1),'MIDDLE'))
-            data = escalado.data
-            dados.append([escalado.data.strftime("%d/%m/%Y"),escalado.dia,escalado.descricao,(escalado.get_posto_display()),escalado.nomeguerra, escalado.get_codom_display()])
-            nrRegAtual +=1
-            nrRegPorData = 0
-        nrlinhas +=1
-        nrRegPorData +=1
-    
-    # ----------------- Usado para fazer o merge da última escala -----------------
-    if (nrlinhas >=1 and nrRegPorData >0):
-            style.append(('SPAN',(0,nrlinhas-nrRegPorData),(0,nrlinhas-1)))
-            style.append(('VALIGN',(0,nrlinhas-nrRegPorData),(0,nrlinhas-1),'MIDDLE'))            
-            
-            style.append(('SPAN',(1,nrlinhas-nrRegPorData),(1,nrlinhas-1)))
-            style.append(('VALIGN',(1,nrlinhas-nrRegPorData),(1,nrlinhas-1),'MIDDLE'))   
-            style.append(('LINEBELOW', (0,-1), (-1,-1), 0.75, colors.black))     
+    # ------------ Configura fonte, tamanho e cor da fonte ------------
+    p.setFont("Helvetica-Bold", 14)
+    p.setFillColor(black)
     # -----------------------------------------------------------------
-  
-    table = Table(dados,rowHeights=25,style=style,repeatRows=1)
-
-    pdf = SimpleDocTemplate(buffer, rightMargin=30,
-                            leftMargin=30, topMargin=30, bottomMargin=30)
-       
-    elements = []
-    styleSheet = getSampleStyleSheet()
 
     # ----------------- Escreve o Título do relatório -----------------
-    tituloEstilo = ParagraphStyle('Titulo',
-                            fontName="Helvetica-Bold",
-                            fontSize=12,
-                            parent=styleSheet['Heading2'],
-                            alignment=1,
-                            spaceAfter=0)
-
-    P = Paragraph(titulo.upper(), tituloEstilo)
-    elements.append(P)
+    p.setTitle(titulo)
+    p.drawCentredString(300, 795, titulo)
     # -----------------------------------------------------------------
 
     # ---------------- Escreve o Subtítulo do relatório ---------------
-   
     if (subtitulo !=None): 
-        tituloEstilo = ParagraphStyle('Titulo',
-                            fontName="Helvetica-Bold",
-                            fontSize=12,
-                            parent=styleSheet['Heading1'],
-                            alignment=1,
-                        spaceAfter=0) 
-        subtitulo += nome_mes + ' ' + str(data.year)
-        P = Paragraph(subtitulo.upper(), tituloEstilo)
-        elements.append(P)
+        p.drawCentredString(300, 780, subtitulo)
     # -----------------------------------------------------------------
 
-    # Estilo da tabela
-    style = TableStyle([
-                        # ('BACKGROUND', (0, 0), (-1, 0), (0.2, 0.4, 0.6)),  # Cor de fundo para cabeçalho
-                        ('BACKGROUND', (0, 0), (-1, 0), colors.olivedrab),  # Cor de fundo para cabeçalho
-                        ('TEXTCOLOR', (0, 0), (-1, 0), (1, 1, 1)),  # Cor do texto no cabeçalho
-                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Alinhamento central
-                        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),  # Alinhamento central                        
-                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold')])  # Fonte negrito para cabeçalho
+    # ----------------- Desenha o Cabeçalho da Tabela -----------------
+    p.line(30,775,555,775)
+    p.setFillColor(olive, alpha=0.75 )
+    p.rect(30,755,525,20, fill=True, stroke=False)    
+    p.line(30,755,555,755)
+    # -----------------------------------------------------------------
 
-    table.setStyle(style)
+    # ------------ Configura fonte, tamanho e cor da fonte ------------
+    comumFontSize = 11
+    p.setFillColor(white)
+    p.setFont("Helvetica-Bold", comumFontSize)
+    # -----------------------------------------------------------------
 
-    elements.append(table)
-    rodape = 'Relatório gerado por: '+request.user.username
-    rodape += '                        em: ' + datetime.now().strftime("%d/%m/%Y")
+    # ----------- Configura os campos das colunas da tabela -----------
+    coluna1 = 'Data  - dia da Semana'
+    coluna2 = 'Escala'
+    coluna3 = 'Posto/Grad'
+    coluna4 = 'Militar'
+    coluna5 = 'OM'
+    # -----------------------------------------------------------------
 
-    estiloRodape = ParagraphStyle('Rodapé',
-                            fontName="Helvetica",
-                            fontSize=10,
-                            alignment=4,
-                            spaceAfter=10)
-      
-    P = Paragraph(rodape, estiloRodape)
-    elements.append(P)
+    # ---------------- Escreve os títulos das colunas  ----------------
+    #          upper é para deixar todas as letras maiúsculas         #
+    # -----------------------------------------------------------------   
+    p.drawCentredString(105,760,  coluna1.upper())
+    p.drawCentredString(220,760, coluna2.upper())
+    p.drawCentredString(305,760, coluna3.upper())
+    p.drawCentredString(405,760, coluna4.upper())
+    p.drawCentredString(505,760, coluna5.upper())
+    # -----------------------------------------------------------------
 
-    pdf.build(elements)
+    #---------------------- linhas verticais ----------------------
+    p.line(180,775,180,755)
+    p.line(260,775,260,755)
+    p.line(350,775,350,755)
+    p.line(460,775,460,755)
+    #--------------------------------------------------------------
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename='+nomeArquivo
-    response.write(buffer.getvalue())
-    buffer.close()
+    topoPagina = 755
+    rodapePagina = 40
+    y = topoPagina
+    areaUtil = topoPagina-rodapePagina
+    nrlinhas = 1
+    nrRegPorPag = 1
+    deltaY = comumFontSize
+    nrRegAtual = 0
 
-    return response
+    saltoTexto = 12
+    saltoLinhas = 5
+
+
+    # ------------ Configura fonte, tamanho e cor da fonte ------------
+    p.setFillColor(fontColor)
+    p.setFont("Helvetica", comumFontSize)   
+    #------------------------------------------------------------------
+
+    # - Faz uma varredura na lista para pegar todas escalas das datas -
+    for escalado in lista:
+        # --------- este if faz a mudança do dia da escala ------------
+        if (escalado.data != data):
+            nrRegAtual += 1
+
+            divisor = (comumFontSize*(nrlinhas)+(saltoTexto-comumFontSize)*(nrlinhas-1)) - saltoLinhas 
+
+            print(nrlinhas,saltoLinhas,saltoTexto)
+            nrRegPorPag = round(areaUtil / divisor)
+            # print("Divisor: ", divisor)
+
+            # -----------------------------------------------------------
+            # Calcula o deltaY para centralizar a data/dia da semana
+            # saltoTexto é a distância dada entre as linhas do texto
+            # -----------------------------------------------------------
+            deltaY = round((comumFontSize*(nrlinhas)+(saltoTexto-comumFontSize)*(nrlinhas-1)) / 2) - round(2.35*saltoLinhas) 
+            print('posicao da data: ', y+deltaY)
+            subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+            p.drawString(35, y+deltaY, subtitle)
+
+            # -----------------------------------------------------------
+            # ---- saltoLinhas é usada para afastar a linha do texto ----
+            # -----------------------------------------------------------
+            y -= saltoLinhas                     
+            p.line(30,y,555,y)
+
+            #atualiza a data e o dia da semana para os valores do registro atual
+            data = escalado.data
+            dia = escalado.dia
+
+            #configura a cor para preta, para garantir que não seja impresso de outra cor
+            fontColor = "black"
+
+            # if vermelha(data):
+            #     fontColor = "red"
+
+            if ((nrRegAtual < nrRegPorPag)):
+                if(vermelha(data)):
+                    # print('vermelha')
+                    p.setFillColor(red, alpha=0.30 )
+                    deslocamento = deltaY+ round((comumFontSize*(nrlinhas)+(saltoTexto-comumFontSize)*(nrlinhas-1)) / 2) + saltoLinhas     
+                    p.rect(30,y-deslocamento,525,deslocamento, fill=True, stroke=False)
+
+                p.setFillColor(fontColor)     
+
+            nrlinhas = 1    
+        # força quebra de página, pq a quantidade de registros é igual ao que cabe em uma página
+        if ((nrRegAtual == nrRegPorPag)):
+            p.setFillColor(fontColor)
+            gerarRodape(request, p, y)
+
+            print(nrlinhas,nrRegAtual,nrRegPorPag)
+
+            nrRegAtual = 0
+            nrlinhas = 1
+            nrRegPorPag = 1
+            y = 755
+    
+            # o método showPage() realiza a quebra de páginas no canvas
+            p.showPage()
+            p.setTitle(titulo)
+            p.setFont("Helvetica-Bold", 14)
+            p.setFillColor(black)
+            p.drawCentredString(300, 795, titulo)
+            if (subtitulo !=None):
+                p.drawCentredString(300, 780, subtitulo)
+
+            p.line(30,775,555,775)
+            p.setFillColor(olive, alpha=0.75 )
+            p.rect(30,755,525,20, fill=True, stroke=False)    
+            
+
+            p.setFillColor(white)
+            p.setFont("Helvetica-Bold", comumFontSize)
+            coluna1 = 'Data  - dia da Semana'
+            coluna2 = 'Escala'
+            coluna3 = 'Posto/Grad'
+            coluna4 = 'Militar'
+            coluna5 = 'OM'
+            p.drawCentredString(105,760,  coluna1.upper())
+            p.drawCentredString(220,760, coluna2.upper())
+            p.drawCentredString(305,760, coluna3.upper())
+            p.drawCentredString(405,760, coluna4.upper())
+            p.drawCentredString(505,760, coluna5.upper())
+
+            #---------------------- linhas verticais ----------------------
+            p.line(180,775,180,755)
+            p.line(260,775,260,755)
+            p.line(350,775,350,755)
+            p.line(460,775,460,755)
+            #--------------------------------------------------------------
+
+            p.line(30,755,555,755)
+            p.setFont("Helvetica", comumFontSize)    
+            p.setFillColor(black)
+
+        nrlinhas += 1
+
+        p.line(180,y+0,180,y-(saltoLinhas+saltoTexto))
+        p.line(260,y+0,260,y-(saltoLinhas+saltoTexto))
+        p.line(350,y+0,350,y-(saltoLinhas+saltoTexto))
+        p.line(460,y+0,460,y-(saltoLinhas+saltoTexto))
+
+        y -= saltoTexto
+
+        if(escalado.nomeguerra=='BELTRANO'):
+            print('posicao de BELTRANO: ', y)
+        p.drawString(185, y,escalado.descricao)
+        p.drawCentredString(305, y,escalado.get_posto_display())
+        p.drawString(355, y,escalado.nomeguerra)
+        p.drawString(465, y,escalado.get_codom_display())
+    # ----------------------- fim do for
+
+
+    # Close the PDF object cleanly, and we're done.
+    
+    # if (y > 60 & p.pageHasData()==False):
+    #     ## - Coloca os dados última escala.
+
+    #     ## - Coloca os dados última escala.
+    subtitle = data.strftime("%d/%m/%Y") + ' - ' + dia
+    p.drawString(35, y+deltaY, subtitle)
+
+    y -= saltoLinhas
+    p.setFillColor(fontColor)
+    gerarRodape(request, p, y)
+
+    p.line(30,y,555,y)
+    
+    p.showPage()
+    p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+
+    return buffer
 
 
 

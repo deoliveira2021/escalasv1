@@ -77,8 +77,6 @@ def GeneratePDF(request):
     ORDER BY b.data, c.precedencia, b.idcirculo, a.antiguidade"
 
     titulo = 'RELATÓRIO GERAL DE SERVIÇOS TIRADOS'
-    subtitulo = None
+    nomeArquivo = 'Relatório de Serviços em: '+ datetime.now().strftime("%d/%m/%Y") + '.pdf'
 
-    buffer = gerarPDF(request, sqlmilitar,titulo)
-
-    return FileResponse(buffer, as_attachment=True, filename='servicosTirados.pdf')
+    return gerarPDF(request, sqlmilitar,titulo, nomeArquivo)
